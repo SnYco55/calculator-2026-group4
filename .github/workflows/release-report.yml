@@ -1,0 +1,40 @@
+name: Release Report
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: maven
+
+      - name: Full build & analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn -B clean verify javadoc:javadoc sonar:sonar --file pom.xml
+
+      - name: Prepare release report
+        run: |
+          mkdir release-report
+          cp -r target/site release-report/
+          cp -r target/surefire-reports release-report/
+          cp -r target/site/jacoco release-report/
+          zip -r release-report.zip release-report
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-report.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
