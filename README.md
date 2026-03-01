@@ -1,11 +1,10 @@
-[![](https://img.shields.io/github/v/release/University-of-Mons/calculator-cucumber-2026?label=Latest%20Release)](https://github.com/University-of-Mons/calculator-cucumber/releases/latest)
+**Releases:** [![Latest Release](https://img.shields.io/github/v/release/SnYco55/calculator-2026-group4?label=Latest%20Release)](https://github.com/SnYco55/calculator-2026-group4/releases/latest)
 
-Code quality: ![Maven Build](https://github.com/University-of-Mons/calculator-cucumber-2026/actions/workflows/maven.yml/badge.svg)
+**CI / Build:** [![Build](https://github.com/SnYco55/calculator-2026-group4/actions/workflows/maven.yml/badge.svg)](https://github.com/SnYco55/calculator-2026-group4/actions/workflows/maven.yml)
 
-Test coverage: ![Coverage](.github/badges/jacoco.svg)
-![Branches](.github/badges/branches.svg)
+**Code Quality:** [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=SnYco55_calculator-2026-group4&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SnYco55_calculator-2026-group4) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SnYco55_calculator-2026-group4&metric=coverage)](https://sonarcloud.io/summary/new_code?id=SnYco55_calculator-2026-group4)
 
-
+**Test Coverage:** [![Coverage](.github/badges/jacoco.svg)](.github/badges/coverage-summary.json) [![Branches](.github/badges/branches.svg)](.github/badges/coverage-summary.json)
 # Calculating arithmetic expressions
 
 ## About
