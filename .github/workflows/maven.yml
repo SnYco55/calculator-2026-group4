@@ -4,7 +4,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ master, feature/ci-cd-workflows ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
