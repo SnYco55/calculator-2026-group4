@@ -70,10 +70,8 @@ public abstract class Operation implements Expression
 
 		//Verify that every sub expressions use the same notation
 		for (Expression e : elist) {
-			if (e instanceof Operation) {
-				if (!((Operation) e).notation.equals(n)){
-					throw new IllegalConstruction();
-				}
+			if ((e instanceof Operation) && (!((Operation) e).notation.equals(n))) {
+				throw new IllegalConstruction();
 			}
 		}
 	}
