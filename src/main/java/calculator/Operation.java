@@ -162,14 +162,14 @@ public abstract class Operation implements Expression
 	   Stream<String> s = args.stream().map(Object::toString);
 	   return switch (n) {
 		   case INFIX -> "( " +
-				   s.reduce((s1, s2) -> s1 + " " + symbol + " " + s2).get() +
+				   s.reduce((s1, s2) -> s1 + " " + symbol + " " + s2).orElse("") +
 				   " )";
 		   case PREFIX -> symbol + " " +
 				   "(" +
-				   s.reduce((s1, s2) -> s1 + ", " + s2).get() +
+				   s.reduce((s1, s2) -> s1 + ", " + s2).orElse("")+
 				   ")";
 		   case POSTFIX -> "(" +
-				   s.reduce((s1, s2) -> s1 + ", " + s2).get() +
+				   s.reduce((s1, s2) -> s1 + ", " + s2).orElse("") +
 				   ")" +
 				   " " + symbol;
 	   };
