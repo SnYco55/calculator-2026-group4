@@ -63,7 +63,17 @@ public abstract class Operation implements Expression
 		else {
 			args = new ArrayList<>(elist);
 		}
+
+		//If n isn't specified it is infix (useful for below verification)
 		if (n!=null) notation = n;
+		else n = Notation.INFIX;
+
+		//Verify that every sub expressions use the same notation
+		for (Expression e : elist) {
+			if ((e instanceof Operation) && (!((Operation) e).notation.equals(n))) {
+				throw new IllegalConstruction();
+			}
+		}
 	}
 
 	/**

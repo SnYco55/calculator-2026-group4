@@ -41,4 +41,21 @@ class TestOperation {
 		assertEquals(Integer.valueOf(6), o.countNbs());
 	}
 
+	@Test
+	void testSameNotation() throws Exception{
+		//Basic case
+		List <Expression> params = Arrays.asList(new MyNumber(4), new MyNumber(5));
+		List <Expression> params2 = Arrays.asList(new Plus(params, Notation.INFIX), new Minus(params, Notation.POSTFIX), new Times(params, Notation.PREFIX));
+
+		assertThrows(IllegalConstruction.class, () -> new Times(params2));
+
+		List <Expression> params3 = Arrays.asList(new Plus(params), new Minus(params), new Times(params, Notation.PREFIX));
+
+		//Another case
+		assertThrows(IllegalConstruction.class, () -> Arrays.asList(new Plus(params3), new MyNumber(6), new MyNumber(7)));
+
+		//If everything is good
+		List <Expression> params4 = Arrays.asList(new Plus(params), new Minus(params), new Times(params));
+		assertDoesNotThrow(() -> new Plus(params4));
+	}
 }
