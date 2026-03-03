@@ -51,7 +51,11 @@ class TestOperation {
 
 		List <Expression> params3 = Arrays.asList(new Plus(params), new Minus(params), new Times(params, Notation.PREFIX));
 
-		//Nested case
-		assertThrows(IllegalConstruction.class, () -> Arrays.asList(new Plus(params3), new Minus(params), new Times(params)));
+		//Another case
+		assertThrows(IllegalConstruction.class, () -> Arrays.asList(new Plus(params3), new MyNumber(6), new MyNumber(7)));
+
+		//If everything is good
+		List <Expression> params4 = Arrays.asList(new Plus(params), new Minus(params), new Times(params));
+		assertDoesNotThrow(() -> new Plus(params4));
 	}
 }
