@@ -32,7 +32,12 @@ public class Calculator {
      */
     public void print(Expression e) {
         System.out.println("The result of evaluating expression " + e);
-        System.out.println("is: " + eval(e) + ".");
+        try {
+            int result = eval(e);
+            System.out.println("is: " + result + ".");
+        } catch (ArithmeticException ex) {
+            System.out.println("Error: Division by zero");
+        }
         System.out.println();
     }
 
@@ -58,7 +63,12 @@ public class Calculator {
         // create a new visitor to evaluate expressions
         Evaluator v = new Evaluator();
         // and ask the expression to accept this visitor to start the evaluation process
-        e.accept(v);
+        try{
+            e.accept(v);
+        }catch (ArithmeticException ex){
+            throw ex;
+        }
+
         // and return the result of the evaluation at the end of the process
         return v.getResult();
     }

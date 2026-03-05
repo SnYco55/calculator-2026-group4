@@ -76,4 +76,48 @@ class TestDivides {
 		assertThrows(IllegalConstruction.class, () -> op = new Divides(params));
 	}
 
+	@Test
+	void testDivisionByZero() {
+		// Evaluating a division by zero should throw an ArithmeticException
+		List<Expression> p = Arrays.asList(new MyNumber(5), new MyNumber(0));
+		Divides d = null;
+		try {
+			d = new Divides(p, Notation.INFIX);
+		} catch (IllegalConstruction e) {
+			fail("Construction failed unexpectedly");
+		}
+		Calculator c = new Calculator();
+		Divides finalD = d;
+		assertThrows(ArithmeticException.class, () -> {
+			c.eval(finalD);
+		});
+	}
+
+	@Test
+	void testPrintDivisionByZero() {
+		// Printing a division by zero should display "Error: Division by zero"
+		List<Expression> p = Arrays.asList(new MyNumber(5), new MyNumber(0));
+		Divides d = null;
+		try {
+			d = new Divides(p, Notation.INFIX);
+		} catch (IllegalConstruction e) {
+			fail();
+		}
+
+		Calculator c = new Calculator();
+
+		java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+		System.setOut(new java.io.PrintStream(out));
+
+		c.print(d);
+
+		String printed = out.toString();
+		assertTrue(printed.contains("Error: Division by zero"));
+
+		// reset System.out
+		System.setOut(System.out);
+	}
+
+
+
 }

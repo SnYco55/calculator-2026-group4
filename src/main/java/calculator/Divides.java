@@ -46,6 +46,10 @@ public final class Divides extends Operation
      * @param r The second integer that should divide the first
      * @return The integer that is the result of the division
      */
-  public int op(int l, int r)
-    { return (l/r); }
+  public int op(int l, int r) {
+      if (r == 0) {
+          throw new ArithmeticException("Division by zero");
+      }
+      return (l/r);
+    }
 }
