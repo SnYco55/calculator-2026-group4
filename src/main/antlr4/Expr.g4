@@ -4,12 +4,12 @@ grammar Expr;
 package exparser;
 }
 
-prog: expr EOF ;
-
-expr: expr '*' expr   # Time
+expr:
+      expr '**' expr  # Pow
+    | expr '*' expr   # Time
+    | expr '/' expr   # Div
     | expr '+' expr   # Add
     | expr '-' expr   # Minus
-    | expr '/' expr   # Div
     | INT             # Int
     | '(' expr ')'    # Parens
     ;
