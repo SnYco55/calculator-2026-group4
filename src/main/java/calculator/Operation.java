@@ -4,7 +4,6 @@ import visitor.Visitor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Operation is an abstract class that represents arithmetic operations,
@@ -91,7 +90,7 @@ public abstract class Operation implements Expression
 	 * @param r	second argument of the binary operation
 	 * @return	result of computing the binary operation
 	 */
-   public abstract int op(int l, int r);
+   public abstract Value op(Value l, Value r);
     // the operation itself is specified in the subclasses
 
 	/** Add more parameters to the existing list of parameters
@@ -115,75 +114,15 @@ public abstract class Operation implements Expression
   }
 
 	/**
-	 * Count the depth of an arithmetic expression recursively,
-	 * using Java 8 functional programming capabilities (streams, maps, etc...)
+	 * getter method to return the symbol of an arithmetic operation.
 	 *
- 	 * @return	The depth of the arithmetic expression being traversed
+	 * @return	The symbol of the arithmetic operation.
 	 */
-	public final int countDepth() {
-	    // use of Java 8 functional programming capabilities
-	return 1 + args.stream()
-			   .mapToInt(Expression::countDepth)
-			   .max()
-			   .getAsInt();  
-  }
+	public String getSymbol() {
+		return symbol;
+	}
 
-	/**
-	 * Count the number of operations contained in an arithmetic expression recursively,
-	 * using Java 8 functional programming capabilities (streams, maps, etc...)
-	 *
-	 * @return	The number of operations contained in an arithmetic expression being traversed
-	 */
-	public final int countOps() {
-	    // use of Java 8 functional programming capabilities
-	return 1 + args.stream()
-			   .mapToInt(Expression::countOps)
-			   .reduce(Integer::sum)
-			   .getAsInt();
-  }
 
-  public final int countNbs() {
-	    // use of Java 8 functional programming capabilities
-	return args.stream()
-			   .mapToInt(Expression::countNbs)
-			   .reduce(Integer::sum)
-			   .getAsInt();  
-  }
-
-  /**
-   * Convert the arithmetic operation into a String to allow it to be printed,
-   * using the default notation (prefix, infix or postfix) that is specified in some variable.
-   *
-   * @return	The String that is the result of the conversion.
-   */
-  @Override
-  public final String toString() {
-  	return toString(notation);
-  }
-
-  /**
-   * Convert the arithmetic operation into a String to allow it to be printed,
-   * using the notation n (prefix, infix or postfix) that is specified as a parameter.
-   *
-   * @param n	The notation to be used for representing the operation (prefix, infix or postfix)
-   * @return	The String that is the result of the conversion.
-   */
-  public final String toString(Notation n) {
-	   Stream<String> s = args.stream().map(Object::toString);
-	   return switch (n) {
-		   case INFIX -> "( " +
-				   s.reduce((s1, s2) -> s1 + " " + symbol + " " + s2).orElse("") +
-				   " )";
-		   case PREFIX -> symbol + " " +
-				   "(" +
-				   s.reduce((s1, s2) -> s1 + ", " + s2).orElse("")+
-				   ")";
-		   case POSTFIX -> "(" +
-				   s.reduce((s1, s2) -> s1 + ", " + s2).orElse("") +
-				   ")" +
-				   " " + symbol;
-	   };
-  }
 
 	/**
 	 * Two operation objects are equal if their list of arguments is equal and they correspond to the same operation.

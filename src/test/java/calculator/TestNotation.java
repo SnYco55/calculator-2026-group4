@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 import java.util.List;
+import visitor.Printer;
 
 
 class TestNotation {
@@ -14,9 +15,9 @@ class TestNotation {
     /* This is an auxilary method to avoid code duplication.
      */
 	void testNotation(String s,Operation o,Notation n) {
-		assertEquals(s, o.toString(n));
-		o.notation = n;
-		assertEquals(s, o.toString());
+		Printer p = new Printer(n);
+		o.accept(p);
+		assertEquals(s, p.getResult());
 	}
 
 	/* This is an auxilary method to avoid code duplication.

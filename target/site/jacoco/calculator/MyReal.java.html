@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyReal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Calculator with JUnit5 and Cucumber tests</a> &gt; <a href="index.source.html" class="el_package">calculator</a> &gt; <span class="el_source">MyReal.java</span></div><h1>MyReal.java</h1><pre class="source lang-java linenums">package calculator;
+
+import visitor.Visitor;
+
+public class MyReal implements Expression, Value {
+    private final double value;
+
+<span class="fc" id="L8">    public MyReal(double v) {</span>
+<span class="fc" id="L9">        this.value = v;</span>
+<span class="fc" id="L10">    }</span>
+
+    public double getValue() {
+<span class="fc" id="L13">        return value;</span>
+    }
+
+    public void accept(Visitor v) {
+<span class="nc" id="L17">        v.visit(this);</span>
+<span class="nc" id="L18">    }</span>
+
+    @Override
+    public Value add(Value other) {
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if (other instanceof MyNumber) return new MyReal(this.value + ((MyNumber)other).getValue());</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        if (other instanceof MyReal) return new MyReal(this.value + ((MyReal)other).getValue());</span>
+<span class="nc" id="L24">        throw new IllegalArgumentException(&quot;Unsupported type for addition with MyReal&quot;);</span>
+    }
+
+    @Override
+    public Value subtract(Value other) {
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        if (other instanceof MyNumber) return new MyReal(this.value - ((MyNumber)other).getValue());</span>
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        if (other instanceof MyReal) return new MyReal(this.value - ((MyReal)other).getValue());</span>
+<span class="nc" id="L31">        throw new IllegalArgumentException(&quot;Unsupported type for subtraction with MyReal&quot;);</span>
+    }
+
+    @Override
+    public Value multiply(Value other) {
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (other instanceof MyNumber) return new MyReal(this.value * ((MyNumber)other).getValue());</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (other instanceof MyReal) return new MyReal(this.value * ((MyReal)other).getValue());</span>
+<span class="nc" id="L38">        throw new IllegalArgumentException(&quot;Unsupported type for multiplication with MyReal&quot;);</span>
+    }
+
+    @Override
+    public Value divide(Value other) {
+        double otherVal;
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if (other instanceof MyNumber) {</span>
+<span class="nc" id="L45">            otherVal = ((MyNumber)other).getValue();</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        } else if (other instanceof MyReal) {</span>
+<span class="fc" id="L47">            otherVal = ((MyReal)other).getValue();</span>
+        } else {
+<span class="nc" id="L49">            throw new IllegalArgumentException(&quot;Unsupported type for division with MyReal&quot;);</span>
+        }
+<span class="fc" id="L51">        return new MyReal(this.value / otherVal); // In Java, X.X / 0.0 results in Infinity or NaN, mapping to the requirements natively</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L56">        return Double.toString(value);</span>
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (o == null) return false;</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (o == this) return true;</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (!(o instanceof MyReal)) return false;</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        return Double.compare(this.value, ((MyReal)o).value) == 0;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L69">        return Double.hashCode(value);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

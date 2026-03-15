@@ -23,7 +23,7 @@ class TestEvaluator {
 
     @Test
     void testEvaluatorMyNumber() {
-        assertEquals( value1, calc.eval(new MyNumber(value1)));
+        assertEquals( value1, ((MyNumber)calc.eval(new MyNumber(value1))).getValue());
     }
 
     @ParameterizedTest
@@ -34,10 +34,10 @@ class TestEvaluator {
             //construct another type of operation depending on the input value
             //of the parameterised test
             switch (symbol) {
-                case "+"	->	assertEquals( value1 + value2, calc.eval(new Plus(params)));
-                case "-"	->	assertEquals( value1 - value2, calc.eval(new Minus(params)));
-                case "*"	->	assertEquals( value1 * value2, calc.eval(new Times(params)));
-                case "/"	->	assertEquals( value1 / value2, calc.eval(new Divides(params)));
+                case "+"	->	assertEquals( value1 + value2, ((MyNumber)calc.eval(new Plus(params))).getValue());
+                case "-"	->	assertEquals( value1 - value2, ((MyNumber)calc.eval(new Minus(params))).getValue());
+                case "*"	->	assertEquals( value1 * value2, ((MyNumber)calc.eval(new Times(params))).getValue());
+                case "/"	->	assertEquals( value1 / value2, ((MyNumber)calc.eval(new Divides(params))).getValue());
                 default		->	fail();
             }
         } catch (IllegalConstruction e) {

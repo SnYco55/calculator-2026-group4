@@ -9,7 +9,7 @@ import visitor.Visitor;
  * @see Expression
  * @see Operation
  */
-public class MyNumber implements Expression
+public class MyNumber implements Expression, Value
 {
   private final int value;
 
@@ -38,40 +38,57 @@ public class MyNumber implements Expression
       v.visit(this);
   }
 
+    @Override
+    public Value add(Value other) {
+        if (other instanceof MyNumber) return new MyNumber(this.value + ((MyNumber)other).getValue());
+        if (other instanceof MyReal) return new MyReal(this.value + ((MyReal)other).getValue());
+        if (other instanceof MyRational) return new MyRational(this.value * ((MyRational)other).getDenominator() + ((MyRational)other).getNumerator(), ((MyRational)other).getDenominator());
+        if (other instanceof MyComplex) return new MyComplex(this.value + ((MyComplex)other).getReal(), ((MyComplex)other).getImaginary());
+        throw new IllegalArgumentException("Unsupported type for addition");
+    }
 
-    /** The depth of a number expression is always 0
-     *
-     * @return The depth of a number expression
-     */
-  public int countDepth() {
-	  return 0;
-  }
+    @Override
+    public Value subtract(Value other) {
+        if (other instanceof MyNumber) return new MyNumber(this.value - ((MyNumber)other).getValue());
+        if (other instanceof MyReal) return new MyReal(this.value - ((MyReal)other).getValue());
+        if (other instanceof MyRational) return new MyRational(this.value * ((MyRational)other).getDenominator() - ((MyRational)other).getNumerator(), ((MyRational)other).getDenominator());
+        if (other instanceof MyComplex) return new MyComplex(this.value - ((MyComplex)other).getReal(), -((MyComplex)other).getImaginary());
+        throw new IllegalArgumentException("Unsupported type for subtraction");
+    }
 
-    /** The number of operations contained in a number expression is always 0
-     *
-     * @return The number of operations contained in a number expression
-     */
-  public int countOps() {
-	  return 0;
-  }
+    @Override
+    public Value multiply(Value other) {
+        if (other instanceof MyNumber) return new MyNumber(this.value * ((MyNumber)other).getValue());
+        if (other instanceof MyReal) return new MyReal(this.value * ((MyReal)other).getValue());
+        if (other instanceof MyRational) return new MyRational(this.value * ((MyRational)other).getNumerator(), ((MyRational)other).getDenominator());
+        if (other instanceof MyComplex) return new MyComplex(this.value * ((MyComplex)other).getReal(), this.value * ((MyComplex)other).getImaginary());
+        throw new IllegalArgumentException("Unsupported type for multiplication");
+    }
 
-    /** The number of numbers contained in a number expression is always 1
-     *
-     * @return The number of numbers contained in  a number expression
-     */
-  public int countNbs() {
-	  return 1;
-  }
+    @Override
+    public Value divide(Value other) {
+        if (other instanceof MyNumber) {
+            int n = ((MyNumber)other).getValue();
+            if (n == 0) throw new ArithmeticException("Division by zero");
+            return new MyNumber(this.value / n);
+        }
+        if (other instanceof MyReal) return new MyReal(this.value / ((MyReal)other).getValue());
+        if (other instanceof MyRational) {
+            MyRational r = (MyRational)other;
+            if (r.getNumerator() == 0) throw new ArithmeticException("Division by zero");
+            return new MyRational(this.value * r.getDenominator(), r.getNumerator());
+        }
+        if (other instanceof MyComplex) {
+            MyComplex c = (MyComplex)other;
+            double denominator = c.getReal() * c.getReal() + c.getImaginary() * c.getImaginary();
+            if (denominator == 0) throw new ArithmeticException("Division by zero");
+            return new MyComplex((this.value * c.getReal()) / denominator, (-this.value * c.getImaginary()) / denominator);
+        }
+        throw new IllegalArgumentException("Unsupported type for division");
+    }
 
-    /**
-     * Convert a number into a String to allow it to be printed.
-     *
-     * @return	The String that is the result of the conversion.
-     */
-  @Override
-  public String toString() {
-	  return Integer.toString(value);
-  }
+
+
 
   /** Two MyNumber expressions are equal if the values they contain are equal
    *
