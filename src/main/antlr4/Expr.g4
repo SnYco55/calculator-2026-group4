@@ -1,7 +1,7 @@
 grammar Expr;
 
 @header {
-package visitor.parser;
+package exparser;
 }
 
 // Règle principale
