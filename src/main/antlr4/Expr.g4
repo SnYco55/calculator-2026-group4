@@ -4,12 +4,12 @@ grammar Expr;
 package exparser;
 }
 
-// Règle principale
 prog: expr EOF ;
 
-// Règle d'expression avec des labels (#) pour le Visitor
-expr: expr '*' expr   # Mul
+expr: expr '*' expr   # Time
     | expr '+' expr   # Add
+    | expr '-' expr   # Minus
+    | expr '/' expr   # Div
     | INT             # Int
     | '(' expr ')'    # Parens
     ;
