@@ -33,7 +33,9 @@ class TestMyNumber {
 
 	@Test
 	void testToString() {
-		assertEquals(Integer.toString(value), number.toString());
+		visitor.Printer p = new visitor.Printer();
+		number.accept(p);
+		assertEquals(Integer.toString(value), p.getResult());
 	}
 
 }

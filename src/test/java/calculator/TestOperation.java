@@ -6,6 +6,9 @@ import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
 import java.util.List;
+import visitor.DepthCounter;
+import visitor.OpsCounter;
+import visitor.NbsCounter;
 
 class TestOperation {
 
@@ -28,17 +31,23 @@ class TestOperation {
 
 	@Test
 	void testCountDepth() {
-		assertEquals(2, o.countDepth());
+		DepthCounter dc = new DepthCounter();
+		o.accept(dc);
+		assertEquals(2, dc.getResult());
 	}
 
 	@Test
 	void testCountOps() {
-		assertEquals(3, o.countOps());
+		OpsCounter oc = new OpsCounter();
+		o.accept(oc);
+		assertEquals(3, oc.getResult());
 	}
 
 	@Test
 	void testCountNbs() {
-		assertEquals(Integer.valueOf(6), o.countNbs());
+		NbsCounter nc = new NbsCounter();
+		o.accept(nc);
+		assertEquals(Integer.valueOf(6), nc.getResult());
 	}
 
 	@Test
