@@ -18,50 +18,46 @@ public class MyComplex implements Expression, Value {
         v.visit(this);
     }
 
+    private double getRealPart(Value v) {
+        if (v instanceof MyComplex) return ((MyComplex)v).getReal();
+        if (v instanceof MyReal) return ((MyReal)v).getValue();
+        if (v instanceof MyRational) return (double)((MyRational)v).getNumerator() / ((MyRational)v).getDenominator();
+        if (v instanceof MyNumber) return ((MyNumber)v).getValue();
+        throw new IllegalArgumentException("Unsupported type");
+    }
+
+    private double getImaginaryPart(Value v) {
+        if (v instanceof MyComplex) return ((MyComplex)v).getImaginary();
+        return 0.0;
+    }
+
     @Override
     public Value add(Value other) {
-        if (other instanceof MyNumber) return new MyComplex(this.real + ((MyNumber)other).getValue(), this.imaginary);
-        if (other instanceof MyComplex) return new MyComplex(this.real + ((MyComplex)other).real, this.imaginary + ((MyComplex)other).imaginary);
-        throw new IllegalArgumentException("Unsupported type for addition with MyComplex");
+        return new MyComplex(this.real + getRealPart(other), this.imaginary + getImaginaryPart(other));
     }
 
     @Override
     public Value subtract(Value other) {
-        if (other instanceof MyNumber) return new MyComplex(this.real - ((MyNumber)other).getValue(), this.imaginary);
-        if (other instanceof MyComplex) return new MyComplex(this.real - ((MyComplex)other).real, this.imaginary - ((MyComplex)other).imaginary);
-        throw new IllegalArgumentException("Unsupported type for subtraction with MyComplex");
+        return new MyComplex(this.real - getRealPart(other), this.imaginary - getImaginaryPart(other));
     }
 
     @Override
     public Value multiply(Value other) {
-        if (other instanceof MyNumber) {
-            double n = ((MyNumber)other).getValue();
-            return new MyComplex(this.real * n, this.imaginary * n);
-        }
-        if (other instanceof MyComplex) {
-            MyComplex c = (MyComplex)other;
-            return new MyComplex(this.real * c.real - this.imaginary * c.imaginary, this.real * c.imaginary + this.imaginary * c.real);
-        }
-        throw new IllegalArgumentException("Unsupported type for multiplication with MyComplex");
+        double oR = getRealPart(other);
+        double oI = getImaginaryPart(other);
+        return new MyComplex(this.real * oR - this.imaginary * oI, this.real * oI + this.imaginary * oR);
     }
 
     @Override
     public Value divide(Value other) {
-        if (other instanceof MyNumber) {
-            double n = ((MyNumber)other).getValue();
-            if (n == 0) throw new ArithmeticException("Division by zero in MyComplex");
-            return new MyComplex(this.real / n, this.imaginary / n);
-        }
-        if (other instanceof MyComplex) {
-            MyComplex c = (MyComplex)other;
-            double denominator = c.real * c.real + c.imaginary * c.imaginary;
-            if (denominator == 0) throw new ArithmeticException("Division by zero in MyComplex");
-            return new MyComplex(
-                (this.real * c.real + this.imaginary * c.imaginary) / denominator,
-                (this.imaginary * c.real - this.real * c.imaginary) / denominator
-            );
-        }
-        throw new IllegalArgumentException("Unsupported type for division with MyComplex");
+        double oR = getRealPart(other);
+        double oI = getImaginaryPart(other);
+        double denominator = oR * oR + oI * oI;
+        if (denominator == 0) throw new ArithmeticException("Division by zero in MyComplex");
+        return new MyComplex(
+            (this.real * oR + this.imaginary * oI) / denominator,
+            (this.imaginary * oR - this.real * oI) / denominator
+        );
     }
 
     @Override

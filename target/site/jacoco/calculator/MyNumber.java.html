@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Calculator with JUnit5 and Cucumber tests</a> &gt; <a href="index.source.html" class="el_package">calculator</a> &gt; <span class="el_source">MyNumber.java</span></div><h1>MyNumber.java</h1><pre class="source lang-java linenums">package calculator;
+
+import visitor.Visitor;
+
+/**
+ * MyNumber is a concrete class that represents arithmetic numbers,
+ * which are a special kind of Expressions, just like operations are.
+ *
+ * @see Expression
+ * @see Operation
+ */
+public class MyNumber implements Expression, Value
+{
+  private final int value;
+
+    /** getter method to obtain the value contained in the object
+     *
+     * @return The integer number contained in the object
+     */
+<span class="fc" id="L20">  public Integer getValue() { return value; }</span>
+
+    /**
+     * Constructor method
+     *
+     * @param v The integer value to be contained in the object
+     */
+<span class="fc" id="L27">    public /*constructor*/ MyNumber(int v) {</span>
+<span class="fc" id="L28">	  value=v;</span>
+<span class="fc" id="L29">	  }</span>
+
+    /**
+     * accept method to implement the visitor design pattern to traverse arithmetic expressions.
+     * Each number will pass itself to the visitor object to get processed by the visitor.
+     *
+     * @param v	The visitor object
+     */
+  public void accept(Visitor v) {
+<span class="fc" id="L38">      v.visit(this);</span>
+<span class="fc" id="L39">  }</span>
+
+    @Override
+    public Value add(Value other) {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (other instanceof MyNumber) return new MyNumber(this.value + ((MyNumber)other).getValue());</span>
+<span class="fc" id="L44">        return other.add(this);</span>
+    }
+
+    @Override
+    public Value subtract(Value other) {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (other instanceof MyNumber) return new MyNumber(this.value - ((MyNumber)other).getValue());</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (other instanceof MyRational) return new MyRational(this.value * ((MyRational)other).getDenominator() - ((MyRational)other).getNumerator(), ((MyRational)other).getDenominator());</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (other instanceof MyReal) return new MyReal(this.value - ((MyReal)other).getValue());</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (other instanceof MyComplex) return new MyComplex(this.value - ((MyComplex)other).getReal(), -((MyComplex)other).getImaginary());</span>
+<span class="nc" id="L53">        throw new IllegalArgumentException(&quot;Unsupported type for subtraction&quot;);</span>
+    }
+
+    @Override
+    public Value multiply(Value other) {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (other instanceof MyNumber) return new MyNumber(this.value * ((MyNumber)other).getValue());</span>
+<span class="fc" id="L59">        return other.multiply(this);</span>
+    }
+
+    @Override
+    public Value divide(Value other) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (other instanceof MyNumber) {</span>
+<span class="fc" id="L65">            int n = ((MyNumber)other).getValue();</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (n == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
+<span class="fc" id="L67">            return new MyNumber(this.value / n);</span>
+        }
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (other instanceof MyRational) {</span>
+<span class="fc" id="L70">            MyRational r = (MyRational)other;</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">            if (r.getNumerator() == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
+<span class="fc" id="L72">            return new MyRational(this.value * r.getDenominator(), r.getNumerator());</span>
+        }
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (other instanceof MyReal) return new MyReal(this.value / ((MyReal)other).getValue());</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (other instanceof MyComplex) {</span>
+<span class="fc" id="L76">            MyComplex c = (MyComplex)other;</span>
+<span class="fc" id="L77">            double denominator = c.getReal() * c.getReal() + c.getImaginary() * c.getImaginary();</span>
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">            if (denominator == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
+<span class="fc" id="L79">            return new MyComplex((this.value * c.getReal()) / denominator, (-this.value * c.getImaginary()) / denominator);</span>
+        }
+<span class="nc" id="L81">        throw new IllegalArgumentException(&quot;Unsupported type for division&quot;);</span>
+    }
+
+
+
+
+  /** Two MyNumber expressions are equal if the values they contain are equal
+   *
+   * @param o The object to compare to
+   * @return  A boolean representing the result of the equality test
+   */
+  @Override
+  public boolean equals(Object o) {
+      // No object should be equal to null (not including this check can result in an exception if a MyNumber is tested against null)
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">      if (o == null) return false;</span>
+
+      // If the object is compared to itself then return true
+<span class="fc bfc" id="L98" title="All 2 branches covered.">      if (o == this) {</span>
+<span class="fc" id="L99">          return true;</span>
+      }
+
+      // If the object is of another type then return false
+<span class="fc bfc" id="L103" title="All 2 branches covered.">      if (!(o instanceof MyNumber)) {</span>
+<span class="fc" id="L104">            return false;</span>
+      }
+<span class="fc bfc" id="L106" title="All 2 branches covered.">      return this.value == ((MyNumber)o).value;</span>
+      // Used == since the contained value is a primitive value
+      // If it had been a Java object, .equals() would be needed
+  }
+
+    /** The method hashCode needs to be overridden it the equals method is overridden;
+     * 	otherwise there may be problems when you use your object in hashed collections
+     * 	such as HashMap, HashSet, LinkedHashSet.
+     *
+     * @return	The result of computing the hash.
+     */
+  @Override
+  public int hashCode() {
+<span class="fc" id="L119">		return value;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

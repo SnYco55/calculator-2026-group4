@@ -58,7 +58,6 @@ class TestOtherNumbers {
 
     @Test
     void testMixedTypesPromotion() {
-        // Testing some basic promotion (int to other domains)
         MyNumber n = new MyNumber(5);
         
         MyRational r = new MyRational(1, 2);
@@ -68,5 +67,58 @@ class TestOtherNumbers {
         MyComplex c = new MyComplex(2, 3);
         // (2+3i) * 5 = 10+15i
         assertEquals(new MyComplex(10, 15), c.multiply(n));
+    }
+
+    @Test
+    void testRationalWithReal() {
+        MyRational r = new MyRational(1, 4); // 0.25
+        MyReal d = new MyReal(0.5);
+        assertEquals(new MyReal(0.75), r.add(d));
+        assertEquals(new MyReal(-0.25), r.subtract(d));
+        assertEquals(new MyReal(0.125), r.multiply(d));
+        assertEquals(new MyReal(0.5), r.divide(d));
+    }
+
+    @Test
+    void testRationalWithComplex() {
+        MyRational r = new MyRational(1, 2); // 0.5
+        MyComplex c = new MyComplex(1, 1);
+        assertEquals(new MyComplex(1.5, 1), r.add(c));
+        assertEquals(new MyComplex(-0.5, -1), r.subtract(c));
+        assertEquals(new MyComplex(0.5, 0.5), r.multiply(c));
+        assertEquals(new MyComplex(0.25, -0.25), r.divide(c)); // 0.5 / (1+i) = 0.5(1-i)/2 = 0.25 - 0.25i
+    }
+
+    @Test
+    void testRealWithComplex() {
+        MyReal r = new MyReal(2.0);
+        MyComplex c = new MyComplex(1, 2);
+        assertEquals(new MyComplex(3.0, 2.0), r.add(c));
+        assertEquals(new MyComplex(1.0, -2.0), r.subtract(c));
+        assertEquals(new MyComplex(2.0, 4.0), r.multiply(c));
+        assertEquals(new MyComplex(0.4, -0.8), r.divide(c)); // 2 / (1+2i) = 2(1-2i)/5 = 0.4 - 0.8i
+    }
+
+    @Test
+    void testNumberWithAll() {
+        MyNumber n = new MyNumber(10);
+        MyRational r = new MyRational(1, 2);
+        MyReal d = new MyReal(2.5);
+        MyComplex c = new MyComplex(1, 1);
+
+        assertEquals(new MyRational(21, 2), n.add(r)); // 10 + 1/2
+        assertEquals(new MyRational(19, 2), n.subtract(r)); // 10 - 1/2
+        assertEquals(new MyRational(5, 1), n.multiply(r)); // 10 * 1/2
+        assertEquals(new MyRational(20, 1), n.divide(r)); // 10 / (1/2)
+
+        assertEquals(new MyReal(12.5), n.add(d));
+        assertEquals(new MyReal(7.5), n.subtract(d));
+        assertEquals(new MyReal(25.0), n.multiply(d));
+        assertEquals(new MyReal(4.0), n.divide(d));
+
+        assertEquals(new MyComplex(11, 1), n.add(c));
+        assertEquals(new MyComplex(9, -1), n.subtract(c));
+        assertEquals(new MyComplex(10, 10), n.multiply(c));
+        assertEquals(new MyComplex(5, -5), n.divide(c)); // 10 / (1+i) = 10(1-i)/2 = 5 - 5i
     }
 }

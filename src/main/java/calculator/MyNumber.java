@@ -41,17 +41,14 @@ public class MyNumber implements Expression, Value
     @Override
     public Value add(Value other) {
         if (other instanceof MyNumber) return new MyNumber(this.value + ((MyNumber)other).getValue());
-        if (other instanceof MyReal) return new MyReal(this.value + ((MyReal)other).getValue());
-        if (other instanceof MyRational) return new MyRational(this.value * ((MyRational)other).getDenominator() + ((MyRational)other).getNumerator(), ((MyRational)other).getDenominator());
-        if (other instanceof MyComplex) return new MyComplex(this.value + ((MyComplex)other).getReal(), ((MyComplex)other).getImaginary());
-        throw new IllegalArgumentException("Unsupported type for addition");
+        return other.add(this);
     }
 
     @Override
     public Value subtract(Value other) {
         if (other instanceof MyNumber) return new MyNumber(this.value - ((MyNumber)other).getValue());
-        if (other instanceof MyReal) return new MyReal(this.value - ((MyReal)other).getValue());
         if (other instanceof MyRational) return new MyRational(this.value * ((MyRational)other).getDenominator() - ((MyRational)other).getNumerator(), ((MyRational)other).getDenominator());
+        if (other instanceof MyReal) return new MyReal(this.value - ((MyReal)other).getValue());
         if (other instanceof MyComplex) return new MyComplex(this.value - ((MyComplex)other).getReal(), -((MyComplex)other).getImaginary());
         throw new IllegalArgumentException("Unsupported type for subtraction");
     }
@@ -59,10 +56,7 @@ public class MyNumber implements Expression, Value
     @Override
     public Value multiply(Value other) {
         if (other instanceof MyNumber) return new MyNumber(this.value * ((MyNumber)other).getValue());
-        if (other instanceof MyReal) return new MyReal(this.value * ((MyReal)other).getValue());
-        if (other instanceof MyRational) return new MyRational(this.value * ((MyRational)other).getNumerator(), ((MyRational)other).getDenominator());
-        if (other instanceof MyComplex) return new MyComplex(this.value * ((MyComplex)other).getReal(), this.value * ((MyComplex)other).getImaginary());
-        throw new IllegalArgumentException("Unsupported type for multiplication");
+        return other.multiply(this);
     }
 
     @Override
@@ -72,12 +66,12 @@ public class MyNumber implements Expression, Value
             if (n == 0) throw new ArithmeticException("Division by zero");
             return new MyNumber(this.value / n);
         }
-        if (other instanceof MyReal) return new MyReal(this.value / ((MyReal)other).getValue());
         if (other instanceof MyRational) {
             MyRational r = (MyRational)other;
             if (r.getNumerator() == 0) throw new ArithmeticException("Division by zero");
             return new MyRational(this.value * r.getDenominator(), r.getNumerator());
         }
+        if (other instanceof MyReal) return new MyReal(this.value / ((MyReal)other).getValue());
         if (other instanceof MyComplex) {
             MyComplex c = (MyComplex)other;
             double denominator = c.getReal() * c.getReal() + c.getImaginary() * c.getImaginary();

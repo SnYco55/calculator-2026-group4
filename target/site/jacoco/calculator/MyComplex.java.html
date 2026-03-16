@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyComplex.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Calculator with JUnit5 and Cucumber tests</a> &gt; <a href="index.source.html" class="el_package">calculator</a> &gt; <span class="el_source">MyComplex.java</span></div><h1>MyComplex.java</h1><pre class="source lang-java linenums">package calculator;
+
+import visitor.Visitor;
+
+public class MyComplex implements Expression, Value {
+    private final double real;
+    private final double imaginary;
+
+<span class="fc" id="L9">    public MyComplex(double r, double i) {</span>
+<span class="fc" id="L10">        this.real = r;</span>
+<span class="fc" id="L11">        this.imaginary = i;</span>
+<span class="fc" id="L12">    }</span>
+
+<span class="fc" id="L14">    public double getReal() { return real; }</span>
+<span class="fc" id="L15">    public double getImaginary() { return imaginary; }</span>
+
+    public void accept(Visitor v) {
+<span class="nc" id="L18">        v.visit(this);</span>
+<span class="nc" id="L19">    }</span>
+
+    private double getRealPart(Value v) {
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (v instanceof MyComplex) return ((MyComplex)v).getReal();</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (v instanceof MyReal) return ((MyReal)v).getValue();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (v instanceof MyRational) return (double)((MyRational)v).getNumerator() / ((MyRational)v).getDenominator();</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        if (v instanceof MyNumber) return ((MyNumber)v).getValue();</span>
+<span class="nc" id="L26">        throw new IllegalArgumentException(&quot;Unsupported type&quot;);</span>
+    }
+
+    private double getImaginaryPart(Value v) {
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (v instanceof MyComplex) return ((MyComplex)v).getImaginary();</span>
+<span class="fc" id="L31">        return 0.0;</span>
+    }
+
+    @Override
+    public Value add(Value other) {
+<span class="fc" id="L36">        return new MyComplex(this.real + getRealPart(other), this.imaginary + getImaginaryPart(other));</span>
+    }
+
+    @Override
+    public Value subtract(Value other) {
+<span class="fc" id="L41">        return new MyComplex(this.real - getRealPart(other), this.imaginary - getImaginaryPart(other));</span>
+    }
+
+    @Override
+    public Value multiply(Value other) {
+<span class="fc" id="L46">        double oR = getRealPart(other);</span>
+<span class="fc" id="L47">        double oI = getImaginaryPart(other);</span>
+<span class="fc" id="L48">        return new MyComplex(this.real * oR - this.imaginary * oI, this.real * oI + this.imaginary * oR);</span>
+    }
+
+    @Override
+    public Value divide(Value other) {
+<span class="fc" id="L53">        double oR = getRealPart(other);</span>
+<span class="fc" id="L54">        double oI = getImaginaryPart(other);</span>
+<span class="fc" id="L55">        double denominator = oR * oR + oI * oI;</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if (denominator == 0) throw new ArithmeticException(&quot;Division by zero in MyComplex&quot;);</span>
+<span class="nc" id="L57">        return new MyComplex(</span>
+            (this.real * oR + this.imaginary * oI) / denominator,
+            (this.imaginary * oR - this.real * oI) / denominator
+        );
+    }
+
+    @Override
+    public String toString() {
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (imaginary == 0) return Double.toString(real);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (real == 0) return imaginary + &quot;i&quot;;</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        return real + (imaginary &gt; 0 ? &quot;+&quot; : &quot;&quot;) + imaginary + &quot;i&quot;;</span>
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        if (o == null) return false;</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (o == this) return true;</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (!(o instanceof MyComplex)) return false;</span>
+<span class="fc" id="L75">        MyComplex c = (MyComplex)o;</span>
+<span class="pc bpc" id="L76" title="2 of 4 branches missed.">        return Double.compare(this.real, c.real) == 0 &amp;&amp; Double.compare(this.imaginary, c.imaginary) == 0;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L81">        return Double.hashCode(real) ^ Double.hashCode(imaginary);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

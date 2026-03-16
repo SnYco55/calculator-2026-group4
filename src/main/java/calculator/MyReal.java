@@ -17,38 +17,40 @@ public class MyReal implements Expression, Value {
         v.visit(this);
     }
 
+    private double getDoubleValue(Value v) {
+        if (v instanceof MyReal) return ((MyReal)v).getValue();
+        if (v instanceof MyRational) return (double)((MyRational)v).getNumerator() / ((MyRational)v).getDenominator();
+        if (v instanceof MyNumber) return ((MyNumber)v).getValue();
+        throw new IllegalArgumentException("Unsupported type");
+    }
+
     @Override
     public Value add(Value other) {
-        if (other instanceof MyNumber) return new MyReal(this.value + ((MyNumber)other).getValue());
-        if (other instanceof MyReal) return new MyReal(this.value + ((MyReal)other).getValue());
-        throw new IllegalArgumentException("Unsupported type for addition with MyReal");
+        if (other instanceof MyComplex) return other.add(this);
+        return new MyReal(this.value + getDoubleValue(other));
     }
 
     @Override
     public Value subtract(Value other) {
-        if (other instanceof MyNumber) return new MyReal(this.value - ((MyNumber)other).getValue());
-        if (other instanceof MyReal) return new MyReal(this.value - ((MyReal)other).getValue());
-        throw new IllegalArgumentException("Unsupported type for subtraction with MyReal");
+        if (other instanceof MyComplex) return new MyComplex(this.value - ((MyComplex)other).getReal(), -((MyComplex)other).getImaginary());
+        return new MyReal(this.value - getDoubleValue(other));
     }
 
     @Override
     public Value multiply(Value other) {
-        if (other instanceof MyNumber) return new MyReal(this.value * ((MyNumber)other).getValue());
-        if (other instanceof MyReal) return new MyReal(this.value * ((MyReal)other).getValue());
-        throw new IllegalArgumentException("Unsupported type for multiplication with MyReal");
+        if (other instanceof MyComplex) return other.multiply(this);
+        return new MyReal(this.value * getDoubleValue(other));
     }
 
     @Override
     public Value divide(Value other) {
-        double otherVal;
-        if (other instanceof MyNumber) {
-            otherVal = ((MyNumber)other).getValue();
-        } else if (other instanceof MyReal) {
-            otherVal = ((MyReal)other).getValue();
-        } else {
-            throw new IllegalArgumentException("Unsupported type for division with MyReal");
+        if (other instanceof MyComplex) {
+            MyComplex c = (MyComplex)other;
+            double denominator = c.getReal() * c.getReal() + c.getImaginary() * c.getImaginary();
+            if (denominator == 0) throw new ArithmeticException("Division by zero in MyReal");
+            return new MyComplex((this.value * c.getReal()) / denominator, (-this.value * c.getImaginary()) / denominator);
         }
-        return new MyReal(this.value / otherVal); // In Java, X.X / 0.0 results in Infinity or NaN, mapping to the requirements natively
+        return new MyReal(this.value / getDoubleValue(other));
     }
 
     @Override
