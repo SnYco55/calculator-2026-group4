@@ -40,45 +40,77 @@ public class MyNumber implements Expression, Value
 
     @Override
     public Value add(Value other) {
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (other instanceof MyNumber) return new MyNumber(this.value + ((MyNumber)other).getValue());</span>
-<span class="fc" id="L44">        return other.add(this);</span>
+<span class="fc" id="L43">        return other.add(this);</span>
     }
 
     @Override
     public Value subtract(Value other) {
-<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (other instanceof MyNumber) return new MyNumber(this.value - ((MyNumber)other).getValue());</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (other instanceof MyRational) return new MyRational(this.value * ((MyRational)other).getDenominator() - ((MyRational)other).getNumerator(), ((MyRational)other).getDenominator());</span>
-<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (other instanceof MyReal) return new MyReal(this.value - ((MyReal)other).getValue());</span>
-<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (other instanceof MyComplex) return new MyComplex(this.value - ((MyComplex)other).getReal(), -((MyComplex)other).getImaginary());</span>
-<span class="nc" id="L53">        throw new IllegalArgumentException(&quot;Unsupported type for subtraction&quot;);</span>
+<span class="fc" id="L48">        return this.add(other.negate());</span>
     }
 
     @Override
     public Value multiply(Value other) {
-<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (other instanceof MyNumber) return new MyNumber(this.value * ((MyNumber)other).getValue());</span>
-<span class="fc" id="L59">        return other.multiply(this);</span>
+<span class="fc" id="L53">        return other.multiply(this);</span>
     }
 
     @Override
     public Value divide(Value other) {
-<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (other instanceof MyNumber) {</span>
-<span class="fc" id="L65">            int n = ((MyNumber)other).getValue();</span>
-<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (n == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
-<span class="fc" id="L67">            return new MyNumber(this.value / n);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (other instanceof MyNumber) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            if (((MyNumber)other).getValue() == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
+<span class="fc" id="L60">            return new MyNumber(this.value / ((MyNumber)other).getValue());</span>
         }
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (other instanceof MyRational) {</span>
-<span class="fc" id="L70">            MyRational r = (MyRational)other;</span>
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">            if (r.getNumerator() == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
-<span class="fc" id="L72">            return new MyRational(this.value * r.getDenominator(), r.getNumerator());</span>
-        }
-<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (other instanceof MyReal) return new MyReal(this.value / ((MyReal)other).getValue());</span>
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (other instanceof MyComplex) {</span>
-<span class="fc" id="L76">            MyComplex c = (MyComplex)other;</span>
-<span class="fc" id="L77">            double denominator = c.getReal() * c.getReal() + c.getImaginary() * c.getImaginary();</span>
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">            if (denominator == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
-<span class="fc" id="L79">            return new MyComplex((this.value * c.getReal()) / denominator, (-this.value * c.getImaginary()) / denominator);</span>
-        }
-<span class="nc" id="L81">        throw new IllegalArgumentException(&quot;Unsupported type for division&quot;);</span>
+<span class="fc" id="L62">        return this.multiply(other.invert());</span>
+    }
+
+    @Override
+    public Value negate() {
+<span class="fc" id="L67">        return new MyNumber(-this.value);</span>
+    }
+
+    @Override
+    public Value invert() {
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (this.value == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
+<span class="nc" id="L73">        return new MyRational(1, this.value);</span>
+    }
+
+    @Override
+    public Value add(MyNumber other) {
+<span class="fc" id="L78">        return new MyNumber(this.value + other.getValue());</span>
+    }
+
+    @Override
+    public Value add(MyRational other) {
+<span class="fc" id="L83">        return new MyRational(this.value * other.getDenominator() + other.getNumerator(), other.getDenominator());</span>
+    }
+
+    @Override
+    public Value add(MyReal other) {
+<span class="fc" id="L88">        return new MyReal(this.value + other.getValue());</span>
+    }
+
+    @Override
+    public Value add(MyComplex other) {
+<span class="fc" id="L93">        return new MyComplex(this.value + other.getReal(), other.getImaginary());</span>
+    }
+
+    @Override
+    public Value multiply(MyNumber other) {
+<span class="fc" id="L98">        return new MyNumber(this.value * other.getValue());</span>
+    }
+
+    @Override
+    public Value multiply(MyRational other) {
+<span class="fc" id="L103">        return new MyRational(this.value * other.getNumerator(), other.getDenominator());</span>
+    }
+
+    @Override
+    public Value multiply(MyReal other) {
+<span class="fc" id="L108">        return new MyReal(this.value * other.getValue());</span>
+    }
+
+    @Override
+    public Value multiply(MyComplex other) {
+<span class="fc" id="L113">        return new MyComplex(this.value * other.getReal(), this.value * other.getImaginary());</span>
     }
 
 
@@ -92,18 +124,18 @@ public class MyNumber implements Expression, Value
   @Override
   public boolean equals(Object o) {
       // No object should be equal to null (not including this check can result in an exception if a MyNumber is tested against null)
-<span class="pc bpc" id="L95" title="1 of 2 branches missed.">      if (o == null) return false;</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">      if (o == null) return false;</span>
 
       // If the object is compared to itself then return true
-<span class="fc bfc" id="L98" title="All 2 branches covered.">      if (o == this) {</span>
-<span class="fc" id="L99">          return true;</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">      if (o == this) {</span>
+<span class="fc" id="L131">          return true;</span>
       }
 
       // If the object is of another type then return false
-<span class="fc bfc" id="L103" title="All 2 branches covered.">      if (!(o instanceof MyNumber)) {</span>
-<span class="fc" id="L104">            return false;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">      if (!(o instanceof MyNumber)) {</span>
+<span class="fc" id="L136">            return false;</span>
       }
-<span class="fc bfc" id="L106" title="All 2 branches covered.">      return this.value == ((MyNumber)o).value;</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">      return this.value == ((MyNumber)o).value;</span>
       // Used == since the contained value is a primitive value
       // If it had been a Java object, .equals() would be needed
   }
@@ -116,7 +148,7 @@ public class MyNumber implements Expression, Value
      */
   @Override
   public int hashCode() {
-<span class="fc" id="L119">		return value;</span>
+<span class="fc" id="L151">		return value;</span>
   }
 
 }
