@@ -4,15 +4,15 @@ grammar Expr;
 package exparser;
 }
 
-expr:
-      expr '**' expr  # Pow
-    | expr '*' expr   # Time
-    | expr '/' expr   # Div
-    | expr '+' expr   # Add
-    | expr '-' expr   # Minus
-    | INT             # Int
-    | '(' expr ')'    # Parens
+// Règle d'entrée
+root : expr EOF ;
+
+expr
+    : '(' expr ')'                       # Parens
+    | expr op=('*'|'/') expr             # MulDiv
+    | expr op=('+'|'-') expr             # AddSub
+    | INT                                # Int
     ;
 
-INT: [0-9]+ ;
-WS : [ \t\r\n]+ -> skip ;
+INT : [0-9]+ ;
+WS  : [ \t\r\n]+ -> skip ;

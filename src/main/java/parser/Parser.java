@@ -24,50 +24,36 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
     }
 
     @Override
-    public Expression visitAdd(ExprParser.AddContext ctx) {
+    public Expression visitAddSub(ExprParser.AddSubContext ctx) {
         Expression left = visit(ctx.expr(0));
         Expression right = visit(ctx.expr(1));
 
         try{
-            return new Plus(Arrays.asList(left, right));
+            if (ctx.op.getText().equals("+"))
+            {
+                return new Plus(Arrays.asList(left, right));
+            }
+            else{
+                return new Minus(Arrays.asList(left, right));
+            }
         }catch (IllegalConstruction _){
             throw new IllegalConstruction();
         }
     }
 
     @Override
-    public Expression visitTime(ExprParser.TimeContext ctx) {
+    public Expression visitMulDiv(ExprParser.MulDivContext ctx) {
         Expression left = visit(ctx.expr(0));
         Expression right = visit(ctx.expr(1));
 
         try{
-            return new Times(Arrays.asList(left, right));
-        }catch (IllegalConstruction _){
-            throw new IllegalConstruction();
-        }
-
-    }
-
-    @Override
-    public Expression visitMinus(ExprParser.MinusContext ctx) {
-        Expression left = visit(ctx.expr(0));
-        Expression right = visit(ctx.expr(1));
-
-        try{
-            return new Minus(Arrays.asList(left, right));
-        }catch (IllegalConstruction _){
-            throw new IllegalConstruction();
-        }
-
-    }
-
-    @Override
-    public Expression visitDiv(ExprParser.DivContext ctx) {
-        Expression left = visit(ctx.expr(0));
-        Expression right = visit(ctx.expr(1));
-
-        try{
-            return new Divides(Arrays.asList(left, right));
+            if (ctx.op.getText().equals("*"))
+            {
+                return new Times(Arrays.asList(left, right));
+            }
+            else{
+                return new Divides(Arrays.asList(left, right));
+            }
         }catch (IllegalConstruction _){
             throw new IllegalConstruction();
         }
@@ -85,4 +71,5 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
         return new MyNumber(Integer.parseInt(text));
     }
+
 }

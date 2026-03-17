@@ -30,5 +30,13 @@ class TestParser {
 
         res = parser.parse("(3*5)+2");
         assertEquals(17, calculator.eval(res));
+
+        res = parser.parse("5-2+7");
+        assertEquals(10, calculator.eval(res));
+
+        res = parser.parse("6/2");
+        assertEquals(3, calculator.eval(res));
+
+
     }
 }
