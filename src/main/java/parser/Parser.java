@@ -30,10 +30,9 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
         try{
             return new Plus(Arrays.asList(left, right));
-        }catch (IllegalConstruction ex){
-            throw new RuntimeException(ex);
+        }catch (IllegalConstruction _){
+            throw new IllegalConstruction();
         }
-
     }
 
     @Override
@@ -43,8 +42,8 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
         try{
             return new Times(Arrays.asList(left, right));
-        }catch (IllegalConstruction ex){
-            throw new RuntimeException(ex);
+        }catch (IllegalConstruction _){
+            throw new IllegalConstruction();
         }
 
     }
@@ -56,8 +55,8 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
         try{
             return new Minus(Arrays.asList(left, right));
-        }catch (IllegalConstruction ex){
-            throw new RuntimeException(ex);
+        }catch (IllegalConstruction _){
+            throw new IllegalConstruction();
         }
 
     }
@@ -69,8 +68,8 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
         try{
             return new Divides(Arrays.asList(left, right));
-        }catch (IllegalConstruction ex){
-            throw new RuntimeException(ex);
+        }catch (IllegalConstruction _){
+            throw new IllegalConstruction();
         }
 
     }

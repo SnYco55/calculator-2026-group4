@@ -7,18 +7,18 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestParser {
+class TestParser {
     private Parser parser;
     private Calculator calculator;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         parser = new Parser();
         calculator = new Calculator();
     }
 
     @Test
-    public void testParse() throws IllegalConstruction {
+    void testParse() throws IllegalConstruction {
         Expression res = parser.parse("2");
         assertEquals(new MyNumber(2), res);
 
