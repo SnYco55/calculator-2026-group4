@@ -17,40 +17,74 @@ public class MyReal implements Expression, Value {
         v.visit(this);
     }
 
-    private double getDoubleValue(Value v) {
-        if (v instanceof MyReal) return ((MyReal)v).getValue();
-        if (v instanceof MyRational) return (double)((MyRational)v).getNumerator() / ((MyRational)v).getDenominator();
-        if (v instanceof MyNumber) return ((MyNumber)v).getValue();
-        throw new IllegalArgumentException("Unsupported type");
-    }
-
     @Override
     public Value add(Value other) {
-        if (other instanceof MyComplex) return other.add(this);
-        return new MyReal(this.value + getDoubleValue(other));
+        return other.add(this);
     }
 
     @Override
     public Value subtract(Value other) {
-        if (other instanceof MyComplex) return new MyComplex(this.value - ((MyComplex)other).getReal(), -((MyComplex)other).getImaginary());
-        return new MyReal(this.value - getDoubleValue(other));
+        return this.add(other.negate());
     }
 
     @Override
     public Value multiply(Value other) {
-        if (other instanceof MyComplex) return other.multiply(this);
-        return new MyReal(this.value * getDoubleValue(other));
+        return other.multiply(this);
     }
 
     @Override
     public Value divide(Value other) {
-        if (other instanceof MyComplex) {
-            MyComplex c = (MyComplex)other;
-            double denominator = c.getReal() * c.getReal() + c.getImaginary() * c.getImaginary();
-            if (denominator == 0) throw new ArithmeticException("Division by zero in MyReal");
-            return new MyComplex((this.value * c.getReal()) / denominator, (-this.value * c.getImaginary()) / denominator);
-        }
-        return new MyReal(this.value / getDoubleValue(other));
+        return this.multiply(other.invert());
+    }
+
+    @Override
+    public Value negate() {
+        return new MyReal(-this.value);
+    }
+
+    @Override
+    public Value invert() {
+        return new MyReal(1.0 / this.value);
+    }
+
+    @Override
+    public Value add(MyNumber other) {
+        return new MyReal(this.value + other.getValue());
+    }
+
+    @Override
+    public Value add(MyRational other) {
+        return new MyReal(this.value + (double)other.getNumerator() / other.getDenominator());
+    }
+
+    @Override
+    public Value add(MyReal other) {
+        return new MyReal(this.value + other.getValue());
+    }
+
+    @Override
+    public Value add(MyComplex other) {
+        return new MyComplex(this.value + other.getReal(), other.getImaginary());
+    }
+
+    @Override
+    public Value multiply(MyNumber other) {
+        return new MyReal(this.value * other.getValue());
+    }
+
+    @Override
+    public Value multiply(MyRational other) {
+        return new MyReal(this.value * ((double)other.getNumerator() / other.getDenominator()));
+    }
+
+    @Override
+    public Value multiply(MyReal other) {
+        return new MyReal(this.value * other.getValue());
+    }
+
+    @Override
+    public Value multiply(MyComplex other) {
+        return new MyComplex(this.value * other.getReal(), this.value * other.getImaginary());
     }
 
     @Override
