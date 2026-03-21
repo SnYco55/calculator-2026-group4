@@ -13,13 +13,17 @@ class TestApi {
 
     @Test
     void testParse() throws Exception {
-        ConfigurableApplicationContext context = SpringApplication.run(api.CalculatorApiApplication.class);
+        ConfigurableApplicationContext context = SpringApplication.run(CalculatorApiApplication.class);
 
         try {
             HttpClient client = HttpClient.newHttpClient();
+
+            String jsonBody = "{\"input\": \"299*3\"}";
+
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/calculator/parse?input=2+3"))
-                    .GET()
+                    .uri(URI.create("http://localhost:8080/calculator/parse"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
