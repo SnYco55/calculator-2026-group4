@@ -6,8 +6,11 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import exparser.ExprParser;
+import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 
+@Component
 public class Parser extends exparser.ExprBaseVisitor<Expression> implements ExpressionParser {
     @Override
     public Expression parse(String expression) {
