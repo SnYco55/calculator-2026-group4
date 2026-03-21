@@ -1,6 +1,8 @@
 package api;
 
+import calculator.Calculator;
 import calculator.Expression;
+import dto.ParserRequest;
 import org.springframework.web.bind.annotation.*;
 import services.CalculatorService;
 
@@ -11,6 +13,8 @@ import services.CalculatorService;
 @RequestMapping("/calculator")
 public class CalculatorController {
 
+    private Calculator calculator = new Calculator();
+
     private final CalculatorService calculatorService;
 
     public CalculatorController(CalculatorService calculatorService) {
@@ -18,13 +22,14 @@ public class CalculatorController {
     }
 
     /**
-     * Parses a mathematical expression.
+     * Evaluates a mathematical expression provided in the request body.
      *
-     * @param input the expression provided by the user
-     * @return the parsed expression representation
+     * @param request the DTO containing the raw expression string (e.g., { "input": "3 + 5" })
+     * @return the integer result of the expression evaluation
      */
-    @GetMapping("/parse")
-    public Expression parseExpression(@RequestParam("input") String input) {
-        return calculatorService.parseExpression(input);
+    @PostMapping("/parse")
+    public Integer parseExpression(@RequestBody ParserRequest request) {
+        String input = request.getInput();
+        return calculator.eval(calculatorService.parseExpression(input));
     }
 }
