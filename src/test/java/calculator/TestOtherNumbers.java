@@ -1,124 +1,111 @@
 package calculator;
 
 import org.junit.jupiter.api.Test;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestOtherNumbers {
 
+    Calculator calc = new Calculator();
+
     @Test
-    void testMyReal() {
+    void testMyReal() throws IllegalConstruction {
         MyReal r1 = new MyReal(3.5);
         MyReal r2 = new MyReal(2.0);
-        assertEquals(new MyReal(5.5), r1.add(r2));
-        assertEquals(new MyReal(1.5), r1.subtract(r2));
-        assertEquals(new MyReal(7.0), r1.multiply(r2));
-        assertEquals(new MyReal(1.75), r1.divide(r2));
 
-        // Testing Division by zero which returns Infinity in Double
+        assertEquals(new MyReal(5.5), calc.eval(new Plus(List.of(r1, r2))));
+        assertEquals(new MyReal(1.5), calc.eval(new Minus(List.of(r1, r2))));
+        assertEquals(new MyNumber(7), calc.eval(new Times(List.of(r1, r2))));
+        assertEquals(new MyReal(1.75), calc.eval(new Divides(List.of(r1, r2))));
+
+        MyReal r4 = new MyReal(0.0);
         MyReal r3 = new MyReal(0.0);
-        assertEquals(Double.POSITIVE_INFINITY, ((MyReal)r1.divide(r3)).getValue());
+        assertEquals(Double.NaN,
+                ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).getValue());
+
+        r4 = new MyReal(1.0);
+        assertEquals(new MyReal(Double.POSITIVE_INFINITY), calc.eval(new Divides(List.of(r4, r3))));
+
+        r4 = new MyReal(-1.0);
+        assertEquals(new MyReal(Double.NEGATIVE_INFINITY), calc.eval(new Divides(List.of(r4, r3))));
+
+        assertThrows(ArithmeticException.class,
+                () -> calc.eval(new Divides(List.of(r1, r3))));
     }
 
     @Test
-    void testMyRational() {
+    void testMyRational() throws IllegalConstruction {
         MyRational r1 = new MyRational(1, 3);
         MyRational r2 = new MyRational(1, 6);
-        assertEquals(new MyRational(1, 2), r1.add(r2));
-        assertEquals(new MyRational(1, 6), r1.subtract(r2));
-        assertEquals(new MyRational(1, 18), r1.multiply(r2));
-        assertEquals(new MyRational(2, 1), r1.divide(r2));
 
-        // Testing simplification
+        assertEquals(new MyRational(1, 2).getValue(), ((MyReal) calc.eval(new Plus(List.of(r1, r2)))).getValue());
+        assertEquals(new MyRational(1, 6).getValue(), ((MyReal) calc.eval(new Minus(List.of(r1, r2)))).getValue());
+        assertEquals(new MyRational(1, 18).getValue(), ((MyReal) calc.eval(new Times(List.of(r1, r2)))).getValue());
+        assertEquals(new MyNumber(2), calc.eval(new Divides(List.of(r1, r2))));
+
         MyRational r3 = new MyRational(2, 4);
-        assertEquals(new MyRational(1, 2), r3);
+        assertTrue(new MyRational(1, 2).equals(r3));
 
-        // Testing Division by zero Exception
-        MyRational r4 = new MyRational(0, 5); // = 0
-        assertThrows(ArithmeticException.class, () -> r1.divide(r4));
+        MyRational r4 = new MyRational(0, 5);
+        assertThrows(ArithmeticException.class,
+                () -> calc.eval(new Divides(List.of(r1, r4))));
     }
 
     @Test
-    void testMyComplex() {
+    void testMyComplex() throws IllegalConstruction {
         MyComplex c1 = new MyComplex(1, 2);
         MyComplex c2 = new MyComplex(3, 4);
-        
-        // (1+2i) + (3+4i) = 4 + 6i
-        assertEquals(new MyComplex(4, 6), c1.add(c2));
-        
-        // (1+2i) - (3+4i) = -2 - 2i
-        assertEquals(new MyComplex(-2, -2), c1.subtract(c2));
-        
-        // (1+2i) * (3+4i) = 3 + 4i + 6i - 8 = -5 + 10i
-        assertEquals(new MyComplex(-5, 10), c1.multiply(c2));
 
-        // Division by zero Exception
+        assertEquals(new MyComplex(4, 6), calc.eval(new Plus(List.of(c1, c2))));
+        assertEquals(new MyComplex(-2, -2), calc.eval(new Minus(List.of(c1, c2))));
+        assertEquals(new MyComplex(-5, 10), calc.eval(new Times(List.of(c1, c2))));
+
         MyComplex c3 = new MyComplex(0, 0);
-        assertThrows(ArithmeticException.class, () -> c1.divide(c3));
+        assertThrows(ArithmeticException.class,
+                () -> calc.eval(new Divides(List.of(c1, c3))));
     }
 
     @Test
-    void testMixedTypesPromotion() {
+    void testMixedTypesPromotion() throws IllegalConstruction {
         MyNumber n = new MyNumber(5);
-        
         MyRational r = new MyRational(1, 2);
-        // 1/2 + 5 = 11/2
-        assertEquals(new MyRational(11, 2), r.add(n));
-
         MyComplex c = new MyComplex(2, 3);
-        // (2+3i) * 5 = 10+15i
-        assertEquals(new MyComplex(10, 15), c.multiply(n));
+
+        assertEquals(new MyRational(11, 2).getValue(), ((MyReal)calc.eval(new Plus(List.of(r, n)))).getValue());
+        assertEquals(new MyComplex(10, 15), calc.eval(new Times(List.of(c, n))));
     }
 
     @Test
-    void testRationalWithReal() {
-        MyRational r = new MyRational(1, 4); // 0.25
-        MyReal d = new MyReal(0.5);
-        assertEquals(new MyReal(0.75), r.add(d));
-        assertEquals(new MyReal(-0.25), r.subtract(d));
-        assertEquals(new MyReal(0.125), r.multiply(d));
-        assertEquals(new MyReal(0.5), r.divide(d));
-    }
-
-    @Test
-    void testRationalWithComplex() {
-        MyRational r = new MyRational(1, 2); // 0.5
-        MyComplex c = new MyComplex(1, 1);
-        assertEquals(new MyComplex(1.5, 1), r.add(c));
-        assertEquals(new MyComplex(-0.5, -1), r.subtract(c));
-        assertEquals(new MyComplex(0.5, 0.5), r.multiply(c));
-        assertEquals(new MyComplex(0.25, -0.25), r.divide(c)); // 0.5 / (1+i) = 0.5(1-i)/2 = 0.25 - 0.25i
-    }
-
-    @Test
-    void testRealWithComplex() {
+    void testRealWithComplex() throws IllegalConstruction {
         MyReal r = new MyReal(2.0);
         MyComplex c = new MyComplex(1, 2);
-        assertEquals(new MyComplex(3.0, 2.0), r.add(c));
-        assertEquals(new MyComplex(1.0, -2.0), r.subtract(c));
-        assertEquals(new MyComplex(2.0, 4.0), r.multiply(c));
-        assertEquals(new MyComplex(0.4, -0.8), r.divide(c)); // 2 / (1+2i) = 2(1-2i)/5 = 0.4 - 0.8i
+
+        assertEquals(new MyComplex(3.0, 2.0), calc.eval(new Plus(List.of(r, c))));
+        assertEquals(new MyComplex(1.0, -2.0), calc.eval(new Minus(List.of(r, c))));
+        assertEquals(new MyComplex(2.0, 4.0), calc.eval(new Times(List.of(r, c))));
+        assertEquals(new MyComplex(0.4, -0.8), calc.eval(new Divides(List.of(r, c))));
     }
 
     @Test
-    void testNumberWithAll() {
+    void testNumberWithAll() throws IllegalConstruction {
         MyNumber n = new MyNumber(10);
         MyRational r = new MyRational(1, 2);
         MyReal d = new MyReal(2.5);
         MyComplex c = new MyComplex(1, 1);
 
-        assertEquals(new MyRational(21, 2), n.add(r)); // 10 + 1/2
-        assertEquals(new MyRational(19, 2), n.subtract(r)); // 10 - 1/2
-        assertEquals(new MyRational(5, 1), n.multiply(r)); // 10 * 1/2
-        assertEquals(new MyRational(20, 1), n.divide(r)); // 10 / (1/2)
+        assertEquals(new MyRational(21, 2).getValue(), ((MyReal) calc.eval(new Plus(List.of(n, r)))).getValue());
+        assertEquals(new MyRational(19, 2).getValue(), ((MyReal) calc.eval(new Minus(List.of(n, r)))).getValue());
+        assertEquals(new MyNumber(5), calc.eval(new Times(List.of(n, r))));
+        assertEquals(new MyNumber(20), calc.eval(new Divides(List.of(n, r))));
 
-        assertEquals(new MyReal(12.5), n.add(d));
-        assertEquals(new MyReal(7.5), n.subtract(d));
-        assertEquals(new MyReal(25.0), n.multiply(d));
-        assertEquals(new MyReal(4.0), n.divide(d));
+        assertEquals(new MyReal(12.5), calc.eval(new Plus(List.of(n, d))));
+        assertEquals(new MyReal(7.5), calc.eval(new Minus(List.of(n, d))));
+        assertEquals(new MyNumber(25), calc.eval(new Times(List.of(n, d))));
+        assertEquals(new MyNumber(4), calc.eval(new Divides(List.of(n, d))));
 
-        assertEquals(new MyComplex(11, 1), n.add(c));
-        assertEquals(new MyComplex(9, -1), n.subtract(c));
-        assertEquals(new MyComplex(10, 10), n.multiply(c));
-        assertEquals(new MyComplex(5, -5), n.divide(c)); // 10 / (1+i) = 10(1-i)/2 = 5 - 5i
+        assertEquals(new MyComplex(11, 1), calc.eval(new Plus(List.of(n, c))));
+        assertEquals(new MyComplex(9, -1), calc.eval(new Minus(List.of(n, c))));
+        assertEquals(new MyComplex(10, 10), calc.eval(new Times(List.of(n, c))));
+        assertEquals(new MyComplex(5, -5), calc.eval(new Divides(List.of(n, c))));
     }
 }

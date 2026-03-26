@@ -37,7 +37,7 @@ class TestEvaluator {
                 case "+"	->	assertEquals( value1 + value2, ((MyNumber)calc.eval(new Plus(params))).getValue());
                 case "-"	->	assertEquals( value1 - value2, ((MyNumber)calc.eval(new Minus(params))).getValue());
                 case "*"	->	assertEquals( value1 * value2, ((MyNumber)calc.eval(new Times(params))).getValue());
-                case "/"	->	assertEquals( value1 / value2, ((MyNumber)calc.eval(new Divides(params))).getValue());
+                case "/"	->	assertEquals( (double) value1 / value2, ((MyReal)calc.eval(new Divides(params))).getValue());
                 default		->	fail();
             }
         } catch (IllegalConstruction e) {

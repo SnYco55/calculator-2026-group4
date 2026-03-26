@@ -46,6 +46,13 @@ public final class Times extends Operation
    * @return The integer that is the result of the multiplication
    */
   public Value op(Value l, Value r) {
-      return l.multiply(r);
+      MyComplex left = l.toComplex();
+      MyComplex right = r.toComplex();
+
+      return super.format(new MyComplex((left.getReal()*right.getReal())-(left.getImaginary()*right.getImaginary()), (left.getReal()*right.getImaginary())+(left.getImaginary()*right.getReal())));
+  }
+
+  public MyRational op(MyRational l, MyRational r) {
+      return new MyRational(l.getNumerator()*r.getNumerator(), l.getDenominator()*r.getDenominator());
   }
 }

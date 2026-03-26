@@ -158,4 +158,17 @@ public abstract class Operation implements Expression
 		return result;
 	}
 
+	// Returns the result with the correct type
+	public Value format(MyComplex val){
+		if (val.getImaginary() == 0){
+			if (val.getReal() % 1 == 0){
+				return new MyNumber((int) val.getReal());
+			}
+			return new MyReal(val.getReal());
+		}else{
+			return val;
+		}
+	}
+
+
 }

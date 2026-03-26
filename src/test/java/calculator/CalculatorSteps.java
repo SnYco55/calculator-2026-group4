@@ -112,7 +112,7 @@ public class CalculatorSteps {
 
 	@Then("the operation evaluates to {int}")
 	public void thenTheOperationEvaluatesTo(int val) {
-		assertEquals(val, ((MyNumber)c.eval(op)).getValue());
+		assertEquals(new MyNumber(val), c.eval(op));
 	}
 
 }

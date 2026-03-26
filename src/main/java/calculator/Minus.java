@@ -46,7 +46,17 @@ public final class Minus extends Operation
      * @param r The second integer that should be subtracted from the first
      * @return The integer that is the result of the subtraction
      */
-  public Value op(Value l, Value r) {
-  	return l.subtract(r);
-  }
+    public Value op(Value l, Value r) {
+        MyComplex left = l.toComplex();
+        MyComplex right = r.toComplex();
+
+        return super.format(new MyComplex(left.getReal()-right.getReal(), left.getImaginary()-right.getImaginary()));
+    }
+
+     public MyRational op(MyRational l, MyRational r) {
+         int pp = l.ppcm(r);
+         int numerator_l = l.getNumerator()*(pp/l.getDenominator());
+         int numerator_r = r.getNumerator()*(pp/r.getDenominator());
+         return new MyRational(numerator_l-numerator_r, pp);
+     }
 }
