@@ -1,5 +1,6 @@
 package calculator;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /** This class represents the arithmetic division operation "/".
@@ -12,7 +13,6 @@ import java.util.List;
  */
 public final class Divides extends Operation
 {
-
   /**
    * Class constructor specifying a number of Expressions to divide.
    *
@@ -47,8 +47,17 @@ public final class Divides extends Operation
      * @return The integer that is the result of the division
      */
   public Value op(Value l, Value r) {
-      if (l instanceof MyReal && r instanceof MyReal) {
-          return op((MyReal) l, (MyReal) r);
+      if (l instanceof MyRational leftrat){
+          if (r instanceof MyRational rightrat){
+              return op(leftrat, rightrat);
+          }
+          else if (r instanceof MyNumber number){
+              return op(leftrat, number);
+          }
+      }else if (l instanceof MyNumber num && r instanceof MyRational rat){
+          return op(num, rat);
+      }else if (l instanceof MyReal leftreal && r instanceof MyReal rightreal) {
+          return op(leftreal, rightreal);
       }
 
       MyComplex left = l.toComplex();
@@ -56,26 +65,41 @@ public final class Divides extends Operation
 
       right = (MyComplex) right.invert();
 
-      return super.format(new MyComplex((left.getReal()*right.getReal())-(left.getImaginary()*right.getImaginary()), (left.getReal()*right.getImaginary())+(left.getImaginary()*right.getReal())));
+      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
   }
 
   public Value op(MyReal l, MyReal r) {
-      double lval = l.getValue();
-      if (r.getValue() == 0.0) {
-          if (lval == 0.0) return new MyReal(Double.NaN);
-          if (lval == 1.0) return new MyReal(Double.POSITIVE_INFINITY);
-          if (lval == -1.0) return new MyReal(Double.NEGATIVE_INFINITY);
+      BigDecimal lval = l.getValue();
+      if (r.getValue().compareTo(BigDecimal.ZERO) == 0) {
+          if (lval.compareTo(BigDecimal.ZERO) == 0) return new MyReal(new BigDecimal(0), MyReal.State.NAN);
+          if (lval.compareTo(BigDecimal.ONE) == 0) return new MyReal(new BigDecimal(0), MyReal.State.POSITIVE_INFINITY);
+          if (lval.compareTo(BigDecimal.valueOf(-1)) == 0) return new MyReal(new BigDecimal(0), MyReal.State.NEGATIVE_INFINITY);
           throw new ArithmeticException();
       }else{
           MyComplex left = l.toComplex();
           MyComplex right = r.toComplex();
-          return op(left, right);
+
+          right = (MyComplex) right.invert();
+          return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
       }
   }
 
-  public MyRational op(MyRational l, MyRational r) {
-      return new MyRational(l.getNumerator()*r.getDenominator(), l.getDenominator()*r.getNumerator());
+  public Value op(MyRational l, MyRational r) {
+      MyRational result = new MyRational(l.getNumerator()*r.getDenominator(), l.getDenominator()*r.getNumerator());
+
+      if (result.getDenominator() == 1){
+          return new MyNumber(result.getNumerator());
+      }
+      return result;
   }
+
+    public Value op(MyRational l, MyNumber r) {
+        return op(l, new MyRational(r.getValue(), 1));
+    }
+
+    public Value op(MyNumber l, MyRational r) {
+        return  op(new MyRational(l.getValue(), 1), r);
+    }
 }
 
 

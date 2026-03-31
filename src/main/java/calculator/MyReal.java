@@ -2,24 +2,38 @@ package calculator;
 
 import visitor.Visitor;
 
-public class MyReal  implements Expression, Value{
-    private final double value;
+import java.math.BigDecimal;
 
-    public MyReal(double v) {
-        this.value = v;
+public class MyReal  implements Expression, Value{
+    private final BigDecimal value;
+    private final State state;
+
+    public enum State {
+        VALID, NAN, POSITIVE_INFINITY, NEGATIVE_INFINITY
     }
 
-    public double getValue() {
+    public MyReal(BigDecimal v) {
+        this.value = v;
+        this.state = State.VALID;
+    }
+
+    public MyReal(BigDecimal v, State s) {
+        this.value = v;
+        this.state = s;
+    }
+
+    public BigDecimal getValue() {
         return value;
     }
 
+    public State getState() {return state;}
     public void accept(Visitor v) {
         v.visit(this);
     }
 
     @Override
     public String toString() {
-        return Double.toString(value);
+        return this.value.toString();
     }
 
     @Override
@@ -27,16 +41,16 @@ public class MyReal  implements Expression, Value{
         if (o == null) return false;
         if (o == this) return true;
         if (!(o instanceof MyReal)) return false;
-        return Double.compare(this.value, ((MyReal)o).value) == 0;
+        return this.value.equals(((MyReal)o).value);
     }
 
     public MyComplex toComplex() {
-        return new MyComplex(this.value, 0);
+        return new MyComplex(this.value, new BigDecimal("0"));
     }
 
     @Override
     public int hashCode() {
-        return Double.hashCode(value);
+        return this.value.stripTrailingZeros().hashCode();
     }
 
 }

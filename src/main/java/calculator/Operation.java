@@ -2,6 +2,7 @@ package calculator;
 
 import visitor.Visitor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +70,7 @@ public abstract class Operation implements Expression
 
 		//Verify that every sub expressions use the same notation
 		for (Expression e : elist) {
-			if ((e instanceof Operation) && (!((Operation) e).notation.equals(n))) {
+			if ((e instanceof Operation operation) && (!operation.notation.equals(n))) {
 				throw new IllegalConstruction();
 			}
 		}
@@ -151,7 +152,8 @@ public abstract class Operation implements Expression
 	@Override
 	public int hashCode()
 	{
-		int result = 5, prime = 31;
+		int result = 5;
+		int prime = 31;
 		result = prime * result + neutral;
 		result = prime * result + symbol.hashCode();
 		result = prime * result + args.hashCode();
@@ -160,9 +162,11 @@ public abstract class Operation implements Expression
 
 	// Returns the result with the correct type
 	public Value format(MyComplex val){
-		if (val.getImaginary() == 0){
-			if (val.getReal() % 1 == 0){
-				return new MyNumber((int) val.getReal());
+		if (val.getImaginary().compareTo(BigDecimal.ZERO) == 0){
+			BigDecimal normalized = val.getReal().stripTrailingZeros();
+
+			if (normalized.scale() <= 0){
+				return new MyNumber(val.getReal().intValueExact());
 			}
 			return new MyReal(val.getReal());
 		}else{

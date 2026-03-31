@@ -2,6 +2,8 @@ package calculator;
 
 import visitor.Visitor;
 
+import java.math.BigDecimal;
+
 /**
  * MyNumber is a concrete class that represents arithmetic numbers,
  * which are a special kind of Expressions, just like operations are.
@@ -38,7 +40,7 @@ public class MyNumber implements Expression, Value
   }
 
   public MyComplex toComplex() {
-      return new MyComplex(this.value, 0);
+      return new MyComplex(new BigDecimal(Integer.toString(this.value)), BigDecimal.ZERO);
   }
 
   /** Two MyNumber expressions are equal if the values they contain are equal

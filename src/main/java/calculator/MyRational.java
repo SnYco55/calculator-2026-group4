@@ -1,12 +1,16 @@
 package calculator;
 
 import visitor.Visitor;
+
+import java.math.BigDecimal;
+
 import static java.lang.Math.abs;
 
 public class MyRational implements Expression, Value{
     private final int numerator;
     private final int denominator;
 
+    // Constructor also is the simplifier
     public MyRational(int numerator, int denominator) {
         if (denominator == 0) throw new ArithmeticException("Division by zero in MyRational");
         // Simplify rational
@@ -15,16 +19,13 @@ public class MyRational implements Expression, Value{
         this.denominator = abs(denominator) / gcd;
     }
 
-    public int getMyNumber(){
-        return numerator/denominator;
-    }
     public double getValue(){
         return (double) this.numerator / this.denominator;
     }
 
     @Override
     public MyComplex toComplex() {
-        return new MyComplex((double) numerator /denominator, 0);
+        return new MyComplex(new BigDecimal(Float.toString((float) numerator / denominator)), new BigDecimal("0"));
     }
 
     private int gcd(int a, int b) {
@@ -48,7 +49,7 @@ public class MyRational implements Expression, Value{
     }
 
     public int ppcm(MyRational other){
-        return abs(this.denominator*this.numerator) / gcd(this.denominator, other.denominator);
+        return Math.abs(this.denominator * other.denominator) / gcd(this.denominator, other.denominator);
     }
 
     @Override
@@ -57,16 +58,16 @@ public class MyRational implements Expression, Value{
         return numerator + "/" + denominator;
     }
 
-    public boolean equals(MyRational o) {
-        return this.numerator == o.numerator && this.denominator == o.denominator;
-    }
 
-    public boolean equals(MyNumber o) {
-        return this.numerator/this.denominator == o.getValue();
-    }
-
-    public boolean equals(MyReal o) {
-        return (double) this.numerator /this.denominator == o.getValue();
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MyRational rational) {
+            return (rational.numerator == this.numerator && rational.denominator == this.denominator);
+        }
+        if (obj instanceof MyReal real) {
+            return (new BigDecimal(this.numerator/this.denominator).compareTo(real.getValue()) == 0);
+        }
+        return false;
     }
 
     @Override

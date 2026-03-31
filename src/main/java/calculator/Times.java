@@ -46,13 +46,38 @@ public final class Times extends Operation
    * @return The integer that is the result of the multiplication
    */
   public Value op(Value l, Value r) {
+      if (l instanceof MyRational leftrat){
+          if (r instanceof MyRational rightrat){
+              return op(leftrat, rightrat);
+          }
+          else if (r instanceof MyNumber number){
+              return op(leftrat, number);
+          }
+      }else if (l instanceof MyNumber num && r instanceof MyRational rat){
+          return op(num, rat);
+      }
+
       MyComplex left = l.toComplex();
       MyComplex right = r.toComplex();
 
-      return super.format(new MyComplex((left.getReal()*right.getReal())-(left.getImaginary()*right.getImaginary()), (left.getReal()*right.getImaginary())+(left.getImaginary()*right.getReal())));
+      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
   }
 
-  public MyRational op(MyRational l, MyRational r) {
-      return new MyRational(l.getNumerator()*r.getNumerator(), l.getDenominator()*r.getDenominator());
+  public Value op(MyRational l, MyRational r) {
+      // We call this here to simplify the rationnal
+      MyRational result = new MyRational(l.getNumerator()*r.getNumerator(), l.getDenominator()*r.getDenominator());
+
+      if (result.getDenominator() == 1){
+          return new MyNumber(result.getNumerator());
+      }
+      return result;
+  }
+
+  public Value op(MyRational l, MyNumber r) {
+      return op(l, new MyRational(r.getValue(), 1));
+  }
+
+  public Value op(MyNumber l, MyRational r) {
+      return  op(r, l);
   }
 }

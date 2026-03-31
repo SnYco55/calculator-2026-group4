@@ -3,5 +3,6 @@
 *.iml
 *.ipr
 *.DS_Store
+target
 .idea/*
 

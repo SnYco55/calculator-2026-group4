@@ -47,16 +47,42 @@ public final class Plus extends Operation
    * @return The integer that is the result of the addition
    */
   public Value op(Value l, Value r) {
+      if (l instanceof MyRational leftrat){
+          if (r instanceof MyRational rightrat){
+              return op(leftrat, rightrat);
+          }
+          else if (r instanceof MyNumber number){
+              return op(leftrat, number);
+          }
+      }else if (l instanceof MyNumber num && r instanceof MyRational rat){
+          return op(num, rat);
+      }
+
       MyComplex left = l.toComplex();
       MyComplex right = r.toComplex();
 
-      return super.format(new MyComplex(left.getReal()+right.getReal(), left.getImaginary()+right.getImaginary()));
+      return super.format(new MyComplex(left.getReal().add(right.getReal()), left.getImaginary().add(right.getImaginary())));
   }
 
-  public MyRational op(MyRational l, MyRational r) {
+  //Returns a rationnal but if x/1 return integer
+  public Value op(MyRational l, MyRational r) {
       int pp = l.ppcm(r);
-      int numerator_l = l.getNumerator()*(pp/l.getDenominator());
-      int numerator_r = r.getNumerator()*(pp/r.getDenominator());
-      return new MyRational(numerator_l+numerator_r, pp);
+      int numeratorL = l.getNumerator()*(pp/l.getDenominator());
+      int numeratorR = r.getNumerator()*(pp/r.getDenominator());
+
+      // If this is an integer we return the result as such
+      if (pp == 1){
+          return new MyNumber(numeratorL+numeratorR);
+      }
+
+      return new MyRational(numeratorL+numeratorR, pp);
+  }
+
+  public Value op(MyRational l, MyNumber r) {
+      return op(l, new MyRational(r.getValue(), 1));
+  }
+
+  public Value op(MyNumber l, MyRational r) {
+      return  op(r, l);
   }
 }
