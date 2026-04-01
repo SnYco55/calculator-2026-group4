@@ -44,6 +44,8 @@ class TestOtherNumbers {
         assertEquals(new MyRational(1, 6), calc.eval(new Minus(List.of(r1, r2))));
         assertEquals(new MyRational(1, 18), calc.eval(new Times(List.of(r1, r2))));
         assertEquals(new MyNumber(2), calc.eval(new Divides(List.of(r1, r2))));
+        assertEquals(new MyNumber(3), r1.invert());
+        assertEquals(new MyRational(-1, 3), r1.negate());
 
         MyRational r3 = new MyRational(2, 4);
         assertEquals(new MyRational(1, 2),r3);
@@ -98,6 +100,9 @@ class TestOtherNumbers {
         MyRational r = new MyRational(1, 2);
         MyReal d = new MyReal(new BigDecimal("2.5"));
         MyComplex c = new MyComplex(new BigDecimal("1"), new BigDecimal("1"));
+
+        c.setPrecision(2);
+        assertEquals(new MyComplex(new BigDecimal("-1"), new BigDecimal("-1")), c.negate());
 
         assertEquals(new MyRational(21, 2), calc.eval(new Plus(List.of(n, r))));
         assertEquals(new MyRational(19, 2), calc.eval(new Minus(List.of(n, r))));

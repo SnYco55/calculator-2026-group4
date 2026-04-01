@@ -43,8 +43,11 @@ public class MyRational implements Expression, Value{
         return new MyRational(-this.numerator, this.denominator);
     }
 
-    public MyRational invert() {
+    public Value invert() {
         if (this.numerator == 0) throw new ArithmeticException("Division by zero");
+        if (this.numerator == 1){
+            return new MyNumber(this.denominator);
+        }
         return new MyRational(this.denominator, this.numerator);
     }
 
