@@ -4,6 +4,7 @@ import calculator.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,6 +38,26 @@ class TestParser {
         res = parser.parse("6/2");
         assertEquals(new MyNumber(3), calculator.eval(res));
 
+        res = parser.parse("9/2");
+        assertEquals(new MyRational(9,2), calculator.eval(res));
+
+        res = parser.parse("0.2+0.45");
+        assertEquals(new MyReal(new BigDecimal("0.65")), calculator.eval(res));
+
+        res = parser.parse("2/3+5");
+        assertEquals(new MyRational(17,3), calculator.eval(res));
+
+        res = parser.parse("2+5i");
+        assertEquals(new MyComplex(new BigDecimal("2"), new BigDecimal("5")), calculator.eval(res));
+
+        res = parser.parse("3.0+5i");
+        assertEquals(new MyComplex(new BigDecimal("3.0"), new BigDecimal("5")), calculator.eval(res));
+
+        res = parser.parse("7.25i");
+        assertEquals(new MyComplex(new BigDecimal("0"), new BigDecimal("7.25")), calculator.eval(res));
+
+        res = parser.parse("3+5i+7");
+        assertEquals(new MyComplex(new BigDecimal("10"), new BigDecimal("5")), calculator.eval(res));
 
     }
 }

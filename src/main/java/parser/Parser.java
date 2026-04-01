@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import exparser.ExprParser;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 @Component
@@ -73,6 +74,45 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
         String text = ctx.INT().getText();
 
         return new MyNumber(Integer.parseInt(text));
+    }
+
+    @Override
+    public Expression visitFloat(ExprParser.FloatContext ctx){
+        String text = ctx.FLOAT().getText();
+
+        return new MyReal(new BigDecimal(text));
+    }
+
+    @Override
+    public Expression visitRat(ExprParser.RatContext ctx){
+        int left = Integer.parseInt(ctx.INT(0).getText());
+        int right = Integer.parseInt(ctx.INT(1).getText());
+
+
+        MyRational res = new MyRational(left, right);
+        if (res.getDenominator() == 1){
+            return new MyNumber(res.getNumerator());
+        }else{
+            return res;
+        }
+    }
+
+    @Override
+    public Expression visitComp(ExprParser.CompContext ctx){
+        BigDecimal imaginary = new BigDecimal(ctx.imag.getText());
+
+        BigDecimal real = new BigDecimal("0");
+
+        if (ctx.real != null){
+            real = new BigDecimal(ctx.real.getText());
+
+            if (ctx.op.getText().equals("-")){
+                imaginary = imaginary.multiply(new BigDecimal("-1"));
+            }
+        }
+
+
+        return new MyComplex(real, imaginary);
     }
 
 }
