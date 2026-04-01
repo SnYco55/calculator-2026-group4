@@ -123,7 +123,24 @@ public abstract class Operation implements Expression
 		return symbol;
 	}
 
+	public Value dispatch(Value l, Value r){
+		if (l instanceof MyRational leftrat){
+			if (r instanceof MyRational rightrat){
+				return opRat(leftrat, rightrat);
+			}
+			else if (r instanceof MyNumber number){
+				return opRatNum(leftrat, number);
+			}
+		}else if (l instanceof MyNumber num && r instanceof MyRational rat){
+			return opNumRat(num, rat);
+		}
 
+		return null;
+	}
+
+	public abstract Value opRat(MyRational left, MyRational right);
+	public abstract Value opRatNum(MyRational left, MyNumber right);
+	public abstract Value opNumRat(MyNumber left, MyRational right);
 
 	/**
 	 * Two operation objects are equal if their list of arguments is equal and they correspond to the same operation.

@@ -47,16 +47,9 @@ public final class Plus extends Operation
    * @return The integer that is the result of the addition
    */
   public Value op(Value l, Value r) {
-      if (l instanceof MyRational leftrat){
-          if (r instanceof MyRational rightrat){
-              return op(leftrat, rightrat);
-          }
-          else if (r instanceof MyNumber number){
-              return op(leftrat, number);
-          }
-      }else if (l instanceof MyNumber num && r instanceof MyRational rat){
-          return op(num, rat);
-      }
+      Value result = dispatch(l,r);
+
+      if (result != null) return result;
 
       MyComplex left = l.toComplex();
       MyComplex right = r.toComplex();
@@ -65,24 +58,22 @@ public final class Plus extends Operation
   }
 
   //Returns a rationnal but if x/1 return integer
-  public Value op(MyRational l, MyRational r) {
+  public Value opRat(MyRational l, MyRational r) {
       int pp = l.ppcm(r);
       int numeratorL = l.getNumerator()*(pp/l.getDenominator());
       int numeratorR = r.getNumerator()*(pp/r.getDenominator());
 
       // If this is an integer we return the result as such
-      if (pp == 1){
-          return new MyNumber(numeratorL+numeratorR);
-      }
+      if (pp == 1){return new MyNumber(numeratorL+numeratorR);}
 
       return new MyRational(numeratorL+numeratorR, pp);
   }
 
-  public Value op(MyRational l, MyNumber r) {
-      return op(l, new MyRational(r.getValue(), 1));
+  public Value opRatNum(MyRational l, MyNumber r) {
+      return opRat(l, new MyRational(r.getValue(), 1));
   }
 
-  public Value op(MyNumber l, MyRational r) {
-      return  op(r, l);
+  public Value opNumRat(MyNumber l, MyRational r) {
+      return  opRatNum(r, l);
   }
 }

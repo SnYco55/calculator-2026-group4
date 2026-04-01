@@ -47,15 +47,10 @@ public final class Minus extends Operation
      * @return The integer that is the result of the subtraction
      */
     public Value op(Value l, Value r) {
-        if (l instanceof MyRational leftrat){
-            if (r instanceof MyRational rightrat){
-                return op(leftrat, rightrat);
-            }
-            else if (r instanceof MyNumber number){
-                return op(leftrat, number);
-            }
-        }else if (l instanceof MyNumber num && r instanceof MyRational rat){
-            return op(num, rat);
+        Value res = dispatch(l, r);
+
+        if (res != null){
+            return res;
         }
 
         MyComplex left = l.toComplex();
@@ -64,7 +59,7 @@ public final class Minus extends Operation
         return super.format(new MyComplex(left.getReal().subtract(right.getReal()), left.getImaginary().subtract(right.getImaginary())));
     }
 
-     public Value op(MyRational l, MyRational r) {
+     public Value opRat(MyRational l, MyRational r) {
          int pp = l.ppcm(r);
          int numeratorL = l.getNumerator()*(pp/l.getDenominator());
          int numeratorR = r.getNumerator()*(pp/r.getDenominator());
@@ -76,11 +71,11 @@ public final class Minus extends Operation
          return new MyRational(numeratorL-numeratorR, pp);
      }
 
-     public Value op(MyRational l, MyNumber r) {
-         return op(l, new MyRational(r.getValue(), 1));
+     public Value opRatNum(MyRational l, MyNumber r) {
+         return opRat(l, new MyRational(r.getValue(), 1));
      }
 
-     public Value op(MyNumber l, MyRational r) {
-         return  op(new MyRational(l.getValue(), 1), r);
+     public Value opNumRat(MyNumber l, MyRational r) {
+         return  opRat(new MyRational(l.getValue(), 1), r);
      }
 }

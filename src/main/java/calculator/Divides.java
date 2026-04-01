@@ -47,28 +47,18 @@ public final class Divides extends Operation
      * @return The integer that is the result of the division
      */
   public Value op(Value l, Value r) {
-      if (l instanceof MyRational leftrat){
-          if (r instanceof MyRational rightrat){
-              return op(leftrat, rightrat);
-          }
-          else if (r instanceof MyNumber number){
-              return op(leftrat, number);
-          }
-      }else if (l instanceof MyNumber num && r instanceof MyRational rat){
-          return op(num, rat);
-      }else if (l instanceof MyReal leftreal && r instanceof MyReal rightreal) {
-          return op(leftreal, rightreal);
+      Value result = dispatch(l, r);
+
+      if (result != null) {return result;}
+
+      if (l instanceof MyReal leftreal && r instanceof MyReal rightreal) {
+          return opReal(leftreal, rightreal);
       }
 
-      MyComplex left = l.toComplex();
-      MyComplex right = r.toComplex();
-
-      right = (MyComplex) right.invert();
-
-      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
+      return compOpLogic(l.toComplex(), r.toComplex());
   }
 
-  public Value op(MyReal l, MyReal r) {
+  public Value opReal(MyReal l, MyReal r) {
       BigDecimal lval = l.getValue();
       if (r.getValue().compareTo(BigDecimal.ZERO) == 0) {
           if (lval.compareTo(BigDecimal.ZERO) == 0) return new MyReal(new BigDecimal(0), MyReal.State.NAN);
@@ -76,15 +66,16 @@ public final class Divides extends Operation
           if (lval.compareTo(BigDecimal.valueOf(-1)) == 0) return new MyReal(new BigDecimal(0), MyReal.State.NEGATIVE_INFINITY);
           throw new ArithmeticException();
       }else{
-          MyComplex left = l.toComplex();
-          MyComplex right = r.toComplex();
-
-          right = (MyComplex) right.invert();
-          return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
+          return compOpLogic(l.toComplex(), r.toComplex());
       }
   }
 
-  public Value op(MyRational l, MyRational r) {
+  public Value compOpLogic(MyComplex left, MyComplex right) {
+      right = (MyComplex) right.invert();
+      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
+  }
+
+  public Value opRat(MyRational l, MyRational r) {
       MyRational result = new MyRational(l.getNumerator()*r.getDenominator(), l.getDenominator()*r.getNumerator());
 
       if (result.getDenominator() == 1){
@@ -93,12 +84,12 @@ public final class Divides extends Operation
       return result;
   }
 
-    public Value op(MyRational l, MyNumber r) {
+    public Value opRatNum(MyRational l, MyNumber r) {
         return op(l, new MyRational(r.getValue(), 1));
     }
 
-    public Value op(MyNumber l, MyRational r) {
-        return  op(new MyRational(l.getValue(), 1), r);
+    public Value opNumRat(MyNumber l, MyRational r) {
+        return  opRat(new MyRational(l.getValue(), 1), r);
     }
 }
 
