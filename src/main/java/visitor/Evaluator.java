@@ -24,7 +24,7 @@ public class Evaluator extends Visitor {
 
     /** Use the visitor design pattern to visit a number.
      *
-     * @param n The number being visited
+     * @param v The number being visited
      */
     @Override
     public void visit(calculator.Value v) {

@@ -41,9 +41,9 @@ public class Calculator {
         try {
 <span class="nc" id="L42">            Value result = eval(e);</span>
 <span class="nc" id="L43">            System.out.println(&quot;is: &quot; + result + &quot;.&quot;);</span>
-<span class="fc" id="L44">        } catch (ArithmeticException ex) {</span>
+<span class="pc" id="L44">        } catch (ArithmeticException ex) {</span>
 <span class="fc" id="L45">            System.out.println(&quot;Error: Division by zero&quot;);</span>
-<span class="nc" id="L46">        }</span>
+        }
 <span class="fc" id="L47">        System.out.println();</span>
 <span class="fc" id="L48">    }</span>
 
@@ -76,7 +76,7 @@ public class Calculator {
 <span class="fc" id="L76">            e.accept(v);</span>
 <span class="fc" id="L77">        }catch (ArithmeticException ex){</span>
 <span class="fc" id="L78">            throw ex;</span>
-<span class="fc" id="L79">        }</span>
+        }
 
         // and return the result of the evaluation at the end of the process
 <span class="fc" id="L82">        return v.getResult();</span>

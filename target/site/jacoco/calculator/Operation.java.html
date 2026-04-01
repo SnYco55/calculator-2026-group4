@@ -55,9 +55,9 @@ public abstract class Operation implements Expression
 	 * @param n 	The notation to be used to represent the operation
 	 * @throws IllegalConstruction	Exception thrown if a null list of expressions is passed as argument
 	 */
-	protected /*constructor*/ Operation(List&lt;Expression&gt; elist,Notation n)
+<span class="fc" id="L58">	protected /*constructor*/ Operation(List&lt;Expression&gt; elist,Notation n)</span>
 			throws IllegalConstruction
-<span class="fc" id="L60">	{</span>
+	{
 <span class="fc bfc" id="L61" title="All 2 branches covered.">		if (elist == null) {</span>
 <span class="fc" id="L62">			throw new IllegalConstruction(); }</span>
 		else {
@@ -73,7 +73,7 @@ public abstract class Operation implements Expression
 <span class="fc bfc" id="L73" title="All 4 branches covered.">			if ((e instanceof Operation operation) &amp;&amp; (!operation.notation.equals(n))) {</span>
 <span class="fc" id="L74">				throw new IllegalConstruction();</span>
 			}
-<span class="fc" id="L76">		}</span>
+		}
 <span class="fc" id="L77">	}</span>
 
 	/**
@@ -129,7 +129,7 @@ public abstract class Operation implements Expression
 <span class="fc" id="L129">				return opRat(leftrat, rightrat);</span>
 			}
 <span class="pc bpc" id="L131" title="1 of 2 branches missed.">			else if (r instanceof MyNumber number){</span>
-<span class="pc" id="L132">				return opRatNum(leftrat, number);</span>
+<span class="fc" id="L132">				return opRatNum(leftrat, number);</span>
 			}
 <span class="fc bfc" id="L134" title="All 4 branches covered.">		}else if (l instanceof MyNumber num &amp;&amp; r instanceof MyRational rat){</span>
 <span class="fc" id="L135">			return opNumRat(num, rat);</span>
