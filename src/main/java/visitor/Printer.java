@@ -1,14 +1,7 @@
 package visitor;
 
-import calculator.Expression;
-import calculator.MyNumber;
 import calculator.Operation;
 import calculator.Notation;
-import calculator.MyReal;
-import calculator.MyRational;
-import calculator.MyComplex;
-
-import java.util.ArrayList;
 
 /**
  * Printer is a concrete visitor that serves to
@@ -31,28 +24,16 @@ public class Printer extends Visitor {
         return computedValue;
     }
 
-    public void visit(MyNumber n) {
-        computedValue = Integer.toString(n.getValue());
-    }
-
-    public void visit(MyReal r) {
-        computedValue = r.toString();
-    }
-
-    public void visit(MyRational r) {
-        computedValue = r.toString();
-    }
-
-    public void visit(MyComplex c) {
-        computedValue = c.toString();
+    @Override
+    public void visit(calculator.Value v) {
+        computedValue = v.toString();
     }
 
     public void visit(Operation o) {
-        ArrayList<String> s = new ArrayList<>();
-        for (Expression a : o.args) {
+        java.util.List<String> s = o.args.stream().map(a -> {
             a.accept(this);
-            s.add(computedValue);
-        }
+            return computedValue;
+        }).toList();
 
         String symbol = o.getSymbol();
         

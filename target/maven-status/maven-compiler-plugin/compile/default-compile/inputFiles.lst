@@ -1,3 +1,5 @@
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/api/CalculatorApiApplication.java
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/api/CalculatorController.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/calculator/Calculator.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/calculator/Divides.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/calculator/Expression.java
@@ -13,10 +15,17 @@
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/calculator/Plus.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/calculator/Times.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/calculator/Value.java
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/dto/ParserRequest.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/parser/ExpressionParser.java
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/parser/Parser.java
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/services/CalculatorService.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/visitor/DepthCounter.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/visitor/Evaluator.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/visitor/NbsCounter.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/visitor/OpsCounter.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/visitor/Printer.java
 /Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/src/main/java/visitor/Visitor.java
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/target/generated-sources/antlr4/ExprBaseVisitor.java
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/target/generated-sources/antlr4/ExprLexer.java
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/target/generated-sources/antlr4/ExprParser.java
+/Users/abdelouahad/Desktop/calculator_2026_Group4/calculator-2026-group4/target/generated-sources/antlr4/ExprVisitor.java

@@ -2,9 +2,11 @@ package calculator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import visitor.Printer;
@@ -30,6 +32,22 @@ class TestNotation {
 		//postfix notation:
 		testNotation("(" + value1 + ", " + value2 + ") " + symbol, op, Notation.POSTFIX);
 	}
+
+    @Test
+    void testNotationValues() {
+        Printer p = new Printer(Notation.INFIX);
+        MyReal real = new MyReal(new BigDecimal("1.5"));
+        real.accept(p);
+        assertEquals("1.5", p.getResult());
+        
+        MyRational rat = new MyRational(1, 2);
+        rat.accept(p);
+        assertEquals("1/2", p.getResult());
+        
+        MyComplex comp = new MyComplex(new BigDecimal("1"), new BigDecimal("2"));
+        comp.accept(p);
+        assertEquals("1+2i", p.getResult());
+    }
 
 	@ParameterizedTest
 	@ValueSource(strings = {"*", "+", "/", "-"})

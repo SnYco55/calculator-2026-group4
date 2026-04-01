@@ -1,11 +1,6 @@
 package visitor;
 
-import calculator.Expression;
-import calculator.MyNumber;
 import calculator.Operation;
-import calculator.MyReal;
-import calculator.MyRational;
-import calculator.MyComplex;
 
 /**
  * OpsCounter is a concrete visitor that serves to
@@ -19,28 +14,16 @@ public class OpsCounter extends Visitor {
         return computedValue;
     }
 
-    public void visit(MyNumber n) {
-        computedValue = 0;
-    }
-
-    public void visit(MyReal r) {
-        computedValue = 0;
-    }
-
-    public void visit(MyRational r) {
-        computedValue = 0;
-    }
-
-    public void visit(MyComplex c) {
+    @Override
+    public void visit(calculator.Value v) {
         computedValue = 0;
     }
 
     public void visit(Operation o) {
-        int sum = 0;
-        for (Expression a : o.args) {
+        int sum = o.args.stream().mapToInt(a -> {
             a.accept(this);
-            sum += computedValue;
-        }
+            return computedValue;
+        }).sum();
         computedValue = 1 + sum;
     }
 }

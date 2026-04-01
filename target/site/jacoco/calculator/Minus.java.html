@@ -46,8 +46,37 @@ public final class Minus extends Operation
      * @param r The second integer that should be subtracted from the first
      * @return The integer that is the result of the subtraction
      */
-  public Value op(Value l, Value r) {
-<span class="fc" id="L50">  	return l.subtract(r);</span>
-  }
+    public Value op(Value l, Value r) {
+<span class="fc" id="L50">        Value res = dispatch(l, r);</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (res != null){</span>
+<span class="fc" id="L53">            return res;</span>
+        }
+
+<span class="fc" id="L56">        MyComplex left = l.toComplex();</span>
+<span class="fc" id="L57">        MyComplex right = r.toComplex();</span>
+
+<span class="fc" id="L59">        return super.format(new MyComplex(left.getReal().subtract(right.getReal()), left.getImaginary().subtract(right.getImaginary())));</span>
+    }
+
+     public Value opRat(MyRational l, MyRational r) {
+<span class="fc" id="L63">         int pp = l.ppcm(r);</span>
+<span class="fc" id="L64">         int numeratorL = l.getNumerator()*(pp/l.getDenominator());</span>
+<span class="fc" id="L65">         int numeratorR = r.getNumerator()*(pp/r.getDenominator());</span>
+
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">         if (pp == 1){</span>
+<span class="nc" id="L68">             return new MyNumber(numeratorL-numeratorR);</span>
+         }
+
+<span class="fc" id="L71">         return new MyRational(numeratorL-numeratorR, pp);</span>
+     }
+
+     public Value opRatNum(MyRational l, MyNumber r) {
+<span class="nc" id="L75">         return opRat(l, new MyRational(r.getValue(), 1));</span>
+     }
+
+     public Value opNumRat(MyNumber l, MyRational r) {
+<span class="fc" id="L79">         return  opRat(new MyRational(l.getValue(), 1), r);</span>
+     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

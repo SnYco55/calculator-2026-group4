@@ -2,115 +2,67 @@
 
 import visitor.Visitor;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 public class MyComplex implements Expression, Value {
-    private final double real;
-    private final double imaginary;
+    private final BigDecimal real;
+    private final BigDecimal imaginary;
+<span class="fc" id="L12">    private MathContext precision= new MathContext(5, RoundingMode.HALF_UP);</span>
 
-<span class="fc" id="L9">    public MyComplex(double r, double i) {</span>
-<span class="fc" id="L10">        this.real = r;</span>
-<span class="fc" id="L11">        this.imaginary = i;</span>
-<span class="fc" id="L12">    }</span>
+<span class="fc" id="L14">    public MyComplex(BigDecimal r, BigDecimal i) {</span>
+<span class="fc" id="L15">        this.real = r;</span>
+<span class="fc" id="L16">        this.imaginary = i;</span>
+<span class="fc" id="L17">    }</span>
 
-<span class="fc" id="L14">    public double getReal() { return real; }</span>
-<span class="fc" id="L15">    public double getImaginary() { return imaginary; }</span>
+<span class="fc" id="L19">    public BigDecimal getReal() { return real; }</span>
+<span class="fc" id="L20">    public BigDecimal getImaginary() { return imaginary; }</span>
+
+    public void setPrecision(int precision) {
+<span class="fc" id="L23">        this.precision = new MathContext(precision, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L24">    }</span>
+    
+    @Override
+    public MyComplex toComplex() {
+<span class="fc" id="L28">        return this;</span>
+    }
 
     public void accept(Visitor v) {
-<span class="nc" id="L18">        v.visit(this);</span>
-<span class="nc" id="L19">    }</span>
+<span class="fc" id="L32">        v.visit(this);</span>
+<span class="fc" id="L33">    }</span>
 
-    @Override
-    public Value add(Value other) {
-<span class="fc" id="L23">        return other.add(this);</span>
-    }
-
-    @Override
-    public Value subtract(Value other) {
-<span class="fc" id="L28">        return this.add(other.negate());</span>
-    }
-
-    @Override
-    public Value multiply(Value other) {
-<span class="nc" id="L33">        return other.multiply(this);</span>
-    }
-
-    @Override
-    public Value divide(Value other) {
-<span class="nc" id="L38">        return this.multiply(other.invert());</span>
-    }
-
-    @Override
     public Value negate() {
-<span class="fc" id="L43">        return new MyComplex(-this.real, -this.imaginary);</span>
+<span class="fc" id="L36">        return new MyComplex(this.real.multiply(new BigDecimal(&quot;-1&quot;)), this.imaginary.multiply(new BigDecimal(&quot;-1&quot;)));</span>
     }
 
-    @Override
     public Value invert() {
-<span class="fc" id="L48">        double divisor = this.real * this.real + this.imaginary * this.imaginary;</span>
-<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (divisor == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
-<span class="fc" id="L50">        return new MyComplex(this.real / divisor, -this.imaginary / divisor);</span>
+<span class="fc" id="L40">        BigDecimal divisor = this.real.multiply(this.real).add(this.imaginary.multiply(this.imaginary));</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (divisor.compareTo(BigDecimal.ZERO) == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
+
+<span class="fc" id="L43">        return new MyComplex(this.real.divide(divisor, precision), this.imaginary.multiply(new BigDecimal(&quot;-1&quot;)).divide(divisor, precision));</span>
     }
 
-    @Override
-    public Value add(MyNumber other) {
-<span class="fc" id="L55">        return new MyComplex(this.real + other.getValue(), this.imaginary);</span>
-    }
-
-    @Override
-    public Value add(MyRational other) {
-<span class="fc" id="L60">        return new MyComplex(this.real + (double)other.getNumerator() / other.getDenominator(), this.imaginary);</span>
-    }
-
-    @Override
-    public Value add(MyReal other) {
-<span class="fc" id="L65">        return new MyComplex(this.real + other.getValue(), this.imaginary);</span>
-    }
-
-    @Override
-    public Value add(MyComplex other) {
-<span class="fc" id="L70">        return new MyComplex(this.real + other.getReal(), this.imaginary + other.getImaginary());</span>
-    }
-
-    @Override
-    public Value multiply(MyNumber other) {
-<span class="fc" id="L75">        return new MyComplex(this.real * other.getValue(), this.imaginary * other.getValue());</span>
-    }
-
-    @Override
-    public Value multiply(MyRational other) {
-<span class="fc" id="L80">        double r = (double)other.getNumerator() / other.getDenominator();</span>
-<span class="fc" id="L81">        return new MyComplex(this.real * r, this.imaginary * r);</span>
-    }
-
-    @Override
-    public Value multiply(MyReal other) {
-<span class="fc" id="L86">        return new MyComplex(this.real * other.getValue(), this.imaginary * other.getValue());</span>
-    }
-
-    @Override
-    public Value multiply(MyComplex other) {
-<span class="fc" id="L91">        return new MyComplex(this.real * other.getReal() - this.imaginary * other.getImaginary(),</span>
-<span class="fc" id="L92">                             this.real * other.getImaginary() + this.imaginary * other.getReal());</span>
-    }
 
     @Override
     public String toString() {
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (imaginary == 0) return Double.toString(real);</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (real == 0) return imaginary + &quot;i&quot;;</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        return real + (imaginary &gt; 0 ? &quot;+&quot; : &quot;&quot;) + imaginary + &quot;i&quot;;</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (imaginary.compareTo(BigDecimal.ZERO) == 0) return real.toString();</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (real.compareTo(BigDecimal.ZERO) == 0) return imaginary + &quot;i&quot;;</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        return real + (imaginary.compareTo(BigDecimal.ZERO) &gt; 0 ? &quot;+&quot; : &quot;&quot;) + imaginary + &quot;i&quot;;</span>
     }
 
     @Override
     public boolean equals(Object o) {
-<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (o == null) return false;</span>
-<span class="pc bpc" id="L105" title="1 of 2 branches missed.">        if (o == this) return true;</span>
-<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (!(o instanceof MyComplex)) return false;</span>
-<span class="fc" id="L107">        MyComplex c = (MyComplex)o;</span>
-<span class="pc bpc" id="L108" title="2 of 4 branches missed.">        return Double.compare(this.real, c.real) == 0 &amp;&amp; Double.compare(this.imaginary, c.imaginary) == 0;</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if (o == null) return false;</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (o == this) return true;</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (!(o instanceof MyComplex)) return false;</span>
+<span class="fc" id="L59">        MyComplex c = (MyComplex)o;</span>
+<span class="pc bpc" id="L60" title="2 of 4 branches missed.">        return this.real.stripTrailingZeros().equals(c.real.stripTrailingZeros()) &amp;&amp; this.imaginary.stripTrailingZeros().equals(c.imaginary.stripTrailingZeros());</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L113">        return Double.hashCode(real) ^ Double.hashCode(imaginary);</span>
+<span class="nc" id="L65">        return this.real.stripTrailingZeros().hashCode()+this.imaginary.stripTrailingZeros().hashCode();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

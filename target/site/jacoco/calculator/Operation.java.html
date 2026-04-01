@@ -2,6 +2,7 @@
 
 import visitor.Visitor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public abstract class Operation implements Expression
    * The notation used to render operations as strings.
    * By default, the infix notation will be used.
    */
-<span class="fc" id="L36">  public Notation notation = Notation.INFIX;</span>
+<span class="fc" id="L37">  public Notation notation = Notation.INFIX;</span>
 
   /** It is not allowed to construct an operation with a null list of expressions.
    * Note that it is allowed to have an EMPTY list of arguments.
@@ -44,8 +45,8 @@ public abstract class Operation implements Expression
   protected /*constructor*/ Operation(List&lt;Expression&gt; elist)
 		  throws IllegalConstruction
 	{
-<span class="nc" id="L47">		this(elist, null);</span>
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L48">		this(elist, null);</span>
+<span class="nc" id="L49">    }</span>
 
 	/** To construct an operation with a list of expressions as arguments,
 	 * as well as the Notation used to represent the operation.
@@ -56,24 +57,24 @@ public abstract class Operation implements Expression
 	 */
 	protected /*constructor*/ Operation(List&lt;Expression&gt; elist,Notation n)
 			throws IllegalConstruction
-<span class="fc" id="L59">	{</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">		if (elist == null) {</span>
-<span class="fc" id="L61">			throw new IllegalConstruction(); }</span>
+<span class="fc" id="L60">	{</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		if (elist == null) {</span>
+<span class="fc" id="L62">			throw new IllegalConstruction(); }</span>
 		else {
-<span class="fc" id="L63">			args = new ArrayList&lt;&gt;(elist);</span>
+<span class="fc" id="L64">			args = new ArrayList&lt;&gt;(elist);</span>
 		}
 
 		//If n isn't specified it is infix (useful for below verification)
-<span class="fc bfc" id="L67" title="All 2 branches covered.">		if (n!=null) notation = n;</span>
-<span class="fc" id="L68">		else n = Notation.INFIX;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		if (n!=null) notation = n;</span>
+<span class="fc" id="L69">		else n = Notation.INFIX;</span>
 
 		//Verify that every sub expressions use the same notation
-<span class="fc bfc" id="L71" title="All 2 branches covered.">		for (Expression e : elist) {</span>
-<span class="fc bfc" id="L72" title="All 4 branches covered.">			if ((e instanceof Operation) &amp;&amp; (!((Operation) e).notation.equals(n))) {</span>
-<span class="fc" id="L73">				throw new IllegalConstruction();</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">		for (Expression e : elist) {</span>
+<span class="fc bfc" id="L73" title="All 4 branches covered.">			if ((e instanceof Operation operation) &amp;&amp; (!operation.notation.equals(n))) {</span>
+<span class="fc" id="L74">				throw new IllegalConstruction();</span>
 			}
-<span class="fc" id="L75">		}</span>
-<span class="fc" id="L76">	}</span>
+<span class="fc" id="L76">		}</span>
+<span class="fc" id="L77">	}</span>
 
 	/**
 	 * getter method to return the number of arguments of an arithmetic operation.
@@ -81,7 +82,7 @@ public abstract class Operation implements Expression
 	 * @return	The number of arguments of the arithmetic operation.
 	 */
 	public List&lt;Expression&gt; getArgs() {
-<span class="fc" id="L84">  	return args;</span>
+<span class="fc" id="L85">  	return args;</span>
   }
 
 	/**
@@ -98,8 +99,8 @@ public abstract class Operation implements Expression
 	 * @param params	The list of parameters to be added
 	 */
 	public void addMoreParams(List&lt;Expression&gt; params) {
-<span class="fc" id="L101">  	args.addAll(params);</span>
-<span class="fc" id="L102">  }</span>
+<span class="fc" id="L102">  	args.addAll(params);</span>
+<span class="fc" id="L103">  }</span>
 
 	/**
 	 * Accept method to implement the visitor design pattern to traverse arithmetic expressions.
@@ -109,9 +110,9 @@ public abstract class Operation implements Expression
 	 * @param v	The visitor object
 	 */
   public void accept(Visitor v) {
-<span class="fc bfc" id="L112" title="All 2 branches covered.">  	for(Expression a:args) { a.accept(v); }</span>
-<span class="fc" id="L113">  	v.visit(this);</span>
-<span class="fc" id="L114">  }</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">  	for(Expression a:args) { a.accept(v); }</span>
+<span class="fc" id="L114">  	v.visit(this);</span>
+<span class="fc" id="L115">  }</span>
 
 	/**
 	 * getter method to return the symbol of an arithmetic operation.
@@ -119,10 +120,27 @@ public abstract class Operation implements Expression
 	 * @return	The symbol of the arithmetic operation.
 	 */
 	public String getSymbol() {
-<span class="fc" id="L122">		return symbol;</span>
+<span class="fc" id="L123">		return symbol;</span>
 	}
 
+	public Value dispatch(Value l, Value r){
+<span class="fc bfc" id="L127" title="All 2 branches covered.">		if (l instanceof MyRational leftrat){</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">			if (r instanceof MyRational rightrat){</span>
+<span class="fc" id="L129">				return opRat(leftrat, rightrat);</span>
+			}
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">			else if (r instanceof MyNumber number){</span>
+<span class="pc" id="L132">				return opRatNum(leftrat, number);</span>
+			}
+<span class="fc bfc" id="L134" title="All 4 branches covered.">		}else if (l instanceof MyNumber num &amp;&amp; r instanceof MyRational rat){</span>
+<span class="fc" id="L135">			return opNumRat(num, rat);</span>
+		}
 
+<span class="fc" id="L138">		return null;</span>
+	}
+
+	public abstract Value opRat(MyRational left, MyRational right);
+	public abstract Value opRatNum(MyRational left, MyNumber right);
+	public abstract Value opNumRat(MyNumber left, MyRational right);
 
 	/**
 	 * Two operation objects are equal if their list of arguments is equal and they correspond to the same operation.
@@ -132,14 +150,14 @@ public abstract class Operation implements Expression
 	 */
 	@Override
 	public boolean equals(Object o) {
-<span class="pc bpc" id="L135" title="1 of 2 branches missed.">		if (o == null) return false; // No object should be equal to null</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">		if (o == null) return false; // No object should be equal to null</span>
 
-<span class="fc bfc" id="L137" title="All 2 branches covered.">		if (this == o) return true; // If it's the same object, they're obviously equal</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">		if (this == o) return true; // If it's the same object, they're obviously equal</span>
 
-<span class="fc bfc" id="L139" title="All 2 branches covered.">		if (getClass() != o.getClass()) return false; // getClass() instead of instanceof() because an addition is not the same as a multiplication</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">		if (getClass() != o.getClass()) return false; // getClass() instead of instanceof() because an addition is not the same as a multiplication</span>
 
-<span class="fc" id="L141">		Operation other = (Operation) o;</span>
-<span class="fc" id="L142">		return this.args.equals(other.getArgs());</span>
+<span class="fc" id="L159">		Operation other = (Operation) o;</span>
+<span class="fc" id="L160">		return this.args.equals(other.getArgs());</span>
 	  }
 
 	/** The method hashCode needs to be overridden it the equals method is overridden;
@@ -151,12 +169,28 @@ public abstract class Operation implements Expression
 	@Override
 	public int hashCode()
 	{
-<span class="fc" id="L154">		int result = 5, prime = 31;</span>
-<span class="fc" id="L155">		result = prime * result + neutral;</span>
-<span class="fc" id="L156">		result = prime * result + symbol.hashCode();</span>
-<span class="fc" id="L157">		result = prime * result + args.hashCode();</span>
-<span class="fc" id="L158">		return result;</span>
+<span class="fc" id="L172">		int result = 5;</span>
+<span class="fc" id="L173">		int prime = 31;</span>
+<span class="fc" id="L174">		result = prime * result + neutral;</span>
+<span class="fc" id="L175">		result = prime * result + symbol.hashCode();</span>
+<span class="fc" id="L176">		result = prime * result + args.hashCode();</span>
+<span class="fc" id="L177">		return result;</span>
 	}
+
+	// Returns the result with the correct type
+	public Value format(MyComplex val){
+<span class="fc bfc" id="L182" title="All 2 branches covered.">		if (val.getImaginary().compareTo(BigDecimal.ZERO) == 0){</span>
+<span class="fc" id="L183">			BigDecimal normalized = val.getReal().stripTrailingZeros();</span>
+
+<span class="fc bfc" id="L185" title="All 2 branches covered.">			if (normalized.scale() &lt;= 0){</span>
+<span class="fc" id="L186">				return new MyNumber(val.getReal().intValueExact());</span>
+			}
+<span class="fc" id="L188">			return new MyReal(val.getReal());</span>
+		}else{
+<span class="fc" id="L190">			return val;</span>
+		}
+	}
+
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

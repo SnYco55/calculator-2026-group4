@@ -1,14 +1,7 @@
 package visitor;
 
-import calculator.Expression;
-import calculator.MyNumber;
 import calculator.Operation;
 import calculator.Value;
-import calculator.MyReal;
-import calculator.MyRational;
-import calculator.MyComplex;
-
-import java.util.ArrayList;
 
 /** Evaluation is a concrete visitor that serves to
  * compute and evaluate the results of arithmetic expressions.
@@ -33,20 +26,9 @@ public class Evaluator extends Visitor {
      *
      * @param n The number being visited
      */
-    public void visit(MyNumber n) {
-        computedValue = n;
-    }
-
-    public void visit(MyReal r) {
-        computedValue = r;
-    }
-
-    public void visit(MyRational r) {
-        computedValue = r;
-    }
-
-    public void visit(MyComplex c) {
-        computedValue = c;
+    @Override
+    public void visit(calculator.Value v) {
+        computedValue = v;
     }
 
     /** Use the visitor design pattern to visit an operation
@@ -54,12 +36,11 @@ public class Evaluator extends Visitor {
      * @param o The operation being visited
      */
     public void visit(Operation o) {
-        ArrayList<Value> evaluatedArgs = new ArrayList<>();
         //first loop to recursively evaluate each subexpression
-        for(Expression a:o.args) {
+        java.util.List<Value> evaluatedArgs = o.args.stream().map(a -> {
             a.accept(this);
-            evaluatedArgs.add(computedValue);
-        }
+            return computedValue;
+        }).toList();
         //second loop to accumulate all the evaluated subresults
         Value temp = evaluatedArgs.get(0);
         int max = evaluatedArgs.size();

@@ -46,7 +46,32 @@ public final class Times extends Operation
    * @return The integer that is the result of the multiplication
    */
   public Value op(Value l, Value r) {
-<span class="fc" id="L49">      return l.multiply(r);</span>
+<span class="fc" id="L49">      Value result = dispatch(l, r);</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">      if (result != null) {return result;}</span>
+
+<span class="fc" id="L53">      MyComplex left = l.toComplex();</span>
+<span class="fc" id="L54">      MyComplex right = r.toComplex();</span>
+
+<span class="fc" id="L56">      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));</span>
+  }
+
+  public Value opRat(MyRational l, MyRational r) {
+      // We call this here to simplify the rationnal
+<span class="fc" id="L61">      MyRational result = new MyRational(l.getNumerator()*r.getNumerator(), l.getDenominator()*r.getDenominator());</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      if (result.getDenominator() == 1){</span>
+<span class="fc" id="L64">          return new MyNumber(result.getNumerator());</span>
+      }
+<span class="fc" id="L66">      return result;</span>
+  }
+
+  public Value opRatNum(MyRational l, MyNumber r) {
+<span class="fc" id="L70">      return op(l, new MyRational(r.getValue(), 1));</span>
+  }
+
+  public Value opNumRat(MyNumber l, MyRational r) {
+<span class="fc" id="L74">      return  op(r, l);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

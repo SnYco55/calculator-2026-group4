@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Evaluator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Calculator with JUnit5 and Cucumber tests</a> &gt; <a href="index.source.html" class="el_package">visitor</a> &gt; <span class="el_source">Evaluator.java</span></div><h1>Evaluator.java</h1><pre class="source lang-java linenums">package visitor;
 
-import calculator.Expression;
-import calculator.MyNumber;
 import calculator.Operation;
 import calculator.Value;
-import calculator.MyReal;
-import calculator.MyRational;
-import calculator.MyComplex;
-
-import java.util.ArrayList;
 
 /** Evaluation is a concrete visitor that serves to
  * compute and evaluate the results of arithmetic expressions.
@@ -18,7 +11,7 @@ public class Evaluator extends Visitor {
     /**
      * Default constructor of the class. Does not initialise anything.
      */
-<span class="fc" id="L21">    public Evaluator() {}</span>
+<span class="fc" id="L14">    public Evaluator() {}</span>
 
     /** The result of the evaluation will be stored in this private variable */
     private Value computedValue;
@@ -27,55 +20,43 @@ public class Evaluator extends Visitor {
      *
      * @return a Value object containing the result of the evaluation
      */
-<span class="fc" id="L30">    public Value getResult() { return computedValue; }</span>
+<span class="fc" id="L23">    public Value getResult() { return computedValue; }</span>
 
     /** Use the visitor design pattern to visit a number.
      *
      * @param n The number being visited
      */
-    public void visit(MyNumber n) {
-<span class="fc" id="L37">        computedValue = n;</span>
-<span class="fc" id="L38">    }</span>
-
-    public void visit(MyReal r) {
-<span class="nc" id="L41">        computedValue = r;</span>
-<span class="nc" id="L42">    }</span>
-
-    public void visit(MyRational r) {
-<span class="nc" id="L45">        computedValue = r;</span>
-<span class="nc" id="L46">    }</span>
-
-    public void visit(MyComplex c) {
-<span class="nc" id="L49">        computedValue = c;</span>
-<span class="nc" id="L50">    }</span>
+    @Override
+    public void visit(calculator.Value v) {
+<span class="fc" id="L31">        computedValue = v;</span>
+<span class="fc" id="L32">    }</span>
 
     /** Use the visitor design pattern to visit an operation
      *
      * @param o The operation being visited
      */
     public void visit(Operation o) {
-<span class="fc" id="L57">        ArrayList&lt;Value&gt; evaluatedArgs = new ArrayList&lt;&gt;();</span>
         //first loop to recursively evaluate each subexpression
-<span class="fc bfc" id="L59" title="All 2 branches covered.">        for(Expression a:o.args) {</span>
-<span class="fc" id="L60">            a.accept(this);</span>
-<span class="fc" id="L61">            evaluatedArgs.add(computedValue);</span>
-<span class="fc" id="L62">        }</span>
+<span class="fc" id="L40">        java.util.List&lt;Value&gt; evaluatedArgs = o.args.stream().map(a -&gt; {</span>
+<span class="fc" id="L41">            a.accept(this);</span>
+<span class="fc" id="L42">            return computedValue;</span>
+<span class="fc" id="L43">        }).toList();</span>
         //second loop to accumulate all the evaluated subresults
-<span class="fc" id="L64">        Value temp = evaluatedArgs.get(0);</span>
-<span class="fc" id="L65">        int max = evaluatedArgs.size();</span>
+<span class="fc" id="L45">        Value temp = evaluatedArgs.get(0);</span>
+<span class="fc" id="L46">        int max = evaluatedArgs.size();</span>
 
-<span class="fc bfc" id="L67" title="All 2 branches covered.">        for(int counter=1; counter&lt;max; counter++) {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for(int counter=1; counter&lt;max; counter++) {</span>
             try {
-<span class="fc" id="L69">                temp = o.op(temp,evaluatedArgs.get(counter));</span>
+<span class="fc" id="L50">                temp = o.op(temp,evaluatedArgs.get(counter));</span>
             }
-<span class="fc" id="L71">            catch (ArithmeticException e) {</span>
-<span class="fc" id="L72">                throw e;</span>
-<span class="fc" id="L73">            }</span>
+<span class="fc" id="L52">            catch (ArithmeticException e) {</span>
+<span class="fc" id="L53">                throw e;</span>
+<span class="fc" id="L54">            }</span>
 
         }
         // store the accumulated result
-<span class="fc" id="L77">        computedValue = temp;</span>
-<span class="fc" id="L78">    }</span>
+<span class="fc" id="L58">        computedValue = temp;</span>
+<span class="fc" id="L59">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

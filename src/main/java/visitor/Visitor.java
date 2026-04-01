@@ -16,13 +16,15 @@ public abstract class Visitor {
      *
      * @param n The number being visited
      */
-    public abstract void visit(MyNumber n);
+    /**
+     * Fallback visit method for Value objects
+     */
+    public void visit(calculator.Value v) {}
 
     public abstract void visit(Operation o);
 
-    public abstract void visit(MyReal r);
-
-    public abstract void visit(MyRational r);
-
-    public abstract void visit(MyComplex c);
+    public void visit(MyNumber n) { visit((calculator.Value) n); }
+    public void visit(MyReal r) { visit((calculator.Value) r); }
+    public void visit(MyRational r) { visit((calculator.Value) r); }
+    public void visit(MyComplex c) { visit((calculator.Value) c); }
 }

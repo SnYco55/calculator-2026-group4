@@ -2,6 +2,8 @@
 
 import visitor.Visitor;
 
+import java.math.BigDecimal;
+
 /**
  * MyNumber is a concrete class that represents arithmetic numbers,
  * which are a special kind of Expressions, just like operations are.
@@ -17,16 +19,15 @@ public class MyNumber implements Expression, Value
      *
      * @return The integer number contained in the object
      */
-<span class="fc" id="L20">  public Integer getValue() { return value; }</span>
-
+<span class="fc" id="L22">  public Integer getValue() { return value; }</span>
     /**
      * Constructor method
      *
      * @param v The integer value to be contained in the object
      */
-<span class="fc" id="L27">    public /*constructor*/ MyNumber(int v) {</span>
-<span class="fc" id="L28">	  value=v;</span>
-<span class="fc" id="L29">	  }</span>
+<span class="fc" id="L28">    public /*constructor*/ MyNumber(int v) {</span>
+<span class="fc" id="L29">	  value=v;</span>
+<span class="fc" id="L30">	  }</span>
 
     /**
      * accept method to implement the visitor design pattern to traverse arithmetic expressions.
@@ -35,86 +36,12 @@ public class MyNumber implements Expression, Value
      * @param v	The visitor object
      */
   public void accept(Visitor v) {
-<span class="fc" id="L38">      v.visit(this);</span>
-<span class="fc" id="L39">  }</span>
+<span class="fc" id="L39">      v.visit(this);</span>
+<span class="fc" id="L40">  }</span>
 
-    @Override
-    public Value add(Value other) {
-<span class="fc" id="L43">        return other.add(this);</span>
-    }
-
-    @Override
-    public Value subtract(Value other) {
-<span class="fc" id="L48">        return this.add(other.negate());</span>
-    }
-
-    @Override
-    public Value multiply(Value other) {
-<span class="fc" id="L53">        return other.multiply(this);</span>
-    }
-
-    @Override
-    public Value divide(Value other) {
-<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (other instanceof MyNumber) {</span>
-<span class="fc bfc" id="L59" title="All 2 branches covered.">            if (((MyNumber)other).getValue() == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
-<span class="fc" id="L60">            return new MyNumber(this.value / ((MyNumber)other).getValue());</span>
-        }
-<span class="fc" id="L62">        return this.multiply(other.invert());</span>
-    }
-
-    @Override
-    public Value negate() {
-<span class="fc" id="L67">        return new MyNumber(-this.value);</span>
-    }
-
-    @Override
-    public Value invert() {
-<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (this.value == 0) throw new ArithmeticException(&quot;Division by zero&quot;);</span>
-<span class="nc" id="L73">        return new MyRational(1, this.value);</span>
-    }
-
-    @Override
-    public Value add(MyNumber other) {
-<span class="fc" id="L78">        return new MyNumber(this.value + other.getValue());</span>
-    }
-
-    @Override
-    public Value add(MyRational other) {
-<span class="fc" id="L83">        return new MyRational(this.value * other.getDenominator() + other.getNumerator(), other.getDenominator());</span>
-    }
-
-    @Override
-    public Value add(MyReal other) {
-<span class="fc" id="L88">        return new MyReal(this.value + other.getValue());</span>
-    }
-
-    @Override
-    public Value add(MyComplex other) {
-<span class="fc" id="L93">        return new MyComplex(this.value + other.getReal(), other.getImaginary());</span>
-    }
-
-    @Override
-    public Value multiply(MyNumber other) {
-<span class="fc" id="L98">        return new MyNumber(this.value * other.getValue());</span>
-    }
-
-    @Override
-    public Value multiply(MyRational other) {
-<span class="fc" id="L103">        return new MyRational(this.value * other.getNumerator(), other.getDenominator());</span>
-    }
-
-    @Override
-    public Value multiply(MyReal other) {
-<span class="fc" id="L108">        return new MyReal(this.value * other.getValue());</span>
-    }
-
-    @Override
-    public Value multiply(MyComplex other) {
-<span class="fc" id="L113">        return new MyComplex(this.value * other.getReal(), this.value * other.getImaginary());</span>
-    }
-
-
-
+  public MyComplex toComplex() {
+<span class="fc" id="L43">      return new MyComplex(new BigDecimal(Integer.toString(this.value)), BigDecimal.ZERO);</span>
+  }
 
   /** Two MyNumber expressions are equal if the values they contain are equal
    *
@@ -124,18 +51,18 @@ public class MyNumber implements Expression, Value
   @Override
   public boolean equals(Object o) {
       // No object should be equal to null (not including this check can result in an exception if a MyNumber is tested against null)
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">      if (o == null) return false;</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">      if (o == null) return false;</span>
 
       // If the object is compared to itself then return true
-<span class="fc bfc" id="L130" title="All 2 branches covered.">      if (o == this) {</span>
-<span class="fc" id="L131">          return true;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">      if (o == this) {</span>
+<span class="fc" id="L58">          return true;</span>
       }
 
       // If the object is of another type then return false
-<span class="fc bfc" id="L135" title="All 2 branches covered.">      if (!(o instanceof MyNumber)) {</span>
-<span class="fc" id="L136">            return false;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">      if (!(o instanceof MyNumber)) {</span>
+<span class="fc" id="L63">            return false;</span>
       }
-<span class="fc bfc" id="L138" title="All 2 branches covered.">      return this.value == ((MyNumber)o).value;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">      return this.value == ((MyNumber)o).value;</span>
       // Used == since the contained value is a primitive value
       // If it had been a Java object, .equals() would be needed
   }
@@ -148,7 +75,12 @@ public class MyNumber implements Expression, Value
      */
   @Override
   public int hashCode() {
-<span class="fc" id="L151">		return value;</span>
+<span class="fc" id="L78">		return value;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="fc" id="L83">      return Integer.toString(value);</span>
   }
 
 }

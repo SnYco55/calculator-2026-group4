@@ -47,7 +47,34 @@ public final class Plus extends Operation
    * @return The integer that is the result of the addition
    */
   public Value op(Value l, Value r) {
-<span class="fc" id="L50">  	return l.add(r);</span>
+<span class="fc" id="L50">      Value result = dispatch(l,r);</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">      if (result != null) return result;</span>
+
+<span class="fc" id="L54">      MyComplex left = l.toComplex();</span>
+<span class="fc" id="L55">      MyComplex right = r.toComplex();</span>
+
+<span class="fc" id="L57">      return super.format(new MyComplex(left.getReal().add(right.getReal()), left.getImaginary().add(right.getImaginary())));</span>
+  }
+
+  //Returns a rationnal but if x/1 return integer
+  public Value opRat(MyRational l, MyRational r) {
+<span class="fc" id="L62">      int pp = l.ppcm(r);</span>
+<span class="fc" id="L63">      int numeratorL = l.getNumerator()*(pp/l.getDenominator());</span>
+<span class="fc" id="L64">      int numeratorR = r.getNumerator()*(pp/r.getDenominator());</span>
+
+      // If this is an integer we return the result as such
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">      if (pp == 1){return new MyNumber(numeratorL+numeratorR);}</span>
+
+<span class="fc" id="L69">      return new MyRational(numeratorL+numeratorR, pp);</span>
+  }
+
+  public Value opRatNum(MyRational l, MyNumber r) {
+<span class="fc" id="L73">      return opRat(l, new MyRational(r.getValue(), 1));</span>
+  }
+
+  public Value opNumRat(MyNumber l, MyRational r) {
+<span class="fc" id="L77">      return  opRatNum(r, l);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

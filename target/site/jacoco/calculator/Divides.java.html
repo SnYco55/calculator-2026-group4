@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Divides.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Calculator with JUnit5 and Cucumber tests</a> &gt; <a href="index.source.html" class="el_package">calculator</a> &gt; <span class="el_source">Divides.java</span></div><h1>Divides.java</h1><pre class="source lang-java linenums">package calculator;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /** This class represents the arithmetic division operation &quot;/&quot;.
@@ -12,7 +13,6 @@ import java.util.List;
  */
 public final class Divides extends Operation
 {
-
   /**
    * Class constructor specifying a number of Expressions to divide.
    *
@@ -47,7 +47,51 @@ public final class Divides extends Operation
      * @return The integer that is the result of the division
      */
   public Value op(Value l, Value r) {
-<span class="fc" id="L50">      return l.divide(r);</span>
+<span class="fc" id="L50">      Value result = dispatch(l, r);</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">      if (result != null) {return result;}</span>
+
+<span class="fc bfc" id="L54" title="All 4 branches covered.">      if (l instanceof MyReal leftreal &amp;&amp; r instanceof MyReal rightreal) {</span>
+<span class="fc" id="L55">          return opReal(leftreal, rightreal);</span>
+      }
+
+<span class="fc" id="L58">      return compOpLogic(l.toComplex(), r.toComplex());</span>
+  }
+
+  public Value opReal(MyReal l, MyReal r) {
+<span class="fc" id="L62">      BigDecimal lval = l.getValue();</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      if (r.getValue().compareTo(BigDecimal.ZERO) == 0) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">          if (lval.compareTo(BigDecimal.ZERO) == 0) return new MyReal(new BigDecimal(0), MyReal.State.NAN);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">          if (lval.compareTo(BigDecimal.ONE) == 0) return new MyReal(new BigDecimal(0), MyReal.State.POSITIVE_INFINITY);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">          if (lval.compareTo(BigDecimal.valueOf(-1)) == 0) return new MyReal(new BigDecimal(0), MyReal.State.NEGATIVE_INFINITY);</span>
+<span class="fc" id="L67">          throw new ArithmeticException();</span>
+      }else{
+<span class="fc" id="L69">          return compOpLogic(l.toComplex(), r.toComplex());</span>
+      }
+  }
+
+  public Value compOpLogic(MyComplex left, MyComplex right) {
+<span class="fc" id="L74">      right = (MyComplex) right.invert();</span>
+<span class="fc" id="L75">      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));</span>
+  }
+
+  public Value opRat(MyRational l, MyRational r) {
+<span class="fc" id="L79">      MyRational result = new MyRational(l.getNumerator()*r.getDenominator(), l.getDenominator()*r.getNumerator());</span>
+
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">      if (result.getDenominator() == 1){</span>
+<span class="fc" id="L82">          return new MyNumber(result.getNumerator());</span>
+      }
+<span class="nc" id="L84">      return result;</span>
+  }
+
+    public Value opRatNum(MyRational l, MyNumber r) {
+<span class="nc" id="L88">        return op(l, new MyRational(r.getValue(), 1));</span>
+    }
+
+    public Value opNumRat(MyNumber l, MyRational r) {
+<span class="fc" id="L92">        return  opRat(new MyRational(l.getValue(), 1), r);</span>
     }
 }
+
+
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

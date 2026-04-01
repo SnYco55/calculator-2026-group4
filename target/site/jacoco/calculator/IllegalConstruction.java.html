@@ -2,8 +2,9 @@
 
 /**
  * Exception that will be used when an incorrectly constructed arithmetic expression is encountered.
+ * We need unchecked exception here because of Parser.java
  */
-<span class="fc" id="L6">public class IllegalConstruction extends Exception {</span>
+<span class="fc" id="L7">public class IllegalConstruction extends RuntimeException {</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

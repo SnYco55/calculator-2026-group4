@@ -2,107 +2,56 @@
 
 import visitor.Visitor;
 
-public class MyReal implements Expression, Value {
-    private final double value;
+import java.math.BigDecimal;
 
-<span class="fc" id="L8">    public MyReal(double v) {</span>
-<span class="fc" id="L9">        this.value = v;</span>
-<span class="fc" id="L10">    }</span>
+public class MyReal  implements Expression, Value{
+    private final BigDecimal value;
+    private final State state;
 
-    public double getValue() {
-<span class="fc" id="L13">        return value;</span>
+<span class="fc" id="L11">    public enum State {</span>
+<span class="fc" id="L12">        VALID, NAN, POSITIVE_INFINITY, NEGATIVE_INFINITY</span>
     }
 
+<span class="fc" id="L15">    public MyReal(BigDecimal v) {</span>
+<span class="fc" id="L16">        this.value = v;</span>
+<span class="fc" id="L17">        this.state = State.VALID;</span>
+<span class="fc" id="L18">    }</span>
+
+<span class="fc" id="L20">    public MyReal(BigDecimal v, State s) {</span>
+<span class="fc" id="L21">        this.value = v;</span>
+<span class="fc" id="L22">        this.state = s;</span>
+<span class="fc" id="L23">    }</span>
+
+    public BigDecimal getValue() {
+<span class="fc" id="L26">        return value;</span>
+    }
+
+<span class="fc" id="L29">    public State getState() {return state;}</span>
     public void accept(Visitor v) {
-<span class="nc" id="L17">        v.visit(this);</span>
-<span class="nc" id="L18">    }</span>
-
-    @Override
-    public Value add(Value other) {
-<span class="fc" id="L22">        return other.add(this);</span>
-    }
-
-    @Override
-    public Value subtract(Value other) {
-<span class="fc" id="L27">        return this.add(other.negate());</span>
-    }
-
-    @Override
-    public Value multiply(Value other) {
-<span class="fc" id="L32">        return other.multiply(this);</span>
-    }
-
-    @Override
-    public Value divide(Value other) {
-<span class="fc" id="L37">        return this.multiply(other.invert());</span>
-    }
-
-    @Override
-    public Value negate() {
-<span class="fc" id="L42">        return new MyReal(-this.value);</span>
-    }
-
-    @Override
-    public Value invert() {
-<span class="fc" id="L47">        return new MyReal(1.0 / this.value);</span>
-    }
-
-    @Override
-    public Value add(MyNumber other) {
-<span class="fc" id="L52">        return new MyReal(this.value + other.getValue());</span>
-    }
-
-    @Override
-    public Value add(MyRational other) {
-<span class="fc" id="L57">        return new MyReal(this.value + (double)other.getNumerator() / other.getDenominator());</span>
-    }
-
-    @Override
-    public Value add(MyReal other) {
-<span class="fc" id="L62">        return new MyReal(this.value + other.getValue());</span>
-    }
-
-    @Override
-    public Value add(MyComplex other) {
-<span class="fc" id="L67">        return new MyComplex(this.value + other.getReal(), other.getImaginary());</span>
-    }
-
-    @Override
-    public Value multiply(MyNumber other) {
-<span class="fc" id="L72">        return new MyReal(this.value * other.getValue());</span>
-    }
-
-    @Override
-    public Value multiply(MyRational other) {
-<span class="fc" id="L77">        return new MyReal(this.value * ((double)other.getNumerator() / other.getDenominator()));</span>
-    }
-
-    @Override
-    public Value multiply(MyReal other) {
-<span class="fc" id="L82">        return new MyReal(this.value * other.getValue());</span>
-    }
-
-    @Override
-    public Value multiply(MyComplex other) {
-<span class="fc" id="L87">        return new MyComplex(this.value * other.getReal(), this.value * other.getImaginary());</span>
-    }
+<span class="fc" id="L31">        v.visit(this);</span>
+<span class="fc" id="L32">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L92">        return Double.toString(value);</span>
+<span class="fc" id="L36">        return this.value.toString();</span>
     }
 
     @Override
     public boolean equals(Object o) {
-<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if (o == null) return false;</span>
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if (o == this) return true;</span>
-<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        if (!(o instanceof MyReal)) return false;</span>
-<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        return Double.compare(this.value, ((MyReal)o).value) == 0;</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (o == null) return false;</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (o == this) return true;</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        if (!(o instanceof MyReal)) return false;</span>
+<span class="fc" id="L44">        return this.value.equals(((MyReal)o).value);</span>
+    }
+
+    public MyComplex toComplex() {
+<span class="fc" id="L48">        return new MyComplex(this.value, new BigDecimal(&quot;0&quot;));</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L105">        return Double.hashCode(value);</span>
+<span class="nc" id="L53">        return this.value.stripTrailingZeros().hashCode();</span>
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

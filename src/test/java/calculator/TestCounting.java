@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +36,19 @@ class TestCounting {
         assertEquals(0, oc.getResult());
         NbsCounter nc = new NbsCounter(); e.accept(nc);
         assertEquals(1, nc.getResult());
+    }
+
+    @Test
+    void testOtherNumberCounting() {
+        Expression[] exps = { new MyReal(new BigDecimal("1.5")), new MyRational(1, 2), new MyComplex(new BigDecimal("1"), new BigDecimal("2")) };
+        for (Expression expr : exps) {
+            DepthCounter dc = new DepthCounter(); expr.accept(dc);
+            assertEquals(0, dc.getResult());
+            OpsCounter oc = new OpsCounter(); expr.accept(oc);
+            assertEquals(0, oc.getResult());
+            NbsCounter nc = new NbsCounter(); expr.accept(nc);
+            assertEquals(1, nc.getResult());
+        }
     }
 
     @ParameterizedTest

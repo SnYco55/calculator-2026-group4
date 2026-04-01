@@ -16,14 +16,16 @@ import calculator.MyComplex;
      *
      * @param n The number being visited
      */
-    public abstract void visit(MyNumber n);
+    /**
+     * Fallback visit method for Value objects
+     */
+<span class="nc" id="L22">    public void visit(calculator.Value v) {}</span>
 
     public abstract void visit(Operation o);
 
-    public abstract void visit(MyReal r);
-
-    public abstract void visit(MyRational r);
-
-    public abstract void visit(MyComplex c);
+<span class="fc" id="L26">    public void visit(MyNumber n) { visit((calculator.Value) n); }</span>
+<span class="fc" id="L27">    public void visit(MyReal r) { visit((calculator.Value) r); }</span>
+<span class="fc" id="L28">    public void visit(MyRational r) { visit((calculator.Value) r); }</span>
+<span class="fc" id="L29">    public void visit(MyComplex c) { visit((calculator.Value) c); }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

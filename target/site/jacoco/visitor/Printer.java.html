@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Printer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Calculator with JUnit5 and Cucumber tests</a> &gt; <a href="index.source.html" class="el_package">visitor</a> &gt; <span class="el_source">Printer.java</span></div><h1>Printer.java</h1><pre class="source lang-java linenums">package visitor;
 
-import calculator.Expression;
-import calculator.MyNumber;
 import calculator.Operation;
 import calculator.Notation;
-import calculator.MyReal;
-import calculator.MyRational;
-import calculator.MyComplex;
-
-import java.util.ArrayList;
 
 /**
  * Printer is a concrete visitor that serves to
@@ -19,54 +12,42 @@ public class Printer extends Visitor {
     private String computedValue;
     private Notation notation;
 
-<span class="fc" id="L22">    public Printer(Notation n) {</span>
-<span class="fc" id="L23">        this.notation = n;</span>
-<span class="fc" id="L24">    }</span>
+<span class="fc" id="L15">    public Printer(Notation n) {</span>
+<span class="fc" id="L16">        this.notation = n;</span>
+<span class="fc" id="L17">    }</span>
 
-<span class="fc" id="L26">    public Printer() {</span>
-<span class="fc" id="L27">        this.notation = Notation.INFIX;</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L19">    public Printer() {</span>
+<span class="fc" id="L20">        this.notation = Notation.INFIX;</span>
+<span class="fc" id="L21">    }</span>
 
     public String getResult() {
-<span class="fc" id="L31">        return computedValue;</span>
+<span class="fc" id="L24">        return computedValue;</span>
     }
 
-    public void visit(MyNumber n) {
-<span class="fc" id="L35">        computedValue = Integer.toString(n.getValue());</span>
-<span class="fc" id="L36">    }</span>
-
-    public void visit(MyReal r) {
-<span class="nc" id="L39">        computedValue = r.toString();</span>
-<span class="nc" id="L40">    }</span>
-
-    public void visit(MyRational r) {
-<span class="nc" id="L43">        computedValue = r.toString();</span>
-<span class="nc" id="L44">    }</span>
-
-    public void visit(MyComplex c) {
-<span class="nc" id="L47">        computedValue = c.toString();</span>
-<span class="nc" id="L48">    }</span>
+    @Override
+    public void visit(calculator.Value v) {
+<span class="fc" id="L29">        computedValue = v.toString();</span>
+<span class="fc" id="L30">    }</span>
 
     public void visit(Operation o) {
-<span class="fc" id="L51">        ArrayList&lt;String&gt; s = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (Expression a : o.args) {</span>
-<span class="fc" id="L53">            a.accept(this);</span>
-<span class="fc" id="L54">            s.add(computedValue);</span>
-<span class="fc" id="L55">        }</span>
+<span class="fc" id="L33">        java.util.List&lt;String&gt; s = o.args.stream().map(a -&gt; {</span>
+<span class="fc" id="L34">            a.accept(this);</span>
+<span class="fc" id="L35">            return computedValue;</span>
+<span class="fc" id="L36">        }).toList();</span>
 
-<span class="fc" id="L57">        String symbol = o.getSymbol();</span>
+<span class="fc" id="L38">        String symbol = o.getSymbol();</span>
         
-<span class="pc bpc" id="L59" title="1 of 4 branches missed.">        switch (notation) {</span>
+<span class="pc bpc" id="L40" title="1 of 4 branches missed.">        switch (notation) {</span>
             case INFIX:
-<span class="fc" id="L61">                computedValue = &quot;( &quot; + String.join(&quot; &quot; + symbol + &quot; &quot;, s) + &quot; )&quot;;</span>
-<span class="fc" id="L62">                break;</span>
+<span class="fc" id="L42">                computedValue = &quot;( &quot; + String.join(&quot; &quot; + symbol + &quot; &quot;, s) + &quot; )&quot;;</span>
+<span class="fc" id="L43">                break;</span>
             case PREFIX:
-<span class="fc" id="L64">                computedValue = symbol + &quot; (&quot; + String.join(&quot;, &quot;, s) + &quot;)&quot;;</span>
-<span class="fc" id="L65">                break;</span>
+<span class="fc" id="L45">                computedValue = symbol + &quot; (&quot; + String.join(&quot;, &quot;, s) + &quot;)&quot;;</span>
+<span class="fc" id="L46">                break;</span>
             case POSTFIX:
-<span class="fc" id="L67">                computedValue = &quot;(&quot; + String.join(&quot;, &quot;, s) + &quot;) &quot; + symbol;</span>
+<span class="fc" id="L48">                computedValue = &quot;(&quot; + String.join(&quot;, &quot;, s) + &quot;) &quot; + symbol;</span>
                 break;
         }
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L51">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
