@@ -101,7 +101,6 @@ class TestOtherNumbers {
         MyReal d = new MyReal(new BigDecimal("2.5"));
         MyComplex c = new MyComplex(new BigDecimal("1"), new BigDecimal("1"));
 
-        c.setPrecision(2);
         assertEquals(new MyComplex(new BigDecimal("-1"), new BigDecimal("-1")), c.negate());
 
         assertEquals(new MyRational(21, 2), calc.eval(new Plus(List.of(n, r))));
@@ -118,5 +117,24 @@ class TestOtherNumbers {
         assertEquals(new MyComplex(new BigDecimal("9"), new BigDecimal("-1")), calc.eval(new Minus(List.of(n, c))));
         assertEquals(new MyComplex(new BigDecimal("10"), new BigDecimal("10")), calc.eval(new Times(List.of(n, c))));
         assertEquals(new MyComplex(new BigDecimal("5"), new BigDecimal("-5")), calc.eval(new Divides(List.of(n, c))));
+    }
+
+
+    @Test
+    void testPrecision(){
+        // Initially the precision is two
+        MyReal r1 = new MyReal(new BigDecimal("1"));
+        MyReal r2 = new MyReal(new BigDecimal("3"));
+
+        assertEquals(new MyReal(new BigDecimal("0.33")), calc.eval(new Divides(List.of(r1, r2))));
+
+        Precision.setPrecision(5);
+        assertEquals(new MyReal(new BigDecimal("0.33333")), calc.eval(new Divides(List.of(r1, r2))));
+
+        Precision.setPrecision(2);
+        r1 = new MyReal(new BigDecimal("0.6"));
+        r2 = new MyReal(new BigDecimal("0.056"));
+
+        assertEquals(new MyReal(new BigDecimal("0.66")), calc.eval(new Plus(List.of(r1, r2))));
     }
 }

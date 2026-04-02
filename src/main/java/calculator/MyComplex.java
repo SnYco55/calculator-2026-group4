@@ -9,20 +9,18 @@ import java.math.RoundingMode;
 public class MyComplex implements Expression, Value {
     private final BigDecimal real;
     private final BigDecimal imaginary;
-    private MathContext precision= new MathContext(5, RoundingMode.HALF_UP);
+    private final MathContext precision;
 
     public MyComplex(BigDecimal r, BigDecimal i) {
-        this.real = r;
-        this.imaginary = i;
+        this.precision = Precision.getMathContext();
+
+        this.real = r.setScale(precision.getPrecision(), RoundingMode.HALF_UP);
+        this.imaginary = i.setScale(precision.getPrecision(), RoundingMode.HALF_UP);
     }
 
     public BigDecimal getReal() { return real; }
     public BigDecimal getImaginary() { return imaginary; }
 
-    public void setPrecision(int precision) {
-        this.precision = new MathContext(precision, RoundingMode.HALF_UP);
-    }
-    
     @Override
     public MyComplex toComplex() {
         return this;
@@ -57,6 +55,7 @@ public class MyComplex implements Expression, Value {
         if (o == this) return true;
         if (!(o instanceof MyComplex)) return false;
         MyComplex c = (MyComplex)o;
+
         return this.real.stripTrailingZeros().equals(c.real.stripTrailingZeros()) && this.imaginary.stripTrailingZeros().equals(c.imaginary.stripTrailingZeros());
     }
 

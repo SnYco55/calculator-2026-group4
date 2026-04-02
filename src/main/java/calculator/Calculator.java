@@ -88,4 +88,16 @@ public class Calculator {
      or to simplify some expression
      public Expression simplify(Expression e)
     */
+
+    /**
+     * Set precision for float calculations and call the evaluation
+     * @param e
+     * @param precision
+     * @return
+     */
+    public Value eval(Expression e, int precision) {
+        Precision.setPrecision(precision);
+
+        return eval(e);
+    }
 }

@@ -46,7 +46,7 @@ class TestNotation {
         
         MyComplex comp = new MyComplex(new BigDecimal("1"), new BigDecimal("2"));
         comp.accept(p);
-        assertEquals("1+2i", p.getResult());
+        assertEquals("1.00+2.00i", p.getResult());
     }
 
 	@ParameterizedTest
@@ -55,7 +55,7 @@ class TestNotation {
 		int value1 = 8;
 		int value2 = 6;
 		Operation op = null;
-		//List<Expression> params = new ArrayList<>(Arrays.asList(new MyNumber(value1),new MyNumber(value2)));
+
 		List<Expression> params = Arrays.asList(new MyNumber(value1),new MyNumber(value2));
 		try {
 			//construct another type of operation depending on the input value
@@ -67,7 +67,7 @@ class TestNotation {
 				case "/"	->	op = new Divides(params);
 				default		->	fail();
 			}
-		} catch (IllegalConstruction e) {
+		} catch (IllegalConstruction _) {
 			fail();
 		}
 		testNotations(symbol, value1, value2, op);

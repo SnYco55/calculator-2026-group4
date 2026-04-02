@@ -41,7 +41,7 @@ public class MyReal  implements Expression, Value{
         if (o == null) return false;
         if (o == this) return true;
         if (!(o instanceof MyReal)) return false;
-        return this.value.equals(((MyReal)o).value);
+        return this.value.stripTrailingZeros().equals(((MyReal)o).value.stripTrailingZeros());
     }
 
     public MyComplex toComplex() {
