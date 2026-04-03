@@ -1,6 +1,10 @@
 package calculator;
 
 import visitor.Evaluator;
+import visitor.DepthCounter;
+import visitor.OpsCounter;
+import visitor.NbsCounter;
+import visitor.Printer;
 
 /**
  * This class represents the core logic of a Calculator.
@@ -31,9 +35,11 @@ public class Calculator {
      * @see #printExpressionDetails(Expression) 
      */
     public void print(Expression e) {
-        System.out.println("The result of evaluating expression " + e);
+        Printer p = new Printer();
+        e.accept(p);
+        System.out.println("The result of evaluating expression " + p.getResult());
         try {
-            int result = eval(e);
+            Value result = eval(e);
             System.out.println("is: " + result + ".");
         } catch (ArithmeticException ex) {
             System.out.println("Error: Division by zero");
@@ -48,9 +54,12 @@ public class Calculator {
      */
     public void printExpressionDetails(Expression e) {
         print(e);
-        System.out.print("It contains " + e.countDepth() + " levels of nested expressions, ");
-        System.out.print(e.countOps() + " operations");
-        System.out.println(" and " + e.countNbs() + " numbers.");
+        DepthCounter dc = new DepthCounter(); e.accept(dc);
+        System.out.print("It contains " + dc.getResult() + " levels of nested expressions, ");
+        OpsCounter oc = new OpsCounter(); e.accept(oc);
+        System.out.print(oc.getResult() + " operations");
+        NbsCounter nc = new NbsCounter(); e.accept(nc);
+        System.out.println(" and " + nc.getResult() + " numbers.");
         System.out.println();
     }
 
@@ -59,7 +68,7 @@ public class Calculator {
      * @param e the arithmetic Expression to be evaluated
      * @return The result of the evaluation
      */
-    public int eval(Expression e) {
+    public Value eval(Expression e) {
         // create a new visitor to evaluate expressions
         Evaluator v = new Evaluator();
         // and ask the expression to accept this visitor to start the evaluation process
@@ -79,4 +88,16 @@ public class Calculator {
      or to simplify some expression
      public Expression simplify(Expression e)
     */
+
+    /**
+     * Set precision for float calculations and call the evaluation
+     * @param e
+     * @param precision
+     * @return
+     */
+    public Value eval(Expression e, int precision) {
+        Precision.setPrecision(precision);
+
+        return eval(e);
+    }
 }

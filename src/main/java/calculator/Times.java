@@ -45,6 +45,32 @@ public final class Times extends Operation
    * @param r The second integer that should be multiplied with the first
    * @return The integer that is the result of the multiplication
    */
-  public int op(int l, int r)
-    { return (l*r); }
+  public Value op(Value l, Value r) {
+      Value result = dispatch(l, r);
+
+      if (result != null) {return result;}
+
+      MyComplex left = l.toComplex();
+      MyComplex right = r.toComplex();
+
+      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
+  }
+
+  public Value opRat(MyRational l, MyRational r) {
+      // We call this here to simplify the rationnal
+      MyRational result = new MyRational(l.getNumerator()*r.getNumerator(), l.getDenominator()*r.getDenominator());
+
+      if (result.getDenominator() == 1){
+          return new MyNumber(result.getNumerator());
+      }
+      return result;
+  }
+
+  public Value opRatNum(MyRational l, MyNumber r) {
+      return op(l, new MyRational(r.getValue(), 1));
+  }
+
+  public Value opNumRat(MyNumber l, MyRational r) {
+      return  op(r, l);
+  }
 }

@@ -2,6 +2,8 @@ package calculator;
 
 import visitor.Visitor;
 
+import java.math.BigDecimal;
+
 /**
  * MyNumber is a concrete class that represents arithmetic numbers,
  * which are a special kind of Expressions, just like operations are.
@@ -9,7 +11,7 @@ import visitor.Visitor;
  * @see Expression
  * @see Operation
  */
-public class MyNumber implements Expression
+public class MyNumber implements Expression, Value
 {
   private final int value;
 
@@ -18,7 +20,6 @@ public class MyNumber implements Expression
      * @return The integer number contained in the object
      */
   public Integer getValue() { return value; }
-
     /**
      * Constructor method
      *
@@ -38,39 +39,8 @@ public class MyNumber implements Expression
       v.visit(this);
   }
 
-
-    /** The depth of a number expression is always 0
-     *
-     * @return The depth of a number expression
-     */
-  public int countDepth() {
-	  return 0;
-  }
-
-    /** The number of operations contained in a number expression is always 0
-     *
-     * @return The number of operations contained in a number expression
-     */
-  public int countOps() {
-	  return 0;
-  }
-
-    /** The number of numbers contained in a number expression is always 1
-     *
-     * @return The number of numbers contained in  a number expression
-     */
-  public int countNbs() {
-	  return 1;
-  }
-
-    /**
-     * Convert a number into a String to allow it to be printed.
-     *
-     * @return	The String that is the result of the conversion.
-     */
-  @Override
-  public String toString() {
-	  return Integer.toString(value);
+  public MyComplex toComplex() {
+      return new MyComplex(new BigDecimal(Integer.toString(this.value)), BigDecimal.ZERO);
   }
 
   /** Two MyNumber expressions are equal if the values they contain are equal
@@ -106,6 +76,11 @@ public class MyNumber implements Expression
   @Override
   public int hashCode() {
 		return value;
+  }
+
+  @Override
+  public String toString() {
+      return Integer.toString(value);
   }
 
 }
