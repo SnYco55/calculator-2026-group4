@@ -15,6 +15,9 @@ public class Precision {
     public static void setPrecision(int precision){
         mathContext = new MathContext(precision, RoundingMode.HALF_EVEN);
     }
+    public static void setPrecision(MathContext mc){
+        mathContext = mc;
+    }
 
     public static MathContext getMathContext(){
         return mathContext;

@@ -122,10 +122,10 @@ class TestOtherNumbers {
 
     @Test
     void testPrecision(){
-        // Initially the precision is two
         MyReal r1 = new MyReal(new BigDecimal("1"));
         MyReal r2 = new MyReal(new BigDecimal("3"));
 
+        Precision.setPrecision(2);
         assertEquals(new MyReal(new BigDecimal("0.33")), calc.eval(new Divides(List.of(r1, r2))));
 
         Precision.setPrecision(5);

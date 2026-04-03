@@ -59,5 +59,26 @@ class TestParser {
         res = parser.parse("3+5i+7");
         assertEquals(new MyComplex(new BigDecimal("10"), new BigDecimal("5")), calculator.eval(res));
 
+        Precision.setPrecision(5);
+        res = parser.parse("2.00E10");
+        assertEquals(new MyReal(new BigDecimal("2E10")), calculator.eval(res));
+
+        Precision.setPrecision(5);
+        res = parser.parse("0.9E-5)");
+        assertEquals(new MyReal(new BigDecimal("0.9E-5")), calculator.eval(res));
+
+        Precision.setPrecision(2);
+
+        res = parser.parse("2^3");
+        assertEquals(new MyReal(new BigDecimal("8")), calculator.eval(res));
+
+        Precision.setPrecision(6);
+        res = parser.parse("((4+5+6)*(7+5/2/7)*9)");
+        assertEquals(new MyReal(new BigDecimal("993.214")), new MyReal(((MyRational) calculator.eval(res)).getValue()));
+
+        Precision.setPrecision(3);
+        res = parser.parse("1+2*3^4/5-6");
+        assertEquals(new MyReal(new BigDecimal("27.4")), new MyReal(((MyRational) calculator.eval(res)).getValue()));
     }
+
 }

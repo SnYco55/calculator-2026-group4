@@ -84,20 +84,6 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
     }
 
     @Override
-    public Expression visitRat(ExprParser.RatContext ctx){
-        int left = Integer.parseInt(ctx.INT(0).getText());
-        int right = Integer.parseInt(ctx.INT(1).getText());
-
-
-        MyRational res = new MyRational(left, right);
-        if (res.getDenominator() == 1){
-            return new MyNumber(res.getNumerator());
-        }else{
-            return res;
-        }
-    }
-
-    @Override
     public Expression visitComp(ExprParser.CompContext ctx){
         BigDecimal imaginary = new BigDecimal(ctx.imag.getText());
 
@@ -115,4 +101,16 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
         return new MyComplex(real, imaginary);
     }
 
+    @Override
+    public Expression visitScientific(ExprParser.ScientificContext ctx) {
+        return new MyReal(new BigDecimal(ctx.getText().trim()));
+    }
+
+    @Override
+    public Expression visitPower(ExprParser.PowerContext ctx){
+        Expression base = visit(ctx.expr(0));
+        Expression exp = visit(ctx.expr(1));
+
+        return new Pow(Arrays.asList(base, exp));
+    }
 }

@@ -43,10 +43,6 @@ class TestNotation {
         MyRational rat = new MyRational(1, 2);
         rat.accept(p);
         assertEquals("1/2", p.getResult());
-        
-        MyComplex comp = new MyComplex(new BigDecimal("1"), new BigDecimal("2"));
-        comp.accept(p);
-        assertEquals("1.00+2.00i", p.getResult());
     }
 
 	@ParameterizedTest

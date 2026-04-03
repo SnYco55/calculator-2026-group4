@@ -10,16 +10,18 @@ root : expr EOF ;
 expr
     : '(' expr ')'                       # Parens
     | complex                            # Comps
-    | rational                           # Rats
+    // | rational                           # Rats
+    | <assoc=right> expr '^' expr        # Power
+    | FLOAT 'E' minus='-'? INT           # Scientific
     | expr op=('*'|'/') expr             # MulDiv
     | expr op=('+'|'-') expr             # AddSub
     | INT                                # Int
     | FLOAT                              # Float
     ;
 
-rational
-    : INT '/' INT                       # Rat
-    ;
+//rational
+  //  : INT '/' INT                       # Rat
+    //;
 
 complex
     : (real=(INT|FLOAT) op=('+'|'-'))? imag=(INT|FLOAT) 'i'  # Comp
