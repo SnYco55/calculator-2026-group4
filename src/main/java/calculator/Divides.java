@@ -51,6 +51,15 @@ public final class Divides extends Operation
 
       if (result != null) {return result;}
 
+      if (l instanceof MyNumber && r instanceof MyNumber numr) {
+          MyRational res =  new MyRational(((MyNumber) l).getValue(), numr.getValue());
+          if (res.getDenominator() == 1){
+              return new MyNumber(res.getNumerator());
+          }else{
+              return res;
+          }
+      }
+
       if (l instanceof MyReal leftreal && r instanceof MyReal rightreal) {
           return opReal(leftreal, rightreal);
       }

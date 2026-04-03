@@ -19,8 +19,8 @@ public class MyRational implements Expression, Value{
         this.denominator = abs(denominator) / gcd;
     }
 
-    public double getValue(){
-        return (double) this.numerator / this.denominator;
+    public BigDecimal getValue(){
+        return new BigDecimal(this.numerator).divide(new BigDecimal(this.denominator), Precision.getMathContext());
     }
 
     @Override

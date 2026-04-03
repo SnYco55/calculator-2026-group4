@@ -53,4 +53,11 @@ public class MyReal  implements Expression, Value{
         return this.value.stripTrailingZeros().hashCode();
     }
 
+    public MyReal degreesToRadians(MyReal degrees) {
+        return new MyReal(BigDecimal.valueOf(Math.toRadians(degrees.value.stripTrailingZeros().doubleValue())));
+    }
+
+    public MyReal radiansToDegrees(MyReal radians) {
+        return new MyReal(BigDecimal.valueOf(Math.toDegrees(radians.value.stripTrailingZeros().doubleValue())));
+    }
 }
