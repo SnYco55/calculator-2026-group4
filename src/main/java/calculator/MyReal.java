@@ -33,7 +33,7 @@ public class MyReal  implements Expression, Value{
 
     @Override
     public String toString() {
-        return this.value.toString();
+        return this.value.stripTrailingZeros().toString();
     }
 
     @Override
@@ -53,11 +53,11 @@ public class MyReal  implements Expression, Value{
         return this.value.stripTrailingZeros().hashCode();
     }
 
-    public MyReal degreesToRadians(MyReal degrees) {
-        return new MyReal(BigDecimal.valueOf(Math.toRadians(degrees.value.stripTrailingZeros().doubleValue())));
+    public MyReal degreesToRadians() {
+        return new MyReal(BigDecimal.valueOf(Math.toRadians(this.value.stripTrailingZeros().doubleValue())));
     }
 
-    public MyReal radiansToDegrees(MyReal radians) {
-        return new MyReal(BigDecimal.valueOf(Math.toDegrees(radians.value.stripTrailingZeros().doubleValue())));
+    public MyReal radiansToDegrees() {
+        return new MyReal(BigDecimal.valueOf(Math.toDegrees(this.value.stripTrailingZeros().doubleValue())));
     }
 }

@@ -7,4 +7,5 @@ package calculator;
 public interface Value {
     public MyComplex toComplex();
     public boolean equals(Object obj);
+    public String toString();
 }

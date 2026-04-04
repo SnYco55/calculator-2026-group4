@@ -3,10 +3,12 @@ package api;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestApi {
@@ -18,7 +20,13 @@ class TestApi {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String jsonBody = "{\"input\": \"299*3\"}";
+            String jsonBody = """
+                {
+                    "input": "299*3.297465",
+                    "angleMode": "RAD",
+                    "precision": 0
+                }
+                """;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/calculator/parse"))
