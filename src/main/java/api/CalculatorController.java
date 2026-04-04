@@ -9,6 +9,7 @@ import services.CalculatorService;
 /**
  * REST controller exposing calculator endpoints.
  */
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/calculator")
 public class CalculatorController {

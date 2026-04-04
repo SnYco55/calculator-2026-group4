@@ -1,38 +1,173 @@
-.App {
-  text-align: center;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #121212;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.calculator {
+    width: 420px;
+    background: #1e1e1e;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.display {
+    background: #000;
+    color: white;
+    padding: 15px 15px 5px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.expression {
+    font-size: 28px;
+    opacity: 0.6;
+    word-break: break-all;
 }
 
-.App-link {
-  color: #61dafb;
+.result {
+    font-size: 32px;
+    color: #00ffcc;
+    margin-top: 10px;
+    font-weight: bold;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+button {
+    height: 70px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #434343;
+    color: white;
+    transition: all 0.15s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.btn-action {
+    background: #676767;
+}
+
+
+.btn-equals {
+    background: #ec652d;
+    color: white;
+    grid-row: span 2;
+    height: 100%;
+}
+
+.app-wrapper {
+    position: relative;
+}
+
+.help-tab {
+    position: absolute;
+    top: 90px;
+    right: -24px;
+
+    background: #444;
+    color: white;
+    padding: 8px 6px;
+    border-radius: 0 8px 8px 0;
+
+
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    line-height: 18px;
+
+    transition: transform 0.3s ease;
+}
+
+.help-tab:hover {
+    background: #666;
+}
+
+.help-drawer {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 300px;
+    min-height: 230px;
+
+    background: #2a2a2a;
+    color: white;
+    border-radius: 0 12px 12px 0;
+    padding: 20px;
+    z-index: -1;
+
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, opacity 0.3s;
+}
+
+.help-drawer h3 {
+    color: #00ffcc;
+    margin: 0 0 12px 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.help-intro {
+    font-size: 13px;
+    color: #ccc;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.help-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.help-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.help-desc {
+    color: #aaa;
+}
+
+.help-syntax {
+    background: #1a1a1a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #ec652d;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.help-drawer.open {
+    transform: translateX(340px);
+}
+
+.help-tab.open {
+    transform: translateX(340px);
 }
