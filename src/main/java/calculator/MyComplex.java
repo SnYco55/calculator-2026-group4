@@ -46,7 +46,7 @@ public class MyComplex implements Expression, Value {
     public String toString() {
         if (imaginary.compareTo(BigDecimal.ZERO) == 0) return real.toString();
         if (real.compareTo(BigDecimal.ZERO) == 0) return imaginary + "i";
-        return real + (imaginary.compareTo(BigDecimal.ZERO) > 0 ? "+" : "") + imaginary + "i";
+        return real.stripTrailingZeros() + (imaginary.compareTo(BigDecimal.ZERO) > 0 ? "+" : "") + imaginary.stripTrailingZeros() + "i";
     }
 
     @Override

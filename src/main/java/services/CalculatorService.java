@@ -1,6 +1,8 @@
 package services;
 
 import calculator.Expression;
+import calculator.MyReal;
+import calculator.Precision;
 import org.springframework.stereotype.Service;
 import parser.ExpressionParser;
 
@@ -22,7 +24,16 @@ public class CalculatorService {
      * @param input user expression
      * @return parsed expression
      */
-    public Expression parseExpression(String input) {
-        return parser.parse(input);
+    public Expression parseExpression(String input, String angleMode, int precision) {
+        Precision.setPrecision(precision);
+        Expression Eresult = parser.parse(input);
+
+        if (Eresult instanceof MyReal real && angleMode.equals("DEG")) {
+            Eresult = real.radiansToDegrees();
+        } else if (Eresult instanceof MyReal real && angleMode.equals("RAD")) {
+            Eresult =real.degreesToRadians();
+        }
+
+        return Eresult;
     }
 }

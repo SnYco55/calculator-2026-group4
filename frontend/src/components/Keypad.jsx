@@ -1,3 +1,12 @@
+/**
+ * Keypad component that renders calculator buttons and handles user interactions.
+ * It sends input tokens to the parent component and triggers actions like clear, delete, and compute.
+ * @param {Object} props
+ * @param {function(string): void} props.add - Adds a token to the expression
+ * @param {function(): void} props.clear - Clears the entire input
+ * @param {function(): void} props.del - Deletes the last token
+ * @param {function(): Promise<void>} props.compute - Computes the current expression
+ */
 export default function Keypad({ add, clear, del, compute }) {
 
     const buttons = [
@@ -5,7 +14,7 @@ export default function Keypad({ add, clear, del, compute }) {
         "4","5","6","*","e",
         "1","2","3","-","AC",
         "0",".","sqrt(","+","DEL",
-        "(",")","log(","^","=",
+        "(",")","E","^","=",
         "sin(","cos(","tan(","i",""
     ];
 

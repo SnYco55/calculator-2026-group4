@@ -1,3 +1,6 @@
+/**
+ * Help component that displays usage examples and supported expression syntax.
+ */
 export default function Help() {
     const examples = [
         { desc: "Arithmetic", syntax: "2+3" },

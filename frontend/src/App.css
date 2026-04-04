@@ -171,3 +171,134 @@ button:active {
 .help-tab.open {
     transform: translateX(340px);
 }
+
+.settings-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+    color: white;
+}
+
+.angle-switch {
+    position: relative;
+    display: flex;
+    width: 72px;
+    height: 32px;
+    background: #1a1a1a;
+    border-radius: 6px;
+    padding: 2px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.angle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(50% - 2px);
+    height: calc(100% - 4px);
+    background: #ec652d;
+    border-radius: 4px;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.angle-switch.deg .angle-slider {
+    transform: translateX(100%);
+}
+
+
+.angle-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    z-index: 1;
+    color: #888;
+    user-select: none;
+}
+
+.angle-option.active {
+    color: white;
+}
+
+.number-control input::-webkit-outer-spin-button,
+.number-control input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.number-control input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.precision-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.precision-label {
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+.number-control {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 28px;
+}
+
+.number-control input {
+    width: 44px;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: white;
+    text-align: center;
+    font-size: 13px;
+    outline: none;
+}
+
+.arrows {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #333;
+    height: 100%;
+}
+
+.arrows button {
+    width: 20px;
+    height: 50%;
+    border: none;
+    background: #222;
+    color: #aaa;
+    font-size: 9px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.arrows button:hover {
+    background: #2f2f2f;
+    color: white;
+}
+
+.arrows button:active {
+    background: #ec652d;
+    color: white;
+}

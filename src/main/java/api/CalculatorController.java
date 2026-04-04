@@ -3,6 +3,7 @@ package api;
 import calculator.Calculator;
 import calculator.Value;
 import dto.ParserRequest;
+import dto.ParserResponse;
 import org.springframework.web.bind.annotation.*;
 import services.CalculatorService;
 
@@ -29,8 +30,11 @@ public class CalculatorController {
      * @return the integer result of the expression evaluation
      */
     @PostMapping("/parse")
-    public Value parseExpression(@RequestBody ParserRequest request) {
+    public ParserResponse parseExpression(@RequestBody ParserRequest request) {
         String input = request.getInput();
-        return calculator.eval(calculatorService.parseExpression(input));
+        String angleMode = request.getAngleMode();
+        int precision = request.getPrecision();
+        String result = calculator.eval(calculatorService.parseExpression(input, angleMode, precision )).toString();
+        return new ParserResponse(result);
     }
 }
