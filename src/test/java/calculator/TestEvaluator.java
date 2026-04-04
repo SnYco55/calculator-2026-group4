@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +24,14 @@ class TestEvaluator {
 
     @Test
     void testEvaluatorMyNumber() {
-        assertEquals( value1, calc.eval(new MyNumber(value1)));
+        assertEquals( value1, ((MyNumber)calc.eval(new MyNumber(value1))).getValue());
+    }
+
+    @Test
+    void testEvaluatorOtherNumbers() {
+        assertEquals(new MyReal(new BigDecimal("1.5")), calc.eval(new MyReal(new BigDecimal("1.5"))));
+        assertEquals(new MyRational(1, 2), calc.eval(new MyRational(1, 2)));
+        assertEquals(new MyComplex(new BigDecimal("1"), new BigDecimal("2")), calc.eval(new MyComplex(new BigDecimal("1"), new BigDecimal("2"))));
     }
 
     @ParameterizedTest
@@ -34,13 +42,13 @@ class TestEvaluator {
             //construct another type of operation depending on the input value
             //of the parameterised test
             switch (symbol) {
-                case "+"	->	assertEquals( value1 + value2, calc.eval(new Plus(params)));
-                case "-"	->	assertEquals( value1 - value2, calc.eval(new Minus(params)));
-                case "*"	->	assertEquals( value1 * value2, calc.eval(new Times(params)));
-                case "/"	->	assertEquals( value1 / value2, calc.eval(new Divides(params)));
+                case "+"	->	assertEquals( value1 + value2, ((MyNumber)calc.eval(new Plus(params))).getValue());
+                case "-"	->	assertEquals( value1 - value2, ((MyNumber)calc.eval(new Minus(params))).getValue());
+                case "*"	->	assertEquals( value1 * value2, ((MyNumber)calc.eval(new Times(params))).getValue());
+                case "/"	->	assertEquals(value1/value2, ((MyRational)calc.eval(new Divides(params))).getValue().intValue());
                 default		->	fail();
             }
-        } catch (IllegalConstruction e) {
+        } catch (IllegalConstruction _) {
             fail();
         }
     }

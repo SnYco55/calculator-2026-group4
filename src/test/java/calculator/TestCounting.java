@@ -3,10 +3,14 @@ package calculator;
 //Import Junit5 libraries for unit testing:
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import visitor.DepthCounter;
+import visitor.OpsCounter;
+import visitor.NbsCounter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,12 +30,25 @@ class TestCounting {
     @Test
     void testNumberCounting() {
         e = new MyNumber(value1);
-        //test whether a number has zero depth (i.e. no nested expressions)
-        assertEquals( 0, e.countDepth());
-        //test whether a number contains zero operations
-        assertEquals(0, e.countOps());
-        //test whether a number contains 1 number
-        assertEquals(1, e.countNbs());
+        DepthCounter dc = new DepthCounter(); e.accept(dc);
+        assertEquals(0, dc.getResult());
+        OpsCounter oc = new OpsCounter(); e.accept(oc);
+        assertEquals(0, oc.getResult());
+        NbsCounter nc = new NbsCounter(); e.accept(nc);
+        assertEquals(1, nc.getResult());
+    }
+
+    @Test
+    void testOtherNumberCounting() {
+        Expression[] exps = { new MyReal(new BigDecimal("1.5")), new MyRational(1, 2), new MyComplex(new BigDecimal("1"), new BigDecimal("2")) };
+        for (Expression expr : exps) {
+            DepthCounter dc = new DepthCounter(); expr.accept(dc);
+            assertEquals(0, dc.getResult());
+            OpsCounter oc = new OpsCounter(); expr.accept(oc);
+            assertEquals(0, oc.getResult());
+            NbsCounter nc = new NbsCounter(); expr.accept(nc);
+            assertEquals(1, nc.getResult());
+        }
     }
 
     @ParameterizedTest
@@ -52,12 +69,12 @@ class TestCounting {
         } catch (IllegalConstruction e) {
             fail();
         }
-        //test whether a binary operation has depth 1
-        assertEquals(1, e.countDepth(),"counting depth of an Operation");
-        //test whether a binary operation contains 1 operation
-        assertEquals(1, e.countOps());
-        //test whether a binary operation contains 2 numbers
-        assertEquals(2, e.countNbs());
+        DepthCounter dc = new DepthCounter(); e.accept(dc);
+        assertEquals(1, dc.getResult(), "counting depth of an Operation");
+        OpsCounter oc = new OpsCounter(); e.accept(oc);
+        assertEquals(1, oc.getResult());
+        NbsCounter nc = new NbsCounter(); e.accept(nc);
+        assertEquals(2, nc.getResult());
     }
 
 }

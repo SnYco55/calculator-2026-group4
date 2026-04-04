@@ -46,7 +46,34 @@ public final class Plus extends Operation
    * @param r The second integer that should be added to the first
    * @return The integer that is the result of the addition
    */
-  public int op(int l, int r) {
-  	return (l+r);
+  public Value op(Value l, Value r) {
+      Value result = dispatch(l,r);
+
+      if (result != null) return result;
+
+      MyComplex left = l.toComplex();
+      MyComplex right = r.toComplex();
+
+      return super.format(new MyComplex(left.getReal().add(right.getReal()), left.getImaginary().add(right.getImaginary())));
+  }
+
+  //Returns a rationnal but if x/1 return integer
+  public Value opRat(MyRational l, MyRational r) {
+      int pp = l.ppcm(r);
+      int numeratorL = l.getNumerator()*(pp/l.getDenominator());
+      int numeratorR = r.getNumerator()*(pp/r.getDenominator());
+
+      // If this is an integer we return the result as such
+      if (pp == 1){return new MyNumber(numeratorL+numeratorR);}
+
+      return new MyRational(numeratorL+numeratorR, pp);
+  }
+
+  public Value opRatNum(MyRational l, MyNumber r) {
+      return opRat(l, new MyRational(r.getValue(), 1));
+  }
+
+  public Value opNumRat(MyNumber l, MyRational r) {
+      return  opRatNum(r, l);
   }
 }

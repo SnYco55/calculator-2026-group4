@@ -9,6 +9,7 @@ import io.cucumber.java.en.When;
 
 import java.util.ArrayList;
 import java.util.List;
+import visitor.Printer;
 
 public class CalculatorSteps {
 
@@ -78,7 +79,9 @@ public class CalculatorSteps {
 	public void thenItsNotationIs(String notation, String s) {
 		if (notation.equals("PREFIX")||notation.equals("POSTFIX")||notation.equals("INFIX")) {
 			op.notation = Notation.valueOf(notation);
-			assertEquals(s, op.toString());
+			Printer p = new Printer(Notation.valueOf(notation));
+			op.accept(p);
+			assertEquals(s, p.getResult());
 		}
 		else fail(notation + " is not a correct notation! ");
 	}
@@ -101,7 +104,7 @@ public class CalculatorSteps {
 				case "difference"	->	op = new Minus(params);
 				default -> fail();
 			}
-			assertEquals(val, c.eval(op));
+			assertEquals(val, ((MyNumber)c.eval(op)).getValue());
 		} catch (IllegalConstruction e) {
 			fail();
 		}
@@ -109,7 +112,7 @@ public class CalculatorSteps {
 
 	@Then("the operation evaluates to {int}")
 	public void thenTheOperationEvaluatesTo(int val) {
-		assertEquals(val, c.eval(op));
+		assertEquals(new MyNumber(val), c.eval(op));
 	}
 
 }

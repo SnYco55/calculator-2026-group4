@@ -1,7 +1,7 @@
 package api;
 
 import calculator.Calculator;
-import calculator.Expression;
+import calculator.Value;
 import dto.ParserRequest;
 import org.springframework.web.bind.annotation.*;
 import services.CalculatorService;
@@ -29,7 +29,7 @@ public class CalculatorController {
      * @return the integer result of the expression evaluation
      */
     @PostMapping("/parse")
-    public Integer parseExpression(@RequestBody ParserRequest request) {
+    public Value parseExpression(@RequestBody ParserRequest request) {
         String input = request.getInput();
         return calculator.eval(calculatorService.parseExpression(input));
     }
