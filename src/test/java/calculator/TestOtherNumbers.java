@@ -1,5 +1,6 @@
 package calculator;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -9,6 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestOtherNumbers {
 
     Calculator calc = new Calculator();
+
+    @BeforeEach
+    void resetPrecision() {
+        Precision.setPrecision(2);
+    }
 
     @Test
     void testMyReal() throws IllegalConstruction {

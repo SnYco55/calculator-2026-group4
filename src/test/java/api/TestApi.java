@@ -24,7 +24,7 @@ class TestApi {
                 {
                     "input": "299*3.297465",
                     "angleMode": "RAD",
-                    "precision": 0
+                    "precision": 6
                 }
                 """;
 
