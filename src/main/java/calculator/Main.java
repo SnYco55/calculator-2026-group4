@@ -34,6 +34,16 @@ public class Main {
 			if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit")) {
 				break;
 			}
+			if (input.equalsIgnoreCase("help")) {
+				System.out.println("Calculator CLI Help:");
+				System.out.println("--------------------");
+				System.out.println("Evaluate Expressions: Enter any arithmetic expression (e.g., '2 + 2', '(4 * 5) / 2').");
+				System.out.println("Supported Numbers: Integers, Reals (e.g., '1.5'), Rationals (e.g., '1/2'), Complex (e.g., '1+2i').");
+				System.out.println("Commands:");
+				System.out.println("  help - Display this help message.");
+				System.out.println("  exit - Quit the calculator.");
+				continue;
+			}
 			if (input.isEmpty()) continue;
 
 			try {
