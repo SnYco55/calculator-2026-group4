@@ -27,39 +27,36 @@ public class Main {
 		Calculator calculator = new Calculator();
 
 		System.out.println("Calculator REPL. Type 'exit' to quit.");
-		while (true) {
+		boolean running = true;
+		while (running) {
 			System.out.print("> ");
 			if (!scanner.hasNextLine()) {
-				break;
-			}
-			String input = scanner.nextLine().trim();
-			
-			if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit")) {
-				break;
-			}
-			if (input.equalsIgnoreCase("help")) {
-				System.out.println("""
-					Calculator CLI Help:
-					--------------------
-					Evaluate Expressions: Enter any arithmetic expression (e.g., '2 + 2', '(4 * 5) / 2').
-					Supported Numbers: Integers, Reals (e.g., '1.5'), Rationals (e.g., '1/2'), Complex (e.g., '1+2i').
-					Commands:
-					  help - Display this help message.
-					  exit - Quit the calculator.""");
-				continue;
-			}
-			if (input.isEmpty()) {
-				continue;
-			}
-
-			try {
-				Expression expr = parser.parse(input);
-				Value result = calculator.eval(expr);
-				System.out.println(result);
-			} catch (IllegalConstruction e) {
-				System.out.println("Invalid expression structure: " + e.getMessage());
-			} catch (RuntimeException e) {
-				System.out.println("Error evaluating expression: " + e.getMessage());
+				running = false;
+			} else {
+				String input = scanner.nextLine().trim();
+				
+				if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit")) {
+					running = false;
+				} else if (input.equalsIgnoreCase("help")) {
+					System.out.println("""
+						Calculator CLI Help:
+						--------------------
+						Evaluate Expressions: Enter any arithmetic expression (e.g., '2 + 2', '(4 * 5) / 2').
+						Supported Numbers: Integers, Reals (e.g., '1.5'), Rationals (e.g., '1/2'), Complex (e.g., '1+2i').
+						Commands:
+						  help - Display this help message.
+						  exit - Quit the calculator.""");
+				} else if (!input.isEmpty()) {
+					try {
+						Expression expr = parser.parse(input);
+						Value result = calculator.eval(expr);
+						System.out.println(result);
+					} catch (IllegalConstruction e) {
+						System.out.println("Invalid expression structure: " + e.getMessage());
+					} catch (RuntimeException e) {
+						System.out.println("Error evaluating expression: " + e.getMessage());
+					}
+				}
 			}
 		}
 		scanner.close();
