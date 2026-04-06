@@ -127,10 +127,16 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
                 return new MyReal(new BigDecimal(String.valueOf(Math.cos(value)), Precision.getMathContext()));
             case "tan":
                 return new MyReal(new BigDecimal(String.valueOf(Math.tan(value)), Precision.getMathContext()));
+            case "log":
+                return new MyReal(new BigDecimal(String.valueOf(Math.log10(value)), Precision.getMathContext()));
             default:
                 throw new IllegalArgumentException("Invalid function call");
         }
     }
 
+    @Override
+    public Expression visitPi(ExprParser.PiContext ctx){
+        return new MyReal(new BigDecimal(String.valueOf(Math.PI), Precision.getMathContext()));
+    }
 
 }

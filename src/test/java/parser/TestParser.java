@@ -92,6 +92,13 @@ class TestParser {
 
         res = parser.parse("sin(90)+cos(0)");
         assertEquals(new MyReal(new BigDecimal("1.894")), calculator.eval(res));
+
+        res = parser.parse("log(100)");
+        assertEquals(new MyReal(new BigDecimal("2")), calculator.eval(res));
+
+        Precision.setPrecision(3);
+        res = parser.parse("π");
+        assertEquals(new MyReal(new BigDecimal("3.14")), calculator.eval(res));
     }
 
 }
