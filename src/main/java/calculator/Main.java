@@ -17,6 +17,12 @@ public class Main {
 	/**
 	 * This is the main method of the application.
 	 * It provides an interactive Read-Eval-Print Loop (REPL) to evaluate arithmetic expressions.
+	 * <p>
+	 * To run the CLI from a terminal, navigate to the project root and use the following Maven command:
+	 * <pre>
+	 * mvn compile exec:java -Dexec.mainClass="calculator.Main"
+	 * </pre>
+	 * </p>
 	 *
 	 * @param args	Command-line parameters are not used in this version
 	 */
