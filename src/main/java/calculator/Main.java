@@ -20,6 +20,7 @@ public class Main {
 	 *
 	 * @param args	Command-line parameters are not used in this version
 	 */
+	@SuppressWarnings("java:S106") // CLI requires System.out
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		ExpressionParser parser = new Parser();
@@ -28,23 +29,28 @@ public class Main {
 		System.out.println("Calculator REPL. Type 'exit' to quit.");
 		while (true) {
 			System.out.print("> ");
-			if (!scanner.hasNextLine()) break;
+			if (!scanner.hasNextLine()) {
+				break;
+			}
 			String input = scanner.nextLine().trim();
 			
 			if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit")) {
 				break;
 			}
 			if (input.equalsIgnoreCase("help")) {
-				System.out.println("Calculator CLI Help:");
-				System.out.println("--------------------");
-				System.out.println("Evaluate Expressions: Enter any arithmetic expression (e.g., '2 + 2', '(4 * 5) / 2').");
-				System.out.println("Supported Numbers: Integers, Reals (e.g., '1.5'), Rationals (e.g., '1/2'), Complex (e.g., '1+2i').");
-				System.out.println("Commands:");
-				System.out.println("  help - Display this help message.");
-				System.out.println("  exit - Quit the calculator.");
+				System.out.println("""
+					Calculator CLI Help:
+					--------------------
+					Evaluate Expressions: Enter any arithmetic expression (e.g., '2 + 2', '(4 * 5) / 2').
+					Supported Numbers: Integers, Reals (e.g., '1.5'), Rationals (e.g., '1/2'), Complex (e.g., '1+2i').
+					Commands:
+					  help - Display this help message.
+					  exit - Quit the calculator.""");
 				continue;
 			}
-			if (input.isEmpty()) continue;
+			if (input.isEmpty()) {
+				continue;
+			}
 
 			try {
 				Expression expr = parser.parse(input);
@@ -52,7 +58,7 @@ public class Main {
 				System.out.println(result);
 			} catch (IllegalConstruction e) {
 				System.out.println("Invalid expression structure: " + e.getMessage());
-			} catch (Exception e) {
+			} catch (RuntimeException e) {
 				System.out.println("Error evaluating expression: " + e.getMessage());
 			}
 		}
