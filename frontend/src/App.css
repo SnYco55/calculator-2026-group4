@@ -177,9 +177,21 @@ button:active {
     justify-content: flex-end;
     align-items: center;
     margin-bottom: 10px;
-    gap: 10px;
+    gap: 8px;
     color: white;
+    width: 100%;
 }
+
+.btn-convert {
+    height: 28px;
+    border-radius: 6px;
+    background: #434343;
+    color: white;
+    font-size: 11px;
+    justify-content: center;
+}
+
+
 
 .angle-switch {
     position: relative;

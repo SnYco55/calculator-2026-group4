@@ -1,10 +1,12 @@
 package api;
 
 import calculator.Calculator;
-import calculator.Value;
+import dto.ConversionRequest;
 import dto.ParserRequest;
 import dto.ParserResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import services.CalculatorService;
 
 /**
@@ -36,5 +38,18 @@ public class CalculatorController {
         int precision = request.getPrecision();
         String result = calculator.eval(calculatorService.parseExpression(input, angleMode, precision )).toString();
         return new ParserResponse(result);
+    }
+
+    @PostMapping("/convert-result")
+    public ParserResponse convertResult(@RequestBody ConversionRequest request) {
+        String value = request.getResult();
+        int precision = request.getPrecision() == null ? 2 : request.getPrecision();
+
+        try {
+            String converted = calculatorService.convertResult(value, precision);
+            return new ParserResponse(converted);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
     }
 }

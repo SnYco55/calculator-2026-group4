@@ -3,6 +3,7 @@ package calculator;
 import visitor.Visitor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static java.lang.Math.abs;
 
@@ -34,6 +35,44 @@ public class MyRational implements Expression, Value{
 
     public int getNumerator() { return numerator; }
     public int getDenominator() { return denominator; }
+
+    /**
+     * Converts a decimal string to a MyRational fraction in simplified form.
+     *
+     * @param decimalString the decimal value as a string
+     * @return MyRational representing the simplified fraction
+     * @throws IllegalArgumentException if the string cannot be converted to a decimal
+     */
+    public static MyRational fromDecimal(String decimalString) {
+        BigDecimal decimal;
+        try {
+            decimal = new BigDecimal(decimalString);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Unsupported decimal format: " + decimalString);
+        }
+
+        BigDecimal normalized = decimal.stripTrailingZeros();
+        BigInteger numerator = normalized.unscaledValue();
+        int scale = normalized.scale();
+        BigInteger denominator = BigInteger.ONE;
+
+        if (scale > 0) {
+            denominator = BigInteger.TEN.pow(scale);
+        } else if (scale < 0) {
+            numerator = numerator.multiply(BigInteger.TEN.pow(-scale));
+        }
+
+        if (numerator.equals(BigInteger.ZERO)) {
+            return new MyRational(0, 1);
+        }
+
+        BigInteger gcd = numerator.abs().gcd(denominator);
+        numerator = numerator.divide(gcd);
+        denominator = denominator.divide(gcd);
+
+        return new MyRational(numerator.intValue(), denominator.intValue());
+    }
+
 
     public void accept(Visitor v) {
         v.visit(this);

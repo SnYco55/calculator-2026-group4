@@ -43,4 +43,34 @@ class TestApi {
             context.close();
         }
     }
+
+    @Test
+    void testConvertResult() throws Exception {
+        ConfigurableApplicationContext context = SpringApplication.run(CalculatorApiApplication.class);
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            String jsonBody = """
+                {
+                    "result": "0.125",
+                    "precision": 6
+                }
+                """;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/calculator/convert-result"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+            System.out.println("Convert API Res : " + response.body());
+
+        } finally {
+            context.close();
+        }
+    }
 }

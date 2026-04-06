@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { ArrowLeftRight } from 'lucide-react';
+
 
 /**
  * Settings bar handling:
  * - Angle mode (RAD / DEG)
  * - Precision input
+ * - Result representation toggle (Fraction <-> Decimal)
  */
-export default function SettingsBar({ onSettingsChange }) {
+export default function SettingsBar({ onSettingsChange, onToggleResultFormat }) {
     const [angleMode, setAngleMode] = useState("RAD");
     const [precision, setPrecision] = useState(2);
 
@@ -51,18 +54,26 @@ export default function SettingsBar({ onSettingsChange }) {
             <div
                 className={`angle-switch ${angleMode === "DEG" ? "deg" : ""}`}
                 onClick={() =>
-                    setAngleMode(angleMode === "RAD" ? "DEG" : "RAD")
+                    updateAngleMode(angleMode === "RAD" ? "DEG" : "RAD")
                 }
             >
                 <div className="angle-slider"></div>
 
                 <div className={`angle-option ${angleMode === "RAD" ? "active" : ""}`}>
-                    RAD
+                    <b>RAD</b>
                 </div>
                 <div className={`angle-option ${angleMode === "DEG" ? "active" : ""}`}>
-                    DEG
+                    <b>DEG</b>
                 </div>
             </div>
+
+            <button
+                className="btn-convert"
+                onClick={onToggleResultFormat}
+                style={{ display: 'flex', alignItems: 'center', gap: '4px', width:"76px" }}
+            >
+                S <ArrowLeftRight size={12} /> D
+            </button>
 
 
         </div>

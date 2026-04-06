@@ -22,3 +22,25 @@ export async function calculate(input, angleMode, precision) {
     });
     return await res.json();
 }
+
+/**
+ * Converts a displayed result to its opposite representation (fraction <-> decimal).
+ *
+ * @param {string} result - Current result value displayed in the calculator
+ * @param {number} precision - Precision used when converting fraction to decimal
+ * @returns {Promise<{ result: string }>} Parsed JSON response from the API
+ */
+export async function convertResult(result, precision) {
+    const res = await fetch("/calculator/convert-result", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            result,
+            precision
+        })
+    });
+
+    return await res.json();
+}

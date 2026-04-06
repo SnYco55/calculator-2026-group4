@@ -2,7 +2,7 @@ import { useState } from "react";
 import Display from "./Display";
 import Keypad from "./Keypad";
 import Help from "./Help";
-import { calculate } from "../services/api";
+import { calculate, convertResult } from "../services/api";
 import SettingsBar from "./SettingsBar";
 
 
@@ -13,7 +13,10 @@ import SettingsBar from "./SettingsBar";
 export default function Calculator() {
     const [tokens, setTokens] = useState([]);
     const [result, setResult] = useState("");
+    const [justComputed, setJustComputed] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
+    const [cachedFraction, setCachedFraction] = useState("");
+    const [currentDisplayMode, setCurrentDisplayMode] = useState("original"); // "original" or "toggled"
 
     const [settings, setSettings] = useState({
         angleMode: "RAD",
@@ -28,17 +31,32 @@ export default function Calculator() {
      * Adds a token (number or operator) to the expression.
      * @param {string} t - Token to add
      */
-    const add = (t) => setTokens((prev) => [...prev, t]);
+    const add = (t) => {
+        if (justComputed) {
+            setTokens([t]);
+            setResult("");
+            setCachedFraction("");
+            setCurrentDisplayMode("original");
+            setJustComputed(false);
+            return;
+        }
+
+        setTokens((prev) => [...prev, t]);
+    };
 
 
     const clear = () => {
         setTokens([]);
         setResult("");
+        setCachedFraction("");
+        setCurrentDisplayMode("original");
+        setJustComputed(false);
     };
 
 
     const del = () => {
         setTokens((prev) => prev.slice(0, -1));
+        setJustComputed(false);
     };
 
     /**
@@ -54,13 +72,61 @@ export default function Calculator() {
             const res = await calculate(expr, settings.angleMode, settings.precision);
 
             if (res.result !== undefined) {
-                setResult(res.result);
+                let finalResult = res.result;
+
+                const isFraction = /^[+-]?\d+\s*\/\s*[+-]?\d+$/.test(res.result);
+
+                if (!isFraction) {
+                    try {
+                        const fractionRes = await convertResult(res.result, settings.precision);
+                        if (fractionRes.result !== undefined) {
+                            const fractionMatch = fractionRes.result.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/);
+                            const denominator = fractionMatch ? Math.abs(Number(fractionMatch[2])) : Number.POSITIVE_INFINITY;
+
+                            finalResult = fractionRes.result;
+
+                        }
+                    } catch (err) {
+                        console.log("Could not convert to fraction:", err);
+                    }
+                }
+
+                setResult(finalResult);
+                setCachedFraction(finalResult);
+                setCurrentDisplayMode("original");
+                setJustComputed(true);
             } else {
                 setResult("API Error");
+                setJustComputed(true);
             }
         } catch (err) {
             console.log(err)
             setResult("Error");
+            setJustComputed(true);
+        }
+    };
+
+    const toggleFractionDecimal = async () => {
+        if (!result || result === "Error" || result === "API Error") return;
+
+        if (cachedFraction) {
+            if (currentDisplayMode === "original") {
+                try {
+                    const res = await convertResult(cachedFraction, settings.precision);
+                    if (res.result !== undefined) {
+                        setResult(res.result);
+                        setCurrentDisplayMode("toggled");
+                    } else {
+                        setResult("API Error");
+                    }
+                } catch (err) {
+                    console.log(err);
+                    setResult("Error");
+                }
+            } else {
+                setResult(cachedFraction);
+                setCurrentDisplayMode("original");
+            }
         }
     };
 
@@ -76,7 +142,10 @@ export default function Calculator() {
             {/* CALCULATRICE */}
             <div className="calculator">
                 <Display tokens={tokens} result={result} />
-                <SettingsBar onSettingsChange={handleSettingsChange} />
+                <SettingsBar
+                    onSettingsChange={handleSettingsChange}
+                    onToggleResultFormat={toggleFractionDecimal}
+                />
                 <Keypad add={add} clear={clear} del={del} compute={compute} />
             </div>
 
