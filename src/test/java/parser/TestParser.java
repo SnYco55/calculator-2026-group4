@@ -70,7 +70,7 @@ class TestParser {
         Precision.setPrecision(2);
 
         res = parser.parse("2^3");
-        assertEquals(new MyReal(new BigDecimal("8")), calculator.eval(res));
+        assertEquals(new MyNumber(8), calculator.eval(res));
 
         Precision.setPrecision(6);
         res = parser.parse("((4+5+6)*(7+5/2/7)*9)");
@@ -79,6 +79,19 @@ class TestParser {
         Precision.setPrecision(3);
         res = parser.parse("1+2*3^4/5-6");
         assertEquals(new MyReal(new BigDecimal("27.4")), new MyReal(((MyRational) calculator.eval(res)).getValue()));
+
+        res = parser.parse("sin(90)");
+        assertEquals(new MyReal(new BigDecimal("0.894")), calculator.eval(res));
+
+        res = parser.parse("cos(0)");
+        assertEquals(new MyReal(new BigDecimal("1")), calculator.eval(res));
+
+        Precision.setPrecision(4);
+        res = parser.parse("tan(256)");
+        assertEquals(new MyReal(new BigDecimal("25.11")), calculator.eval(res));
+
+        res = parser.parse("sin(90)+cos(0)");
+        assertEquals(new MyReal(new BigDecimal("1.894")), calculator.eval(res));
     }
 
 }

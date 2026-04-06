@@ -9,6 +9,7 @@ root : expr EOF ;
 
 expr
     : '(' expr ')'                       # Parens
+    | func=('sin'|'cos'|'tan') '(' expr ')' # Trig
     | complex                            # Comps
     // | rational                           # Rats
     | <assoc=right> expr '^' expr        # Power
@@ -18,10 +19,6 @@ expr
     | INT                                # Int
     | FLOAT                              # Float
     ;
-
-//rational
-  //  : INT '/' INT                       # Rat
-    //;
 
 complex
     : (real=(INT|FLOAT) op=('+'|'-'))? imag=(INT|FLOAT) 'i'  # Comp

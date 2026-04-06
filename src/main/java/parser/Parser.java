@@ -113,4 +113,24 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
         return new Pow(Arrays.asList(base, exp));
     }
+
+    @Override
+    public Expression visitTrig(ExprParser.TrigContext ctx){
+        double value = ((Value) visit(ctx.expr())).toComplex().getReal().floatValue();
+
+        String functionName = ctx.func.getText();
+
+        switch (functionName) {
+            case "sin":
+                return new MyReal(new BigDecimal(String.valueOf(Math.sin(value)), Precision.getMathContext()));
+            case "cos":
+                return new MyReal(new BigDecimal(String.valueOf(Math.cos(value)), Precision.getMathContext()));
+            case "tan":
+                return new MyReal(new BigDecimal(String.valueOf(Math.tan(value)), Precision.getMathContext()));
+            default:
+                throw new IllegalArgumentException("Invalid function call");
+        }
+    }
+
+
 }
