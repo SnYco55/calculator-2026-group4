@@ -11,10 +11,10 @@ export default function Keypad({ add, clear, del, compute }) {
 
     const buttons = [
         "7","8","9","/","π",
-        "4","5","6","*","e",
+        "4","5","6","*","E",
         "1","2","3","-","AC",
         "0",".","sqrt(","+","DEL",
-        "(",")","E","^","=",
+        "(",")","log(","^","=",
         "sin(","cos(","tan(","i",""
     ];
 
