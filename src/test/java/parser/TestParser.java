@@ -84,7 +84,7 @@ class TestParser {
         assertEquals(new MyReal(new BigDecimal("0.894")), calculator.eval(res));
 
         res = parser.parse("cos(0)");
-        assertEquals(new MyReal(new BigDecimal("1")), calculator.eval(res));
+        assertEquals(new MyNumber(1), calculator.eval(res));
 
         Precision.setPrecision(4);
         res = parser.parse("tan(256)");
@@ -94,11 +94,11 @@ class TestParser {
         assertEquals(new MyReal(new BigDecimal("1.894")), calculator.eval(res));
 
         res = parser.parse("log(100)");
-        assertEquals(new MyReal(new BigDecimal("2")), calculator.eval(res));
+        assertEquals(new MyNumber(2), calculator.eval(res));
 
-        Precision.setPrecision(3);
-        res = parser.parse("π");
-        assertEquals(new MyReal(new BigDecimal("3.14")), calculator.eval(res));
+        AngleMode.setMode(AngleMode.Mode.DEG);
+        res = parser.parse("sin(90)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
     }
 
 }

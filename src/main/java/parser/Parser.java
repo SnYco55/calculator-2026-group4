@@ -120,15 +120,19 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
         String functionName = ctx.func.getText();
 
+        if (AngleMode.getMode() == AngleMode.Mode.DEG){
+            value = value * (Math.PI/180);
+        }
+
         switch (functionName) {
             case "sin":
-                return new MyReal(new BigDecimal(String.valueOf(Math.sin(value)), Precision.getMathContext()));
+                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.sin(value)), Precision.getMathContext())).toComplex());
             case "cos":
-                return new MyReal(new BigDecimal(String.valueOf(Math.cos(value)), Precision.getMathContext()));
+                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.cos(value)), Precision.getMathContext())).toComplex());
             case "tan":
-                return new MyReal(new BigDecimal(String.valueOf(Math.tan(value)), Precision.getMathContext()));
+                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.tan(value)), Precision.getMathContext())).toComplex());
             case "log":
-                return new MyReal(new BigDecimal(String.valueOf(Math.log10(value)), Precision.getMathContext()));
+                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.log10(value)), Precision.getMathContext())).toComplex());
             default:
                 throw new IllegalArgumentException("Invalid function call");
         }
@@ -136,7 +140,7 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
     @Override
     public Expression visitPi(ExprParser.PiContext ctx){
-        return new MyReal(new BigDecimal(String.valueOf(Math.PI), Precision.getMathContext()));
+        return new MyReal(new BigDecimal(String.valueOf(Math.PI)));
     }
 
 }
