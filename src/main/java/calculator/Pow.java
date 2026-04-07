@@ -19,7 +19,7 @@ public class Pow extends Operation{
         MyComplex left = l.toComplex();
         MyComplex right = r.toComplex();
 
-        return super.format(new MyReal(left.getReal().pow(right.getReal().intValue())).toComplex());
+        return Operation.format(new MyReal(left.getReal().pow(right.getReal().intValue())).toComplex());
     }
 
     @Override

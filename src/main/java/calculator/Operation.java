@@ -178,7 +178,7 @@ public abstract class Operation implements Expression
 	}
 
 	// Returns the result with the correct type
-	public Value format(MyComplex val){
+	public static Value format(MyComplex val){
 		if (val.getImaginary().compareTo(BigDecimal.ZERO) == 0){
 			BigDecimal normalized = val.getReal().stripTrailingZeros();
 
