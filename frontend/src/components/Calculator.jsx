@@ -5,6 +5,31 @@ import Help from "./Help";
 import { calculate, convertResult } from "../services/api";
 import SettingsBar from "./SettingsBar";
 
+/**
+ * Checks if a fraction is acceptable based on denominator size and precision.
+ * @param {string|number} decimal
+ * @param {string} fractionStr
+ * @param {number} maxDen
+ * @param {number} tolerance
+ * @returns {boolean}
+ */
+function isNiceFraction(decimal, fractionStr, maxDen = 500, tolerance = 1e-9) {
+    const match = fractionStr.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/);
+    if (!match) return false;
+
+    const num = Number(match[1]);
+    const den = Number(match[2]);
+
+    if (den === 0) return false;
+    if (Math.abs(den) > maxDen) return false;
+
+    const approx = num / den;
+    if (Math.abs(approx - Number(decimal)) > tolerance) return false;
+
+    if (den % 10 === 0 && den >= 1000) return false;
+
+    return true;
+}
 
 /**
  * Main calculator component.
@@ -16,7 +41,7 @@ export default function Calculator() {
     const [justComputed, setJustComputed] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
     const [cachedFraction, setCachedFraction] = useState("");
-    const [currentDisplayMode, setCurrentDisplayMode] = useState("original"); // "original" or "toggled"
+    const [currentDisplayMode, setCurrentDisplayMode] = useState("original");
 
     const [settings, setSettings] = useState({
         angleMode: "RAD",
@@ -27,10 +52,6 @@ export default function Calculator() {
         setSettings(newSettings);
     };
 
-    /**
-     * Adds a token (number or operator) to the expression.
-     * @param {string} t - Token to add
-     */
     const add = (t) => {
         if (justComputed) {
             setTokens([t]);
@@ -44,7 +65,6 @@ export default function Calculator() {
         setTokens((prev) => [...prev, t]);
     };
 
-
     const clear = () => {
         setTokens([]);
         setResult("");
@@ -53,7 +73,6 @@ export default function Calculator() {
         setJustComputed(false);
     };
 
-
     const del = () => {
         setTokens((prev) => prev.slice(0, -1));
         setJustComputed(false);
@@ -61,7 +80,6 @@ export default function Calculator() {
 
     /**
      * Computes the result of the current expression using an API.
-     * Handles errors and updates the result state.
      * @returns {Promise<void>}
      */
     const compute = async () => {
@@ -80,19 +98,27 @@ export default function Calculator() {
                     try {
                         const fractionRes = await convertResult(res.result, settings.precision);
                         if (fractionRes.result !== undefined) {
-                            const fractionMatch = fractionRes.result.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/);
-                            const denominator = fractionMatch ? Math.abs(Number(fractionMatch[2])) : Number.POSITIVE_INFINITY;
+                            const fractionStr = fractionRes.result;
+                            const dynamicMaxDen =
+                                Math.abs(Number(res.result)) > 10 ? 200 : 1000;
 
-                            finalResult = fractionRes.result;
-
+                            if (isNiceFraction(res.result, fractionStr, dynamicMaxDen)) {
+                                finalResult = fractionStr;
+                                setCachedFraction(fractionStr);
+                            } else {
+                                finalResult = res.result;
+                                setCachedFraction("");
+                            }
                         }
                     } catch (err) {
                         console.log("Could not convert to fraction:", err);
+                        setCachedFraction("");
                     }
+                } else {
+                    setCachedFraction(res.result);
                 }
 
                 setResult(finalResult);
-                setCachedFraction(finalResult);
                 setCurrentDisplayMode("original");
                 setJustComputed(true);
             } else {
@@ -108,38 +134,34 @@ export default function Calculator() {
 
     const toggleFractionDecimal = async () => {
         if (!result || result === "Error" || result === "API Error") return;
+        if (!cachedFraction) return;
 
-        if (cachedFraction) {
-            if (currentDisplayMode === "original") {
-                try {
-                    const res = await convertResult(cachedFraction, settings.precision);
-                    if (res.result !== undefined) {
-                        setResult(res.result);
-                        setCurrentDisplayMode("toggled");
-                    } else {
-                        setResult("API Error");
-                    }
-                } catch (err) {
-                    console.log(err);
-                    setResult("Error");
+        if (currentDisplayMode === "original") {
+            try {
+                const res = await convertResult(cachedFraction, settings.precision);
+                if (res.result !== undefined) {
+                    setResult(res.result);
+                    setCurrentDisplayMode("toggled");
+                } else {
+                    setResult("API Error");
                 }
-            } else {
-                setResult(cachedFraction);
-                setCurrentDisplayMode("original");
+            } catch (err) {
+                console.log(err);
+                setResult("Error");
             }
+        } else {
+            setResult(cachedFraction);
+            setCurrentDisplayMode("original");
         }
     };
-
 
     return (
         <div className="app-wrapper">
 
-            {/* BOUTON HELP */}
             <div className={`help-tab ${showHelp ? "open" : ""}`} onClick={() => setShowHelp(!showHelp)}>
                 H<br/>E<br/>L<br/>P
             </div>
 
-            {/* CALCULATRICE */}
             <div className="calculator">
                 <Display tokens={tokens} result={result} />
                 <SettingsBar
@@ -149,7 +171,6 @@ export default function Calculator() {
                 <Keypad add={add} clear={clear} del={del} compute={compute} />
             </div>
 
-            {/* PANEL SLIDE */}
             <div className={`help-drawer ${showHelp ? "open" : ""}`}>
                 <Help />
             </div>
