@@ -73,4 +73,33 @@ class TestApi {
             context.close();
         }
     }
+
+    @Test
+    void testParseInvalidAngleMode() throws Exception {
+        ConfigurableApplicationContext context = SpringApplication.run(CalculatorApiApplication.class);
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            String jsonBody = """
+                {
+                    "input": "sin(90)",
+                    "angleMode": "GRAD",
+                    "precision": 6
+                }
+                """;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/calculator/parse"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(400, response.statusCode());
+        } finally {
+            context.close();
+        }
+    }
 }

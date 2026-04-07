@@ -9,6 +9,9 @@
  * @returns {Promise<{ result: string }>} Parsed JSON response from the API
  */
 export async function calculate(input, angleMode, precision) {
+    const normalizedAngleMode = angleMode === "DEG" ? "DEG" : "RAD";
+    const normalizedPrecision = Number.isFinite(precision) ? precision : 2;
+
     const res = await fetch("/calculator/parse", {
         method: "POST",
         headers: {
@@ -16,8 +19,8 @@ export async function calculate(input, angleMode, precision) {
         },
         body: JSON.stringify({
             input,
-            angleMode,
-            precision
+            angleMode: normalizedAngleMode,
+            precision: normalizedPrecision
         })
     });
     return await res.json();

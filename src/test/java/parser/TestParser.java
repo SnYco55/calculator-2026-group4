@@ -16,6 +16,8 @@ class TestParser {
     void setUp() {
         parser = new Parser();
         calculator = new Calculator();
+        Precision.setPrecision(10);
+        AngleMode.setMode(AngleMode.Mode.RAD);
     }
 
     @Test
@@ -96,8 +98,44 @@ class TestParser {
         res = parser.parse("log(100)");
         assertEquals(new MyNumber(2), calculator.eval(res));
 
+        Precision.setPrecision(10);
+        AngleMode.setMode(AngleMode.Mode.RAD);
+        res = parser.parse("sin(0)");
+        assertEquals(new MyNumber(0), calculator.eval(res));
+
+        res = parser.parse("cos(0)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("tan(0)");
+        assertEquals(new MyNumber(0), calculator.eval(res));
+
+        res = parser.parse("sin(π/2)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("cos(π)");
+        assertEquals(new MyNumber(-1), calculator.eval(res));
+
+        res = parser.parse("tan(π/4)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
         AngleMode.setMode(AngleMode.Mode.DEG);
         res = parser.parse("sin(90)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("cos(180)");
+        assertEquals(new MyNumber(-1), calculator.eval(res));
+
+        res = parser.parse("tan(45)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("sin(45+45)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("cos(sin(90))");
+        assertEquals(new MyReal(new BigDecimal("0.9998476952")), calculator.eval(res));
+
+        AngleMode.setMode(AngleMode.Mode.RAD);
+        res = parser.parse("sin(cos(0)*π/2)");
         assertEquals(new MyNumber(1), calculator.eval(res));
     }
 

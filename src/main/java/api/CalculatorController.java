@@ -35,9 +35,14 @@ public class CalculatorController {
     public ParserResponse parseExpression(@RequestBody ParserRequest request) {
         String input = request.getInput();
         String angleMode = request.getAngleMode();
-        int precision = request.getPrecision();
-        String result = calculator.eval(calculatorService.parseExpression(input, angleMode, precision )).toString();
-        return new ParserResponse(result);
+        Integer precision = request.getPrecision();
+
+        try {
+            String result = calculator.eval(calculatorService.parseExpression(input, angleMode, precision)).toString();
+            return new ParserResponse(result);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
     }
 
     @PostMapping("/convert-result")

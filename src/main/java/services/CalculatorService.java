@@ -1,5 +1,6 @@
 package services;
 
+import calculator.AngleMode;
 import calculator.Expression;
 import calculator.MyRational;
 import calculator.MyReal;
@@ -9,6 +10,7 @@ import parser.ExpressionParser;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,9 +34,22 @@ public class CalculatorService {
      * @param input user expression
      * @return parsed expression
      */
-    public Expression parseExpression(String input, String angleMode, int precision) {
-        Precision.setPrecision(precision);
+    public Expression parseExpression(String input, String angleMode, Integer precision) {
+        Precision.setPrecision(sanitizePrecision(precision));
+        AngleMode.setMode(resolveAngleMode(angleMode));
         return parser.parse(input);
+    }
+
+    private AngleMode.Mode resolveAngleMode(String angleMode) {
+        if (angleMode == null || angleMode.trim().isEmpty()) {
+            return AngleMode.Mode.RAD;
+        }
+
+        try {
+            return AngleMode.Mode.valueOf(angleMode.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Invalid angleMode. Expected RAD or DEG");
+        }
     }
 
     /**

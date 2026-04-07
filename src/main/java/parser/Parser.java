@@ -116,7 +116,8 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
     @Override
     public Expression visitTrig(ExprParser.TrigContext ctx){
-        double value = ((Value) visit(ctx.expr())).toComplex().getReal().floatValue();
+        Expression arg = visit(ctx.expr());
+        double value = new Calculator().eval(arg).toComplex().getReal().doubleValue();
 
         String functionName = ctx.func.getText();
 
