@@ -33,7 +33,14 @@ public class MyReal  implements Expression, Value{
 
     @Override
     public String toString() {
-        return this.value.stripTrailingZeros().toString();
+        return switch (state) {
+            case NAN -> "NaN";
+            case POSITIVE_INFINITY -> "+Inf";
+            case NEGATIVE_INFINITY -> "-Inf";
+            case UNDEFINED -> "Undefined";
+            default -> this.value.stripTrailingZeros().toString();
+        };
+
     }
 
     @Override

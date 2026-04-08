@@ -13,7 +13,7 @@ expr
     | func=('sin'|'cos'|'tan'|'log'|'sqrt') '(' expr ')' # Funcs
     | complex                            # Comps
     | <assoc=right> expr '^' expr        # Power
-    | FLOAT 'E' minus='-'? INT           # Scientific
+    | expr 'E' minus='-'? expr           # Scientific
     | expr op=('*'|'/') expr             # MulDiv
     | expr op=('+'|'-') expr             # AddSub
     | INT                                # Int
