@@ -9,7 +9,6 @@ import exparser.ExprParser;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 
 @Component
@@ -108,7 +107,10 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
     @Override
     public Expression visitScientific(ExprParser.ScientificContext ctx) {
-        return new MyReal(new BigDecimal(ctx.getText().trim()));
+        Expression left = visit(ctx.expr(0));
+        Expression right = visit(ctx.expr(1));
+
+        return new Scientific(Arrays.asList(left, right));
     }
 
     @Override
@@ -161,7 +163,7 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
         }
 
         int decimalPlaces = Precision.getDecimalPlaces();
-        BigDecimal bd = new BigDecimal(result);
+        BigDecimal bd = BigDecimal.valueOf(result);
         BigDecimal rounded = bd.setScale(decimalPlaces, java.math.RoundingMode.HALF_EVEN);
         MyReal myReal = new MyReal(rounded);
 
@@ -175,7 +177,7 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
     @Override
     public Expression visitUnaryMinus(ExprParser.UnaryMinusContext ctx){
-        Value v = (Value) visit(ctx.expr());
-        return new Times(Arrays.asList(new MyNumber(-1), v.toComplex()));
+        Expression v = visit(ctx.expr());
+        return new Times(Arrays.asList(new MyNumber(-1), v));
     }
 }
