@@ -9,6 +9,7 @@ import exparser.ExprParser;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 
 @Component
@@ -79,8 +80,12 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
     @Override
     public Expression visitFloat(ExprParser.FloatContext ctx){
         String text = ctx.FLOAT().getText();
+        BigDecimal value = new BigDecimal(text);
 
-        return new MyReal(new BigDecimal(text));
+        int decimalPlaces = Precision.getDecimalPlaces();
+        BigDecimal rounded = value.setScale(decimalPlaces, java.math.RoundingMode.HALF_EVEN);
+
+        return new MyReal(rounded);
     }
 
     @Override
@@ -125,29 +130,42 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
             value = value * (Math.PI/180);
         }
 
+        double result;
         switch (functionName) {
             case "sin":
-                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.sin(value)), Precision.getMathContext())).toComplex());
+                result = Math.sin(value);
+                break;
             case "cos":
-                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.cos(value)), Precision.getMathContext())).toComplex());
+                result = Math.cos(value);
+                break;
             case "tan":
-                if (value == Math.PI/2){
+                if (value % Math.PI/2 == 0 && value != 0){
                     return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
                 }
-                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.tan(value)), Precision.getMathContext())).toComplex());
+                result = Math.tan(value);
+                break;
             case "log":
-                if (value == 0){
+                if (value <= 0){
                     return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
                 }
-                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.log10(value)), Precision.getMathContext())).toComplex());
+                result = Math.log10(value);
+                break;
             case "sqrt":
                 if (value < 0){
                     return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
                 }
-                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.sqrt(value)), Precision.getMathContext())).toComplex());
+                result = Math.sqrt(value);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid function call");
         }
+
+        int decimalPlaces = Precision.getDecimalPlaces();
+        BigDecimal bd = new BigDecimal(result);
+        BigDecimal rounded = bd.setScale(decimalPlaces, java.math.RoundingMode.HALF_EVEN);
+        MyReal myReal = new MyReal(rounded);
+
+        return (Expression) Operation.format(myReal.toComplex());
     }
 
     @Override

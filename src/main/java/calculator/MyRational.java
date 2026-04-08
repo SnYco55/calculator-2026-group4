@@ -21,7 +21,8 @@ public class MyRational implements Expression, Value{
     }
 
     public BigDecimal getValue(){
-        return new BigDecimal(this.numerator).divide(new BigDecimal(this.denominator), Precision.getMathContext());
+        int decimalPlaces = Precision.getDecimalPlaces();
+        return new BigDecimal(this.numerator).divide(new BigDecimal(this.denominator), decimalPlaces, java.math.RoundingMode.HALF_EVEN);
     }
 
     @Override

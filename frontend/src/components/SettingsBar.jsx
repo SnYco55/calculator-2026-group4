@@ -8,7 +8,7 @@ import { ArrowLeftRight } from 'lucide-react';
  * - Precision input
  * - Result representation toggle (Fraction <-> Decimal)
  */
-export default function SettingsBar({ onSettingsChange, onToggleResultFormat }) {
+export default function SettingsBar({ onSettingsChange, onToggleResultFormat, precisionChanged, cachedFraction }) {
     const [angleMode, setAngleMode] = useState("RAD");
     const [precision, setPrecision] = useState(2);
 
@@ -70,7 +70,15 @@ export default function SettingsBar({ onSettingsChange, onToggleResultFormat }) 
             <button
                 className="btn-convert"
                 onClick={onToggleResultFormat}
-                style={{ display: 'flex', alignItems: 'center', gap: '4px', width:"76px" }}
+                disabled={!cachedFraction || precisionChanged}
+                style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '4px', 
+                    width:"76px", 
+                    opacity: (!cachedFraction || precisionChanged) ? 0.5 : 1,
+                    cursor: (!cachedFraction || precisionChanged) ? 'not-allowed' : 'pointer'
+                }}
             >
                 S <ArrowLeftRight size={12} /> D
             </button>

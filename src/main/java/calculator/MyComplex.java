@@ -9,13 +9,10 @@ import java.math.RoundingMode;
 public class MyComplex implements Expression, Value {
     private final BigDecimal real;
     private final BigDecimal imaginary;
-    private final MathContext precision;
 
     public MyComplex(BigDecimal r, BigDecimal i) {
-        this.precision = Precision.getMathContext();
-
-        this.real = r.setScale(precision.getPrecision(), RoundingMode.HALF_UP);
-        this.imaginary = i.setScale(precision.getPrecision(), RoundingMode.HALF_UP);
+        this.real = r;
+        this.imaginary = i;
     }
 
     public BigDecimal getReal() { return real; }
@@ -38,7 +35,11 @@ public class MyComplex implements Expression, Value {
         BigDecimal divisor = this.real.multiply(this.real).add(this.imaginary.multiply(this.imaginary));
         if (divisor.compareTo(BigDecimal.ZERO) == 0) throw new ArithmeticException("Division by zero");
 
-        return new MyComplex(this.real.divide(divisor, precision), this.imaginary.multiply(new BigDecimal("-1")).divide(divisor, precision));
+        int decimalPlaces = Precision.getDecimalPlaces();
+        return new MyComplex(
+            this.real.divide(divisor, decimalPlaces, RoundingMode.HALF_EVEN),
+            this.imaginary.multiply(new BigDecimal("-1")).divide(divisor, decimalPlaces, RoundingMode.HALF_EVEN)
+        );
     }
 
 

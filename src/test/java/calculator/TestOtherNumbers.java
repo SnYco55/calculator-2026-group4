@@ -141,6 +141,6 @@ class TestOtherNumbers {
         r1 = new MyReal(new BigDecimal("0.6"));
         r2 = new MyReal(new BigDecimal("0.056"));
 
-        assertEquals(new MyReal(new BigDecimal("0.66")), calc.eval(new Plus(List.of(r1, r2))));
+        assertEquals(new MyReal(new BigDecimal("0.656")), calc.eval(new Plus(List.of(r1, r2))));
     }
 }

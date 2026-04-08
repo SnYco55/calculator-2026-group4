@@ -11,6 +11,7 @@ export default function Help() {
         { desc: "Scientific notation", syntax: "2.00E10" },
         { desc: "Square root", syntax: "sqrt(16)" },
         { desc: "Complex numbers", syntax: "3+5i" },
+        { desc: "Logarithm", syntax: "log(5)" },
         { desc: "Trig in RAD", syntax: "sin(π/2)" },
         { desc: "Trig in DEG", syntax: "sin(90)" },
     ];

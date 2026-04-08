@@ -47,8 +47,12 @@ export default function Calculator() {
         angleMode: "RAD",
         precision: 2
     });
+    const [precisionChanged, setPrecisionChanged] = useState(false);
 
     const handleSettingsChange = (newSettings) => {
+        if (newSettings.precision !== settings.precision) {
+            setPrecisionChanged(true);
+        }
         setSettings(newSettings);
     };
 
@@ -86,6 +90,7 @@ export default function Calculator() {
         const expr = tokens.join("");
         if (!expr.trim()) return;
 
+        setPrecisionChanged(false);
         try {
             const res = await calculate(expr, settings.angleMode, settings.precision);
 
@@ -167,6 +172,8 @@ export default function Calculator() {
                 <SettingsBar
                     onSettingsChange={handleSettingsChange}
                     onToggleResultFormat={toggleFractionDecimal}
+                    precisionChanged={precisionChanged}
+                    cachedFraction={cachedFraction}
                 />
                 <Keypad add={add} clear={clear} del={del} compute={compute} />
             </div>
