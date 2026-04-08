@@ -25,6 +25,16 @@ class TestParser {
         Expression res = parser.parse("2");
         assertEquals(new MyNumber(2), res);
 
+        res = parser.parse("-4");
+        assertEquals(new MyNumber(-4), calculator.eval(res));
+
+        Precision.setPrecision(3);
+        res = parser.parse("-3.27");
+        assertEquals(new MyReal(new BigDecimal("-3.27")), calculator.eval(res));
+
+        res = parser.parse("-4-5");
+        assertEquals(new MyNumber(-9), calculator.eval(res));
+
         res = parser.parse("2+2");
         assertEquals(new Plus(Arrays.asList(new MyNumber(2), new MyNumber(2))), res);
 
@@ -81,8 +91,12 @@ class TestParser {
         Precision.setPrecision(3);
         res = parser.parse("1+2*3^4/5-6");
         assertEquals(new MyReal(new BigDecimal("27.4")), new MyReal(((MyRational) calculator.eval(res)).getValue()));
+    }
 
-        res = parser.parse("sin(90)");
+    @Test
+    void TestParseFuncs(){
+        Precision.setPrecision(3);
+        Expression res = parser.parse("sin(90)");
         assertEquals(new MyReal(new BigDecimal("0.894")), calculator.eval(res));
 
         res = parser.parse("cos(0)");
@@ -137,6 +151,11 @@ class TestParser {
         AngleMode.setMode(AngleMode.Mode.RAD);
         res = parser.parse("sin(cos(0)*π/2)");
         assertEquals(new MyNumber(1), calculator.eval(res));
-    }
 
+        res = parser.parse("sqrt(16)");
+        assertEquals(new MyNumber(4), calculator.eval(res));
+
+        res = parser.parse("sqrt(36)^2");
+        assertEquals(new MyNumber(36), calculator.eval(res));
+    }
 }

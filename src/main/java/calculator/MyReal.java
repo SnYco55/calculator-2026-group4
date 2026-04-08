@@ -9,7 +9,7 @@ public class MyReal  implements Expression, Value{
     private final State state;
 
     public enum State {
-        VALID, NAN, POSITIVE_INFINITY, NEGATIVE_INFINITY
+        VALID, NAN, POSITIVE_INFINITY, NEGATIVE_INFINITY, UNDEFINED
     }
 
     public MyReal(BigDecimal v) {
