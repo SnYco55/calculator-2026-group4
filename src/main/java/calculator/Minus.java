@@ -56,7 +56,7 @@ public final class Minus extends Operation
         MyComplex left = l.toComplex();
         MyComplex right = r.toComplex();
 
-        return super.format(new MyComplex(left.getReal().subtract(right.getReal()), left.getImaginary().subtract(right.getImaginary())));
+        return Operation.format(new MyComplex(left.getReal().subtract(right.getReal()), left.getImaginary().subtract(right.getImaginary())));
     }
 
      public Value opRat(MyRational l, MyRational r) {

@@ -17,6 +17,7 @@ class TestEvaluator {
 
     @BeforeEach
     void setUp() {
+        Precision.setPrecision(2);
         calc = new Calculator();
         value1 = 8;
         value2 = 6;

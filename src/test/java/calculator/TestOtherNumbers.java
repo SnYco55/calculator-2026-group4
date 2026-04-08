@@ -1,5 +1,6 @@
 package calculator;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -9,6 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestOtherNumbers {
 
     Calculator calc = new Calculator();
+
+    @BeforeEach
+    void resetPrecision() {
+        Precision.setPrecision(2);
+    }
 
     @Test
     void testMyReal() throws IllegalConstruction {
@@ -24,11 +30,15 @@ class TestOtherNumbers {
         MyReal r3 = new MyReal(new BigDecimal("0.0"));
         assertEquals(MyReal.State.NAN, ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).getState());
 
+        assertEquals("NaN", ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).toString());
+
         r4 = new MyReal(new BigDecimal("1.0"));
         assertEquals(MyReal.State.POSITIVE_INFINITY, ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).getState());
+        assertEquals("+Inf", ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).toString());
 
         r4 = new MyReal(new BigDecimal("-1.0"));
         assertEquals(MyReal.State.NEGATIVE_INFINITY, ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).getState());
+        assertEquals("-Inf", ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).toString());
 
         Divides test = new Divides(List.of(r1, r3));
         assertThrows(ArithmeticException.class,
@@ -135,6 +145,6 @@ class TestOtherNumbers {
         r1 = new MyReal(new BigDecimal("0.6"));
         r2 = new MyReal(new BigDecimal("0.056"));
 
-        assertEquals(new MyReal(new BigDecimal("0.66")), calc.eval(new Plus(List.of(r1, r2))));
+        assertEquals(new MyReal(new BigDecimal("0.656")), calc.eval(new Plus(List.of(r1, r2))));
     }
 }

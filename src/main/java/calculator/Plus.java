@@ -54,7 +54,7 @@ public final class Plus extends Operation
       MyComplex left = l.toComplex();
       MyComplex right = r.toComplex();
 
-      return super.format(new MyComplex(left.getReal().add(right.getReal()), left.getImaginary().add(right.getImaginary())));
+      return Operation.format(new MyComplex(left.getReal().add(right.getReal()), left.getImaginary().add(right.getImaginary())));
   }
 
   //Returns a rationnal but if x/1 return integer

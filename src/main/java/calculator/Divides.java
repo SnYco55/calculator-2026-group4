@@ -51,8 +51,8 @@ public final class Divides extends Operation
 
       if (result != null) {return result;}
 
-      if (l instanceof MyNumber && r instanceof MyNumber numr) {
-          MyRational res =  new MyRational(((MyNumber) l).getValue(), numr.getValue());
+      if (l instanceof MyNumber numl && r instanceof MyNumber numr) {
+          MyRational res =  new MyRational(numl.getValue(), numr.getValue());
           if (res.getDenominator() == 1){
               return new MyNumber(res.getNumerator());
           }else{
@@ -81,7 +81,7 @@ public final class Divides extends Operation
 
   public Value compOpLogic(MyComplex left, MyComplex right) {
       right = (MyComplex) right.invert();
-      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
+      return Operation.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
   }
 
   public Value opRat(MyRational l, MyRational r) {

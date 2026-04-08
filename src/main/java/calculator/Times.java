@@ -53,7 +53,7 @@ public final class Times extends Operation
       MyComplex left = l.toComplex();
       MyComplex right = r.toComplex();
 
-      return super.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
+      return Operation.format(new MyComplex(left.getReal().multiply(right.getReal()).subtract(left.getImaginary().multiply(right.getImaginary())), left.getReal().multiply(right.getImaginary()).add(left.getImaginary().multiply(right.getReal()))));
   }
 
   public Value opRat(MyRational l, MyRational r) {

@@ -1,14 +1,18 @@
 package api;
 
 import calculator.Calculator;
-import calculator.Value;
+import dto.ConversionRequest;
 import dto.ParserRequest;
+import dto.ParserResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import services.CalculatorService;
 
 /**
  * REST controller exposing calculator endpoints.
  */
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/calculator")
 public class CalculatorController {
@@ -28,8 +32,29 @@ public class CalculatorController {
      * @return the integer result of the expression evaluation
      */
     @PostMapping("/parse")
-    public Value parseExpression(@RequestBody ParserRequest request) {
+    public ParserResponse parseExpression(@RequestBody ParserRequest request) {
         String input = request.getInput();
-        return calculator.eval(calculatorService.parseExpression(input));
+        String angleMode = request.getAngleMode();
+        Integer precision = request.getPrecision();
+
+        try {
+            String result = calculator.eval(calculatorService.parseExpression(input, angleMode, precision)).toString();
+            return new ParserResponse(result);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @PostMapping("/convert-result")
+    public ParserResponse convertResult(@RequestBody ConversionRequest request) {
+        String value = request.getResult();
+        int precision = request.getPrecision() == null ? 2 : request.getPrecision();
+
+        try {
+            String converted = calculatorService.convertResult(value, precision);
+            return new ParserResponse(converted);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
     }
 }

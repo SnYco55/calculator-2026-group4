@@ -9,7 +9,7 @@ public class MyReal  implements Expression, Value{
     private final State state;
 
     public enum State {
-        VALID, NAN, POSITIVE_INFINITY, NEGATIVE_INFINITY
+        VALID, NAN, POSITIVE_INFINITY, NEGATIVE_INFINITY, UNDEFINED
     }
 
     public MyReal(BigDecimal v) {
@@ -33,7 +33,14 @@ public class MyReal  implements Expression, Value{
 
     @Override
     public String toString() {
-        return this.value.toString();
+        return switch (state) {
+            case NAN -> "NaN";
+            case POSITIVE_INFINITY -> "+Inf";
+            case NEGATIVE_INFINITY -> "-Inf";
+            case UNDEFINED -> "Undefined";
+            default -> this.value.stripTrailingZeros().toString();
+        };
+
     }
 
     @Override
@@ -51,13 +58,5 @@ public class MyReal  implements Expression, Value{
     @Override
     public int hashCode() {
         return this.value.stripTrailingZeros().hashCode();
-    }
-
-    public MyReal degreesToRadians(MyReal degrees) {
-        return new MyReal(BigDecimal.valueOf(Math.toRadians(degrees.value.stripTrailingZeros().doubleValue())));
-    }
-
-    public MyReal radiansToDegrees(MyReal radians) {
-        return new MyReal(BigDecimal.valueOf(Math.toDegrees(radians.value.stripTrailingZeros().doubleValue())));
     }
 }

@@ -16,12 +16,24 @@ class TestParser {
     void setUp() {
         parser = new Parser();
         calculator = new Calculator();
+        Precision.setPrecision(10);
+        AngleMode.setMode(AngleMode.Mode.RAD);
     }
 
     @Test
     void testParse() throws IllegalConstruction {
         Expression res = parser.parse("2");
         assertEquals(new MyNumber(2), res);
+
+        res = parser.parse("-4");
+        assertEquals(new MyNumber(-4), calculator.eval(res));
+
+        Precision.setPrecision(3);
+        res = parser.parse("-3.27");
+        assertEquals(new MyReal(new BigDecimal("-3.27")), calculator.eval(res));
+
+        res = parser.parse("-4-5");
+        assertEquals(new MyNumber(-9), calculator.eval(res));
 
         res = parser.parse("2+2");
         assertEquals(new Plus(Arrays.asList(new MyNumber(2), new MyNumber(2))), res);
@@ -67,18 +79,89 @@ class TestParser {
         res = parser.parse("0.9E-5)");
         assertEquals(new MyReal(new BigDecimal("0.9E-5")), calculator.eval(res));
 
+        res = parser.parse("(3+4)E-9");
+        assertEquals(new MyReal(new BigDecimal("7E-9")), calculator.eval(res));
+
+        res = parser.parse("(10*2)E-(2+3)");
+        assertEquals(new MyReal(new BigDecimal("20E-5")), calculator.eval(res));
+
         Precision.setPrecision(2);
 
         res = parser.parse("2^3");
-        assertEquals(new MyReal(new BigDecimal("8")), calculator.eval(res));
+        assertEquals(new MyNumber(8), calculator.eval(res));
 
         Precision.setPrecision(6);
         res = parser.parse("((4+5+6)*(7+5/2/7)*9)");
-        assertEquals(new MyReal(new BigDecimal("993.214")), new MyReal(((MyRational) calculator.eval(res)).getValue()));
+        assertEquals(new MyReal(new BigDecimal("993.214286")), new MyReal(((MyRational) calculator.eval(res)).getValue()));
 
         Precision.setPrecision(3);
         res = parser.parse("1+2*3^4/5-6");
         assertEquals(new MyReal(new BigDecimal("27.4")), new MyReal(((MyRational) calculator.eval(res)).getValue()));
     }
 
+    @Test
+    void TestParseFuncs(){
+        Precision.setPrecision(3);
+        Expression res = parser.parse("sin(90)");
+        assertEquals(new MyReal(new BigDecimal("0.894")), calculator.eval(res));
+
+        res = parser.parse("cos(0)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        Precision.setPrecision(4);
+        res = parser.parse("tan(256)");
+        assertEquals(new MyReal(new BigDecimal("25.1116")), calculator.eval(res));
+
+        res = parser.parse("sin(90)+cos(0)");
+        assertEquals(new MyReal(new BigDecimal("1.894")), calculator.eval(res));
+
+        res = parser.parse("log(100)");
+        assertEquals(new MyNumber(2), calculator.eval(res));
+
+        Precision.setPrecision(10);
+        AngleMode.setMode(AngleMode.Mode.RAD);
+        res = parser.parse("sin(0)");
+        assertEquals(new MyNumber(0), calculator.eval(res));
+
+        res = parser.parse("cos(0)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("tan(0)");
+        assertEquals(new MyNumber(0), calculator.eval(res));
+
+        res = parser.parse("sin(π/2)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("cos(π)");
+        assertEquals(new MyNumber(-1), calculator.eval(res));
+
+        res = parser.parse("tan(π/4)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        AngleMode.setMode(AngleMode.Mode.DEG);
+        res = parser.parse("sin(90)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("cos(180)");
+        assertEquals(new MyNumber(-1), calculator.eval(res));
+
+        res = parser.parse("tan(45)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("sin(45+45)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("cos(sin(90))");
+        assertEquals(new MyReal(new BigDecimal("0.9998476952")), calculator.eval(res));
+
+        AngleMode.setMode(AngleMode.Mode.RAD);
+        res = parser.parse("sin(cos(0)*π/2)");
+        assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("sqrt(16)");
+        assertEquals(new MyNumber(4), calculator.eval(res));
+
+        res = parser.parse("sqrt(36)^2");
+        assertEquals(new MyNumber(36), calculator.eval(res));
+    }
 }
