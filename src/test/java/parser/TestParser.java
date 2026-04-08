@@ -97,8 +97,6 @@ class TestParser {
         Precision.setPrecision(3);
         res = parser.parse("1+2*3^4/5-6");
         assertEquals(new MyReal(new BigDecimal("27.4")), new MyReal(((MyRational) calculator.eval(res)).getValue()));
-
-
     }
 
     @Test

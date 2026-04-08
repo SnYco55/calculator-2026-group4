@@ -30,11 +30,15 @@ class TestOtherNumbers {
         MyReal r3 = new MyReal(new BigDecimal("0.0"));
         assertEquals(MyReal.State.NAN, ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).getState());
 
+        assertEquals("NaN", ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).toString());
+
         r4 = new MyReal(new BigDecimal("1.0"));
         assertEquals(MyReal.State.POSITIVE_INFINITY, ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).getState());
+        assertEquals("+Inf", ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).toString());
 
         r4 = new MyReal(new BigDecimal("-1.0"));
         assertEquals(MyReal.State.NEGATIVE_INFINITY, ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).getState());
+        assertEquals("-Inf", ((MyReal) calc.eval(new Divides(List.of(r4, r3)))).toString());
 
         Divides test = new Divides(List.of(r1, r3));
         assertThrows(ArithmeticException.class,

@@ -59,12 +59,4 @@ public class MyReal  implements Expression, Value{
     public int hashCode() {
         return this.value.stripTrailingZeros().hashCode();
     }
-
-    public MyReal degreesToRadians() {
-        return new MyReal(BigDecimal.valueOf(Math.toRadians(this.value.stripTrailingZeros().doubleValue())));
-    }
-
-    public MyReal radiansToDegrees() {
-        return new MyReal(BigDecimal.valueOf(Math.toDegrees(this.value.stripTrailingZeros().doubleValue())));
-    }
 }
