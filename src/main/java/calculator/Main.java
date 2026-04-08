@@ -1,8 +1,8 @@
 package calculator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Scanner;
+import parser.Parser;
+import parser.ExpressionParser;
 
 /**
  * A very simple calculator in Java
@@ -16,49 +16,55 @@ public class Main {
 
 	/**
 	 * This is the main method of the application.
-	 * It provides examples of how to use it to construct and evaluate arithmetic expressions.
+	 * It provides an interactive Read-Eval-Print Loop (REPL) to evaluate arithmetic expressions.
+	 * <p>
+	 * To run the CLI from a terminal, navigate to the project root and use the following Maven command:
+	 * <pre>
+	 * mvn compile exec:java -Dexec.mainClass="calculator.Main"
+	 * </pre>
+	 * </p>
 	 *
 	 * @param args	Command-line parameters are not used in this version
 	 */
+	@SuppressWarnings("java:S106") // CLI requires System.out
 	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		ExpressionParser parser = new Parser();
+		Calculator calculator = new Calculator();
 
-		Expression e;
-		Calculator c = new Calculator();
-
-		try{
-
-			e = new MyNumber(8);
-			c.print(e);
-			c.eval(e);
-
-			List<Expression> params = new ArrayList<>();
-			Collections.addAll(params, new MyNumber(3), new MyNumber(4), new MyNumber(5));
-			e = new Plus(params,Notation.PREFIX);
-			c.printExpressionDetails(e);
-			c.eval(e);
-
-			List<Expression> params2 = new ArrayList<>();
-			Collections.addAll(params2, new MyNumber(5), new MyNumber(3));
-			e = new Divides(params2, Notation.INFIX);
-			c.print(e);
-			c.eval(e);
-
-			List<Expression> params3 = new ArrayList<>();
-			Collections.addAll(params3, new Plus(params), new Minus(params2));
-			e = new Times(params3);
-			c.printExpressionDetails(e);
-			c.eval(e);
-
-			List<Expression> params4 = new ArrayList<>();
-			Collections.addAll(params4, new Plus(params), new Minus(params2), new MyNumber(5));
-			e = new Divides(params4,Notation.POSTFIX);
-			c.print(e);
-			c.eval(e);
-
-
-		} catch(IllegalConstruction exception) {
-			System.out.println("cannot create operations without parameters");
+		System.out.println("Calculator REPL. Type 'exit' to quit.");
+		boolean running = true;
+		while (running) {
+			System.out.print("> ");
+			if (!scanner.hasNextLine()) {
+				running = false;
+			} else {
+				String input = scanner.nextLine().trim();
+				
+				if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit")) {
+					running = false;
+				} else if (input.equalsIgnoreCase("help")) {
+					System.out.println("""
+						Calculator CLI Help:
+						--------------------
+						Evaluate Expressions: Enter any arithmetic expression (e.g., '2 + 2', '(4 * 5) / 2').
+						Supported Numbers: Integers, Reals (e.g., '1.5'), Rationals (e.g., '1/2'), Complex (e.g., '1+2i').
+						Commands:
+						  help - Display this help message.
+						  exit - Quit the calculator.""");
+				} else if (!input.isEmpty()) {
+					try {
+						Expression expr = parser.parse(input);
+						Value result = calculator.eval(expr);
+						System.out.println(result);
+					} catch (IllegalConstruction e) {
+						System.out.println("Invalid expression structure: " + e.getMessage());
+					} catch (RuntimeException e) {
+						System.out.println("Error evaluating expression: " + e.getMessage());
+					}
+				}
+			}
 		}
+		scanner.close();
  	}
-
 }
