@@ -5,61 +5,59 @@
 **Code Quality:** [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=SnYco55_calculator-2026-group4&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SnYco55_calculator-2026-group4) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SnYco55_calculator-2026-group4&metric=coverage)](https://sonarcloud.io/summary/new_code?id=SnYco55_calculator-2026-group4)
 
 **Test Coverage:** [![Coverage](.github/badges/jacoco.svg)](.github/badges/coverage-summary.json) [![Branches](.github/badges/branches.svg)](.github/badges/coverage-summary.json)
-# Calculating arithmetic expressions
+
+# Calculator 2026 - Group 4
 
 ## About
 
-This repository contains Java code for computing arithmetic expressions. It is deliberately incomplete as it serves to be the basis of all kinds of extensions, such as a more sophisticated Calculator application. The code was written to be used for educational purposes at the University of Mons, Belgium in the context of the software evolution course.
+This repository contains an advanced, multi-platform calculator developed as a collaborative group project for the software evolution course at the University of Mons, Belgium. Starting from a basic arithmetic expression evaluator, our group has significantly extended the application by introducing robust architectural patterns, new mathematical capabilities, and modern user interfaces.
 
-**For more information about how to use this repository for the student project assignment, please read the [Wiki pages](https://github.com/University-of-Mons/calculator-cucumber-2026/wiki).**
+### Key Features Implemented
+
+* **Extended Number Types:** Full support for interacting with Integers, Reals, Rationals, and Complex numbers.
+* **Interactive CLI (REPL):** A built-in command-line loop that processes arithmetic expressions dynamically, complete with a `help` manual.
+* **Web-Based Interface (React):** A modern, responsive graphical interface connected to an API backend to evaluate expressions securely.
+* **Architectural Refactoring:** Implementation of the **Visitor Design Pattern** separating the logic of evaluation and printing from the expression structures.
+* **Strict Quality Standards:** 100% CI/CD validation including JUnit/Cucumber tests, SonarQube analysis, and Sonar maintaining an 'A' maintainability rating.
+
+---
 
 ### Unit testing and BDD
 
-*  All tests can be found in the src\test directory. They serve as executable documentation of the source code.
-*  The source code is accompanied by a set of JUnit 5 unit tests. These tests can be written and run in the usual way. If you are not familiar with unit testing or JUnit 5, please refer to https://junit.org/junit5/.
-*  The source code is accompanied by a set of Cucumber BDD scenarios, also running in Junit. If you are not familiar with Cucumber and BDD, please refer to https://cucumber.io/docs/cucumber/.
-The BDD scenarios are specified as .feature files in the src\test\resources directory. Some classes defined in src\test take care of converting these scenarios to executable JUnit tests.
+* All tests can be found in the `src/test` directory. They serve as executable documentation of the source code.
+* The source code is accompanied by a set of **JUnit 5** unit tests and **Cucumber** BDD scenarios.
+* The BDD scenarios are specified as `.feature` files in the `src/test/resources` directory.
 
 ### Prerequisites
 
-*  You will need to have a running version of Java 25 on your machine in order to be able to compile and execute this code, although it is also backward compatible with earlier versions of Java.
-*  You will need to have a running version of Maven, since this project is accompanied by a pom.xml file so that it can be installed, compiled, tested and run using Maven.
+* Java 25 (or backward compatible equivalent)
+* Maven
+* Node.js (for running the React frontend)
 
-### Installation and testing instructions
+### Installation and Testing Instructions
 
-*  Upon first use of the code in this repository, you will need to run "mvn clean install" to ensure that all required project dependencies (e.g. for Java, JUnit, Cucumber, and Maven) will be downloaded and installed locally.
-*  Assuming you have a sufficiently recent version of Maven installed (the required versions are specified as properties in the POM file), you can compile the source code using "mvn compile"
-*  Once the code is compiled, you can execute the main class of the Java code using "mvn exec:java" 
-*  The tests and BDD scenarios are executable with Maven using "mvn test"
-*  Note that the tests are also executed when you do a "mvn install". It is possible to skip those tests by providing an extra parameter. For details of more advanced uses of Maven, please refer to its official documentation https://maven.apache.org/guides/.
+#### 1. Backend (Java API & CLI)
+* Ensure all dependencies are downloaded: `mvn clean install`
+* Compile the source code: `mvn compile`
+* Run the interactive CLI calculator: `mvn exec:java`
+* Execute automated tests & BDD scenarios: `mvn test`
 
-### Test coverage and JavaDoc reporting
+#### 2. Frontend (React Web GUI)
+* Navigate to the frontend folder: `cd frontend`
+* Install dependencies: `npm install`
+* Start the web interface: `npm start` (Runs on `http://localhost:3000`)
 
-*  In addition to testing the code, "mvn test" will also generate a test coverage report (in HTML format) using JaCoCo. This test coverage is generated in target/site/jacoco.
-*  When packaging the code using "mvn package" the JavaDoc code documentation will be generated and stored in target/site/apidocs.
+### Test Coverage and JavaDoc Reporting
 
-## Built With
+* Test coverage reports (JaCoCo) are generated in `target/site/jacoco` upon running `mvn test`.
+* JavaDoc documentation is generated in `target/site/apidocs` when running `mvn package`.
 
-*  [Maven](https://maven.apache.org/) - an open source build automation and dependency management tool
-*  [JUnit5](https://junit.org/junit5/) - a unit testing framework for Java
-*  [Cucumber](https://cucumber.io/docs/cucumber/) - a tool for Behaviour-Driven Development
-*  [JaCoCo](https://www.jacoco.org) - a code coverage library for Java
-*  [JavaDoc](https://docs.oracle.com/en/java/javase/21/javadoc/javadoc.html) - a code documentation tool for Java
+## Developers & Contributors
+* **Abdelouahad Alla**
+* **Moulin Léo**
+* **Sauvenière Nicolas**
+* *Original Base Code by Tom Mens & Gauvain Devillez*
 
-## Versions
-
-We use [SemVer](http://semver.org/) for semantic versioning. For the versions available, see the [tags on this repository](https://github.com/University-of-Mons/calculator-cucumber-2025/tags). 
-
-## Contributors
-
-* Tom Mens
-* Gauvain Devillez @GauvainD
-
-## Licence
-
-
-[This code is available under the GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/) (GPLv3)
-
-## Acknowledgments
+## Acknowledgements
 
 * Software Engineering Lab, Faculty of Sciences, University of Mons, Belgium.
