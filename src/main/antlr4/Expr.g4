@@ -9,19 +9,17 @@ root : expr EOF ;
 
 expr
     : '(' expr ')'                       # Parens
+    | op='-' expr                        # UnaryMinus
+    | func=('sin'|'cos'|'tan'|'log'|'sqrt') '(' expr ')' # Funcs
     | complex                            # Comps
-    // | rational                           # Rats
     | <assoc=right> expr '^' expr        # Power
-    | FLOAT 'E' minus='-'? INT           # Scientific
+    | expr 'E' expr           # Scientific
     | expr op=('*'|'/') expr             # MulDiv
     | expr op=('+'|'-') expr             # AddSub
     | INT                                # Int
     | FLOAT                              # Float
+    | 'π'                                  # Pi
     ;
-
-//rational
-  //  : INT '/' INT                       # Rat
-    //;
 
 complex
     : (real=(INT|FLOAT) op=('+'|'-'))? imag=(INT|FLOAT) 'i'  # Comp

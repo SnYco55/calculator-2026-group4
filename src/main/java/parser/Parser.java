@@ -79,8 +79,12 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
     @Override
     public Expression visitFloat(ExprParser.FloatContext ctx){
         String text = ctx.FLOAT().getText();
+        BigDecimal value = new BigDecimal(text);
 
-        return new MyReal(new BigDecimal(text));
+        int decimalPlaces = Precision.getDecimalPlaces();
+        BigDecimal rounded = value.setScale(decimalPlaces, java.math.RoundingMode.HALF_EVEN);
+
+        return new MyReal(rounded);
     }
 
     @Override
@@ -103,7 +107,10 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
 
     @Override
     public Expression visitScientific(ExprParser.ScientificContext ctx) {
-        return new MyReal(new BigDecimal(ctx.getText().trim()));
+        Expression left = visit(ctx.expr(0));
+        Expression right = visit(ctx.expr(1));
+
+        return new Scientific(Arrays.asList(left, right));
     }
 
     @Override
@@ -112,5 +119,68 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
         Expression exp = visit(ctx.expr(1));
 
         return new Pow(Arrays.asList(base, exp));
+    }
+
+    @Override
+    public Expression visitFuncs(ExprParser.FuncsContext ctx){
+        Expression arg = visit(ctx.expr());
+        double value = new Calculator().eval(arg).toComplex().getReal().doubleValue();
+
+        String functionName = ctx.func.getText();
+
+        if (AngleMode.getMode() == AngleMode.Mode.DEG && !functionName.equals("sqrt")){
+            value = value * (Math.PI/180);
+        }
+
+        double epsilon = 1e-9;
+        double normalized = Math.abs(value % Math.PI);
+
+        double result;
+        switch (functionName) {
+            case "sin":
+                result = Math.sin(value);
+                break;
+            case "cos":
+                result = Math.cos(value);
+                break;
+            case "tan":
+                if (Math.abs(normalized - Math.PI / 2) < epsilon) {
+                    return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
+                }
+                result = Math.tan(value);
+                break;
+            case "log":
+                if (value <= 0){
+                    return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
+                }
+                result = Math.log10(value);
+                break;
+            case "sqrt":
+                if (value < 0){
+                    return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
+                }
+                result = Math.sqrt(value);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid function call");
+        }
+
+        int decimalPlaces = Precision.getDecimalPlaces();
+        BigDecimal bd = BigDecimal.valueOf(result);
+        BigDecimal rounded = bd.setScale(decimalPlaces, java.math.RoundingMode.HALF_EVEN);
+        MyReal myReal = new MyReal(rounded);
+
+        return (Expression) Operation.format(myReal.toComplex());
+    }
+
+    @Override
+    public Expression visitPi(ExprParser.PiContext ctx){
+        return new MyReal(new BigDecimal(String.valueOf(Math.PI)));
+    }
+
+    @Override
+    public Expression visitUnaryMinus(ExprParser.UnaryMinusContext ctx){
+        Expression v = visit(ctx.expr());
+        return new Times(Arrays.asList(new MyNumber(-1), v));
     }
 }
