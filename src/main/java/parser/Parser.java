@@ -132,6 +132,9 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
             value = value * (Math.PI/180);
         }
 
+        double epsilon = 1e-9;
+        double normalized = Math.abs(value % Math.PI);
+
         double result;
         switch (functionName) {
             case "sin":
@@ -141,7 +144,7 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
                 result = Math.cos(value);
                 break;
             case "tan":
-                if (value % Math.PI/2 == 0 && value != 0){
+                if (Math.abs(normalized - Math.PI / 2) < epsilon) {
                     return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
                 }
                 result = Math.tan(value);
