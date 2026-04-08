@@ -144,4 +144,9 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
         return new MyReal(new BigDecimal(String.valueOf(Math.PI)));
     }
 
+    @Override
+    public Expression visitUnaryMinus(ExprParser.UnaryMinusContext ctx){
+        Value v = (Value) visit(ctx.expr());
+        return new Times(Arrays.asList(new MyNumber(-1), v.toComplex()));
+    }
 }

@@ -9,6 +9,7 @@ root : expr EOF ;
 
 expr
     : '(' expr ')'                       # Parens
+    | op='-' expr                        # UnaryMinus
     | func=('sin'|'cos'|'tan'|'log') '(' expr ')' # Trig
     | complex                            # Comps
     | <assoc=right> expr '^' expr        # Power
