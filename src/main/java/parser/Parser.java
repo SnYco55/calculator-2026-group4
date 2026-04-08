@@ -115,13 +115,13 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
     }
 
     @Override
-    public Expression visitTrig(ExprParser.TrigContext ctx){
+    public Expression visitFuncs(ExprParser.FuncsContext ctx){
         Expression arg = visit(ctx.expr());
         double value = new Calculator().eval(arg).toComplex().getReal().doubleValue();
 
         String functionName = ctx.func.getText();
 
-        if (AngleMode.getMode() == AngleMode.Mode.DEG){
+        if (AngleMode.getMode() == AngleMode.Mode.DEG && !functionName.equals("sqrt")){
             value = value * (Math.PI/180);
         }
 
@@ -131,9 +131,20 @@ public class Parser extends exparser.ExprBaseVisitor<Expression> implements Expr
             case "cos":
                 return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.cos(value)), Precision.getMathContext())).toComplex());
             case "tan":
+                if (value == Math.PI/2){
+                    return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
+                }
                 return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.tan(value)), Precision.getMathContext())).toComplex());
             case "log":
+                if (value == 0){
+                    return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
+                }
                 return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.log10(value)), Precision.getMathContext())).toComplex());
+            case "sqrt":
+                if (value < 0){
+                    return new MyReal(BigDecimal.valueOf(0), MyReal.State.UNDEFINED);
+                }
+                return (Expression) Operation.format(new MyReal(new BigDecimal(String.valueOf(Math.sqrt(value)), Precision.getMathContext())).toComplex());
             default:
                 throw new IllegalArgumentException("Invalid function call");
         }

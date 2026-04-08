@@ -94,7 +94,7 @@ class TestParser {
     }
 
     @Test
-    void TestParseTrig(){
+    void TestParseFuncs(){
         Precision.setPrecision(3);
         Expression res = parser.parse("sin(90)");
         assertEquals(new MyReal(new BigDecimal("0.894")), calculator.eval(res));
@@ -151,5 +151,11 @@ class TestParser {
         AngleMode.setMode(AngleMode.Mode.RAD);
         res = parser.parse("sin(cos(0)*π/2)");
         assertEquals(new MyNumber(1), calculator.eval(res));
+
+        res = parser.parse("sqrt(16)");
+        assertEquals(new MyNumber(4), calculator.eval(res));
+
+        res = parser.parse("sqrt(36)^2");
+        assertEquals(new MyNumber(36), calculator.eval(res));
     }
 }
