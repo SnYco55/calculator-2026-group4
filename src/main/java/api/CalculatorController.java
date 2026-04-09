@@ -57,4 +57,10 @@ public class CalculatorController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
+
+    @GetMapping("/health")
+    public String health() {
+        return "OK";
+    }
+
 }
