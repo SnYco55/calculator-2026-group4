@@ -12,7 +12,10 @@ import services.CalculatorService;
 /**
  * REST controller exposing calculator endpoints.
  */
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {
+        "http://localhost:3000",
+        "https://calculator-2026-group4.vercel.app"
+})
 @RestController
 @RequestMapping("/calculator")
 public class CalculatorController {
