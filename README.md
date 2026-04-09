@@ -44,7 +44,7 @@ To comply with modern software evolution and CI/CD standards, we integrated the 
 ### 2. Frontend (React Web GUI)
 * Navigate to the frontend folder: `cd frontend`
 * Install dependencies: `npm install`
-* Start the web interface: `npm start` (Runs on `http://localhost:3000`)
+* Start the web interface:  (Runs on `https://calculator-2026-group4.vercel.app`)
 
 ## Test Coverage and JavaDoc Reporting
 
