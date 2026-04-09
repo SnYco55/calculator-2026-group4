@@ -12,7 +12,10 @@ import services.CalculatorService;
 /**
  * REST controller exposing calculator endpoints.
  */
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {
+        "http://localhost:3000",
+        "https://calculator-2026-group4.vercel.app"
+})
 @RestController
 @RequestMapping("/calculator")
 public class CalculatorController {
@@ -57,4 +60,10 @@ public class CalculatorController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
+
+    @GetMapping("/health")
+    public String health() {
+        return "OK";
+    }
+
 }
