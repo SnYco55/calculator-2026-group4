@@ -1,3 +1,6 @@
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+
 /**
  * Sends a calculation request to the backend API.
  * Includes evaluation context such as angle mode (RAD/DEG)
@@ -12,7 +15,7 @@ export async function calculate(input, angleMode, precision) {
     const normalizedAngleMode = angleMode === "DEG" ? "DEG" : "RAD";
     const normalizedPrecision = Number.isFinite(precision) ? precision : 2;
 
-    const res = await fetch("/calculator/parse", {
+    const res = await fetch(`${API_URL}/calculator/parse`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -34,7 +37,7 @@ export async function calculate(input, angleMode, precision) {
  * @returns {Promise<{ result: string }>} Parsed JSON response from the API
  */
 export async function convertResult(result, precision) {
-    const res = await fetch("/calculator/convert-result", {
+    const res = await fetch(`${API_URL}/calculator/convert-result`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
