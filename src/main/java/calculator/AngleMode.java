@@ -19,7 +19,7 @@ public class AngleMode {
     /**
      * Private constructor to prevent instantiation (singleton pattern).
      */
-    private AngleMode(){};
+    private AngleMode(){}
 
     private static Mode mode = Mode.RAD;
 
