@@ -16,6 +16,8 @@ Starting from a basic educational arithmetic expression evaluator, our team (Gro
 
 ## Features Implemented by Group 4
 
+* **Expression Parser & Evaluator:** A engine capable of parsing and evaluating complex arithmetic expressions, including support for operator precedence and parentheses.
+* **REST API Backend (Java):** A Spring Boot application exposing endpoints for evaluating arithmetic expressions.
 * **Web-Based Interface (React):** A modern, responsive graphical interface connected to the Java API backend.
 * **Interactive CLI (REPL):** A built-in command-line loop that processes arithmetic expressions dynamically, complete with a `help` manual.
 * **Extended Number Types:** Full support for evaluating expressions with Integers, Reals, Rationals, and Complex numbers.
@@ -114,8 +116,8 @@ The API will be available at `http://localhost:8080`.
 
 ## Test Coverage and JavaDoc Reporting
 
-* Test coverage reports (JaCoCo) are generated in `target/site/jacoco` upon running `mvn test`.
-* JavaDoc documentation is generated in `target/site/apidocs` when running `mvn package`.
+* Test coverage reports (JaCoCo) are generated in `target/site/jacoco` upon running `mvn package`.
+* JavaDoc documentation is automatically generated in `target/reports/apidocs` when running `mvn package`.
 
 ## Developers & Contributors
 * **Abdelouahad Alla**
